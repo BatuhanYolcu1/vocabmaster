@@ -2,35 +2,18 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
-// Starter word list - Most common English words for beginners
+// Starter word list - reduced for serverless performance
 const WELCOME_WORDS = [
-    { word: 'hello', translation: 'merhaba', example: 'Hello, how are you?', exampleTr: 'Merhaba, nasılsın?' },
-    { word: 'goodbye', translation: 'hoşça kal', example: 'Goodbye, see you tomorrow!', exampleTr: 'Hoşça kal, yarın görüşürüz!' },
-    { word: 'thank you', translation: 'teşekkür ederim', example: 'Thank you for your help.', exampleTr: 'Yardımın için teşekkürler.' },
-    { word: 'please', translation: 'lütfen', example: 'Please sit down.', exampleTr: 'Lütfen oturun.' },
-    { word: 'yes', translation: 'evet', example: 'Yes, I understand.', exampleTr: 'Evet, anlıyorum.' },
-    { word: 'no', translation: 'hayır', example: 'No, thank you.', exampleTr: 'Hayır, teşekkürler.' },
-    { word: 'water', translation: 'su', example: 'Can I have some water?', exampleTr: 'Biraz su alabilir miyim?' },
-    { word: 'food', translation: 'yiyecek', example: 'The food is delicious.', exampleTr: 'Yemek lezzetli.' },
-    { word: 'friend', translation: 'arkadaş', example: 'She is my best friend.', exampleTr: 'O benim en iyi arkadaşım.' },
-    { word: 'family', translation: 'aile', example: 'I love my family.', exampleTr: 'Ailemi seviyorum.' },
-    { word: 'house', translation: 'ev', example: 'This is my house.', exampleTr: 'Bu benim evim.' },
-    { word: 'car', translation: 'araba', example: 'I bought a new car.', exampleTr: 'Yeni bir araba aldım.' },
-    { word: 'book', translation: 'kitap', example: 'I am reading a book.', exampleTr: 'Bir kitap okuyorum.' },
-    { word: 'school', translation: 'okul', example: 'I go to school every day.', exampleTr: 'Her gün okula gidiyorum.' },
-    { word: 'work', translation: 'iş', example: 'I have a lot of work.', exampleTr: 'Çok işim var.' },
-    { word: 'money', translation: 'para', example: 'I need more money.', exampleTr: 'Daha fazla paraya ihtiyacım var.' },
-    { word: 'time', translation: 'zaman', example: 'What time is it?', exampleTr: 'Saat kaç?' },
-    { word: 'day', translation: 'gün', example: 'Have a nice day!', exampleTr: 'İyi günler!' },
-    { word: 'night', translation: 'gece', example: 'Good night!', exampleTr: 'İyi geceler!' },
-    { word: 'love', translation: 'sevgi, aşk', example: 'I love you.', exampleTr: 'Seni seviyorum.' },
-    { word: 'happy', translation: 'mutlu', example: 'I am very happy today.', exampleTr: 'Bugün çok mutluyum.' },
-    { word: 'beautiful', translation: 'güzel', example: 'The sunset is beautiful.', exampleTr: 'Gün batımı güzel.' },
-    { word: 'big', translation: 'büyük', example: 'This is a big house.', exampleTr: 'Bu büyük bir ev.' },
-    { word: 'small', translation: 'küçük', example: 'I have a small dog.', exampleTr: 'Küçük bir köpeğim var.' },
-    { word: 'good', translation: 'iyi', example: 'This is a good idea.', exampleTr: 'Bu iyi bir fikir.' },
-    { word: 'new', translation: 'yeni', example: 'I have a new phone.', exampleTr: 'Yeni bir telefonum var.' },
-    { word: 'today', translation: 'bugün', example: 'What are you doing today?', exampleTr: 'Bugün ne yapıyorsun?' },
+    { word: 'hello', translation: 'merhaba', example: 'Hello, how are you?' },
+    { word: 'goodbye', translation: 'hoşça kal', example: 'Goodbye, see you tomorrow!' },
+    { word: 'thank you', translation: 'teşekkür ederim', example: 'Thank you for your help.' },
+    { word: 'please', translation: 'lütfen', example: 'Please sit down.' },
+    { word: 'yes', translation: 'evet', example: 'Yes, I understand.' },
+    { word: 'no', translation: 'hayır', example: 'No, thank you.' },
+    { word: 'water', translation: 'su', example: 'Can I have some water?' },
+    { word: 'friend', translation: 'arkadaş', example: 'She is my best friend.' },
+    { word: 'family', translation: 'aile', example: 'I love my family.' },
+    { word: 'house', translation: 'ev', example: 'This is my house.' },
 ];
 
 export async function POST(req: Request) {
@@ -65,59 +48,66 @@ export async function POST(req: Request) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create user with welcome word list in a transaction
-        const user = await prisma.$transaction(async (tx) => {
-            // Create user
-            const newUser = await tx.user.create({
-                data: {
-                    email,
-                    name: name || email.split('@')[0],
-                    password: hashedPassword,
-                    xp: 0,
-                    level: 1,
-                    streak: 0,
-                },
-            });
+        // Create user first
+        const newUser = await prisma.user.create({
+            data: {
+                email,
+                name: name || email.split('@')[0],
+                password: hashedPassword,
+                xp: 0,
+                level: 1,
+                streak: 0,
+            },
+        });
 
-            // Create welcome word list
-            const wordList = await tx.wordList.create({
+        // Create welcome word list (separate operation, no transaction)
+        try {
+            const wordList = await prisma.wordList.create({
                 data: {
                     name: '🎉 Hoş Geldin Paketi',
-                    description: 'İngilizce öğrenmeye başlamak için en temel 25 kelime!',
+                    description: 'İngilizce öğrenmeye başlamak için temel 10 kelime!',
                     userId: newUser.id,
                 },
             });
 
-            // Create words and link them to the list
-            for (const w of WELCOME_WORDS) {
-                const word = await tx.word.create({
+            // Create words in parallel for speed
+            const wordPromises = WELCOME_WORDS.map(w =>
+                prisma.word.create({
                     data: {
                         word: w.word,
                         turkishTranslation: w.translation,
                         definitionTr: w.translation,
                         exampleSentence: w.example,
-                        exampleSentenceTr: w.exampleTr,
+                        exampleSentenceTr: '',
                         type: 'noun',
                         level: 'A1',
                         category: 'Temel',
                         isSystem: false,
                         createdByUserId: newUser.id,
                     },
-                });
+                })
+            );
 
-                await tx.wordListItem.create({
+            const words = await Promise.all(wordPromises);
+
+            // Link words to list in parallel
+            const linkPromises = words.map(word =>
+                prisma.wordListItem.create({
                     data: {
                         wordListId: wordList.id,
                         wordId: word.id,
                     },
-                });
-            }
+                })
+            );
 
-            return newUser;
-        });
+            await Promise.all(linkPromises);
+        } catch (wordError) {
+            // If word list creation fails, user is still created successfully
+            console.error('Welcome pack creation failed:', wordError);
+        }
 
         return NextResponse.json(
-            { message: 'Kullanıcı başarıyla oluşturuldu', userId: user.id },
+            { message: 'Kullanıcı başarıyla oluşturuldu', userId: newUser.id },
             { status: 201 }
         );
     } catch (error) {

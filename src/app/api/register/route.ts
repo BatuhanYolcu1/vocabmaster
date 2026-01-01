@@ -4,36 +4,33 @@ import bcrypt from 'bcryptjs';
 
 // Starter word list - Most common English words for beginners
 const WELCOME_WORDS = [
-    { word: 'hello', definition: 'merhaba', example: 'Hello, how are you?' },
-    { word: 'goodbye', definition: 'hoşça kal', example: 'Goodbye, see you tomorrow!' },
-    { word: 'thank you', definition: 'teşekkür ederim', example: 'Thank you for your help.' },
-    { word: 'please', definition: 'lütfen', example: 'Please sit down.' },
-    { word: 'yes', definition: 'evet', example: 'Yes, I understand.' },
-    { word: 'no', definition: 'hayır', example: 'No, thank you.' },
-    { word: 'water', definition: 'su', example: 'Can I have some water?' },
-    { word: 'food', definition: 'yiyecek', example: 'The food is delicious.' },
-    { word: 'friend', definition: 'arkadaş', example: 'She is my best friend.' },
-    { word: 'family', definition: 'aile', example: 'I love my family.' },
-    { word: 'house', definition: 'ev', example: 'This is my house.' },
-    { word: 'car', definition: 'araba', example: 'I bought a new car.' },
-    { word: 'book', definition: 'kitap', example: 'I am reading a book.' },
-    { word: 'school', definition: 'okul', example: 'I go to school every day.' },
-    { word: 'work', definition: 'iş', example: 'I have a lot of work.' },
-    { word: 'money', definition: 'para', example: 'I need more money.' },
-    { word: 'time', definition: 'zaman', example: 'What time is it?' },
-    { word: 'day', definition: 'gün', example: 'Have a nice day!' },
-    { word: 'night', definition: 'gece', example: 'Good night!' },
-    { word: 'love', definition: 'sevgi, aşk', example: 'I love you.' },
-    { word: 'happy', definition: 'mutlu', example: 'I am very happy today.' },
-    { word: 'sad', definition: 'üzgün', example: 'Why are you sad?' },
-    { word: 'beautiful', definition: 'güzel', example: 'The sunset is beautiful.' },
-    { word: 'big', definition: 'büyük', example: 'This is a big house.' },
-    { word: 'small', definition: 'küçük', example: 'I have a small dog.' },
-    { word: 'good', definition: 'iyi', example: 'This is a good idea.' },
-    { word: 'bad', definition: 'kötü', example: 'That was a bad decision.' },
-    { word: 'new', definition: 'yeni', example: 'I have a new phone.' },
-    { word: 'old', definition: 'eski, yaşlı', example: 'This is an old building.' },
-    { word: 'today', definition: 'bugün', example: 'What are you doing today?' },
+    { word: 'hello', translation: 'merhaba', example: 'Hello, how are you?', exampleTr: 'Merhaba, nasılsın?' },
+    { word: 'goodbye', translation: 'hoşça kal', example: 'Goodbye, see you tomorrow!', exampleTr: 'Hoşça kal, yarın görüşürüz!' },
+    { word: 'thank you', translation: 'teşekkür ederim', example: 'Thank you for your help.', exampleTr: 'Yardımın için teşekkürler.' },
+    { word: 'please', translation: 'lütfen', example: 'Please sit down.', exampleTr: 'Lütfen oturun.' },
+    { word: 'yes', translation: 'evet', example: 'Yes, I understand.', exampleTr: 'Evet, anlıyorum.' },
+    { word: 'no', translation: 'hayır', example: 'No, thank you.', exampleTr: 'Hayır, teşekkürler.' },
+    { word: 'water', translation: 'su', example: 'Can I have some water?', exampleTr: 'Biraz su alabilir miyim?' },
+    { word: 'food', translation: 'yiyecek', example: 'The food is delicious.', exampleTr: 'Yemek lezzetli.' },
+    { word: 'friend', translation: 'arkadaş', example: 'She is my best friend.', exampleTr: 'O benim en iyi arkadaşım.' },
+    { word: 'family', translation: 'aile', example: 'I love my family.', exampleTr: 'Ailemi seviyorum.' },
+    { word: 'house', translation: 'ev', example: 'This is my house.', exampleTr: 'Bu benim evim.' },
+    { word: 'car', translation: 'araba', example: 'I bought a new car.', exampleTr: 'Yeni bir araba aldım.' },
+    { word: 'book', translation: 'kitap', example: 'I am reading a book.', exampleTr: 'Bir kitap okuyorum.' },
+    { word: 'school', translation: 'okul', example: 'I go to school every day.', exampleTr: 'Her gün okula gidiyorum.' },
+    { word: 'work', translation: 'iş', example: 'I have a lot of work.', exampleTr: 'Çok işim var.' },
+    { word: 'money', translation: 'para', example: 'I need more money.', exampleTr: 'Daha fazla paraya ihtiyacım var.' },
+    { word: 'time', translation: 'zaman', example: 'What time is it?', exampleTr: 'Saat kaç?' },
+    { word: 'day', translation: 'gün', example: 'Have a nice day!', exampleTr: 'İyi günler!' },
+    { word: 'night', translation: 'gece', example: 'Good night!', exampleTr: 'İyi geceler!' },
+    { word: 'love', translation: 'sevgi, aşk', example: 'I love you.', exampleTr: 'Seni seviyorum.' },
+    { word: 'happy', translation: 'mutlu', example: 'I am very happy today.', exampleTr: 'Bugün çok mutluyum.' },
+    { word: 'beautiful', translation: 'güzel', example: 'The sunset is beautiful.', exampleTr: 'Gün batımı güzel.' },
+    { word: 'big', translation: 'büyük', example: 'This is a big house.', exampleTr: 'Bu büyük bir ev.' },
+    { word: 'small', translation: 'küçük', example: 'I have a small dog.', exampleTr: 'Küçük bir köpeğim var.' },
+    { word: 'good', translation: 'iyi', example: 'This is a good idea.', exampleTr: 'Bu iyi bir fikir.' },
+    { word: 'new', translation: 'yeni', example: 'I have a new phone.', exampleTr: 'Yeni bir telefonum var.' },
+    { word: 'today', translation: 'bugün', example: 'What are you doing today?', exampleTr: 'Bugün ne yapıyorsun?' },
 ];
 
 export async function POST(req: Request) {
@@ -83,21 +80,38 @@ export async function POST(req: Request) {
             });
 
             // Create welcome word list
-            await tx.wordList.create({
+            const wordList = await tx.wordList.create({
                 data: {
                     name: '🎉 Hoş Geldin Paketi',
-                    description: 'İngilizce öğrenmeye başlamak için en temel 30 kelime!',
+                    description: 'İngilizce öğrenmeye başlamak için en temel 25 kelime!',
                     userId: newUser.id,
-                    items: {
-                        create: WELCOME_WORDS.map((w, index) => ({
-                            word: w.word,
-                            definition: w.definition,
-                            example: w.example,
-                            order: index,
-                        })),
-                    },
                 },
             });
+
+            // Create words and link them to the list
+            for (const w of WELCOME_WORDS) {
+                const word = await tx.word.create({
+                    data: {
+                        word: w.word,
+                        turkishTranslation: w.translation,
+                        definitionTr: w.translation,
+                        exampleSentence: w.example,
+                        exampleSentenceTr: w.exampleTr,
+                        type: 'noun',
+                        level: 'A1',
+                        category: 'Temel',
+                        isSystem: false,
+                        createdByUserId: newUser.id,
+                    },
+                });
+
+                await tx.wordListItem.create({
+                    data: {
+                        wordListId: wordList.id,
+                        wordId: word.id,
+                    },
+                });
+            }
 
             return newUser;
         });

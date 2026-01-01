@@ -1,0 +1,188 @@
+// VocabMaster v2.0 - Database Schema
+// Comprehensive vocabulary learning platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// User model for authentication and progress tracking
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  password      String?   // Hashed password for credentials auth
+  
+  // Gamification
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  streak        Int       @default(0)
+  lastStudyDate DateTime?
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  progress      Progress[]
+  achievements  UserAchievement[]
+  wordLists     WordList[]
+  dailyActivities DailyActivity[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// NextAuth Account model
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// NextAuth Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Word model - vocabulary items
+model Word {
+  id                  String   @id @default(cuid())
+  word                String
+  definitionTr        String   // Turkish definition
+  exampleSentence     String
+  exampleSentenceTr   String   // Turkish translation of example
+  turkishTranslation  String
+  type                String   // noun, verb, adjective, adverb
+  level               String   @default("B1") // A1, A2, B1, B2, C1, C2
+  category            String   @default("Genel") // İş, Seyahat, Akademik, etc.
+  
+  // System or user created
+  isSystem            Boolean  @default(true)
+  createdByUserId     String?
+  
+  // Relations
+  progress            Progress[]
+  wordListItems       WordListItem[]
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// User's custom word lists
+model WordList {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       WordListItem[]
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+// Words in a word list
+model WordListItem {
+  id         String   @id @default(cuid())
+  wordListId String
+  wordId     String
+  wordList   WordList @relation(fields: [wordListId], references: [id], onDelete: Cascade)
+  word       Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  
+  createdAt  DateTime @default(now())
+  
+  @@unique([wordListId, wordId])
+}
+
+// SRS Progress tracking per user per word
+model Progress {
+  id          String   @id @default(cuid())
+  userId      String
+  wordId      String
+  
+  // SRS algorithm fields
+  interval    Int      @default(1)      // in minutes
+  easeFactor  Float    @default(2.5)
+  nextReview  DateTime @default(now())
+  reviewCount Int      @default(0)
+  
+  // Statistics
+  correctCount Int     @default(0)
+  wrongCount   Int     @default(0)
+  lastRating   String? // hard, good, easy
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word        Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, wordId])
+}
+
+// Achievement definitions
+model Achievement {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  nameTr      String            // Turkish name
+  description String
+  descriptionTr String          // Turkish description
+  icon        String            // Emoji or icon name
+  xpReward    Int               @default(100)
+  condition   String            // JSON condition for unlocking
+  
+  users       UserAchievement[]
+}
+
+// User's earned achievements
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  achievementId String
+  
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  
+  earnedAt      DateTime    @default(now())
+  
+  @@unique([userId, achievementId])
+}
+
+// Daily activity tracking for charts
+model DailyActivity {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @default(now()) // Only the date portion is used
+  xpEarned    Int      @default(0)
+  wordsStudied Int     @default(0)
+  sessionsCompleted Int @default(0)
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, date])
+}

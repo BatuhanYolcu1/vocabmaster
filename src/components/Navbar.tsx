@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { BookOpen, Home, BarChart3, User, LogOut } from 'lucide-react';
+import { BookOpen, Home, BarChart3, User, LogOut, Moon, Sun } from 'lucide-react';
+import { useTheme } from './ThemeProvider';
 
 export default function Navbar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
     const [xp, setXp] = useState(0);
+    const { theme, toggleTheme } = useTheme();
 
     // Sync state with session initial data
     useEffect(() => {
@@ -43,15 +45,30 @@ export default function Navbar() {
         return () => window.removeEventListener('xp-updated', handleXpUpdate);
     }, [session, pathname]);
 
+    // Theme Toggle Button Component
+    const ThemeToggle = () => (
+        <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-700 transition-all"
+            title={theme === 'light' ? 'Karanlık Mod' : 'Aydınlık Mod'}
+        >
+            {theme === 'light' ? (
+                <Moon className="w-5 h-5" />
+            ) : (
+                <Sun className="w-5 h-5" />
+            )}
+        </button>
+    );
+
     // Landing Page Navbar (Unauthenticated)
     if (!session && status !== 'loading') {
         return (
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:shadow-indigo-300 transition-shadow">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 group-hover:shadow-indigo-300 transition-shadow">
                                 <BookOpen className="w-5 h-5 text-white" />
                             </div>
                             <span className="font-bold text-xl bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
@@ -59,11 +76,12 @@ export default function Navbar() {
                             </span>
                         </Link>
 
-                        {/* Auth Buttons Only */}
+                        {/* Auth Buttons + Theme Toggle */}
                         <div className="flex items-center gap-3">
+                            <ThemeToggle />
                             <Link
                                 href="/login"
-                                className="px-5 py-2 text-gray-600 hover:text-indigo-600 font-medium transition-colors"
+                                className="px-5 py-2 text-gray-600 dark:text-gray-300 hover:text-indigo-600 font-medium transition-colors"
                             >
                                 Giriş Yap
                             </Link>
@@ -82,12 +100,12 @@ export default function Navbar() {
 
     // Dashboard Navbar (Authenticated)
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-gray-100 dark:border-slate-800">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:shadow-indigo-300 transition-shadow">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 group-hover:shadow-indigo-300 transition-shadow">
                             <BookOpen className="w-5 h-5 text-white" />
                         </div>
                         <span className="font-bold text-xl bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
@@ -100,8 +118,8 @@ export default function Navbar() {
                         <Link
                             href="/"
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${pathname === '/'
-                                ? 'text-indigo-600 bg-indigo-50 font-medium'
-                                : 'text-gray-600 hover:text-indigo-600 hover:bg-indigo-50'
+                                ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 font-medium'
+                                : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800'
                                 }`}
                         >
                             <Home className="w-4 h-4" />
@@ -110,8 +128,8 @@ export default function Navbar() {
                         <Link
                             href="/categories"
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${pathname === '/categories'
-                                ? 'text-indigo-600 bg-indigo-50 font-medium'
-                                : 'text-gray-600 hover:text-indigo-600 hover:bg-indigo-50'
+                                ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 font-medium'
+                                : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800'
                                 }`}
                         >
                             <BookOpen className="w-4 h-4" />
@@ -120,8 +138,8 @@ export default function Navbar() {
                         <Link
                             href="/study"
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${pathname.startsWith('/study')
-                                ? 'text-indigo-600 bg-indigo-50 font-medium'
-                                : 'text-gray-600 hover:text-indigo-600 hover:bg-indigo-50'
+                                ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 font-medium'
+                                : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800'
                                 }`}
                         >
                             <BarChart3 className="w-4 h-4" />
@@ -130,19 +148,22 @@ export default function Navbar() {
 
                         {/* Auth Section (Authenticated) */}
                         {status === 'loading' ? (
-                            <div className="w-8 h-8 rounded-full bg-gray-100 animate-pulse" />
+                            <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-700 animate-pulse" />
                         ) : (
                             <div className="flex items-center gap-2 ml-2">
                                 {/* XP Badge */}
-                                <div className="hidden sm:flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-sm font-medium border border-amber-100">
+                                <div className="hidden sm:flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-sm font-medium border border-amber-100 dark:border-amber-800">
                                     <span>⭐</span>
                                     <span>{xp} XP</span>
                                 </div>
 
+                                {/* Theme Toggle */}
+                                <ThemeToggle />
+
                                 {/* Profile Link */}
                                 <Link
                                     href="/profile"
-                                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 transition-all"
                                 >
                                     {session?.user?.image ? (
                                         <img
@@ -151,8 +172,8 @@ export default function Navbar() {
                                             className="w-8 h-8 rounded-full"
                                         />
                                     ) : (
-                                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                                            <User className="w-4 h-4 text-indigo-600" />
+                                        <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                                            <User className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                                         </div>
                                     )}
                                 </Link>
@@ -160,7 +181,7 @@ export default function Navbar() {
                                 {/* Logout */}
                                 <button
                                     onClick={() => signOut()}
-                                    className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
+                                    className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                                     title="Çıkış Yap"
                                 >
                                     <LogOut className="w-4 h-4" />

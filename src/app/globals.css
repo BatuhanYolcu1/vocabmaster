@@ -1,8 +1,33 @@
 @import "tailwindcss";
 
 :root {
+  /* Light Theme */
   --background: #fafafa;
   --foreground: #171717;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --muted: #6b7280;
+  --muted-bg: #f3f4f6;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+}
+
+.dark {
+  /* Dark Theme */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card-bg: #1e293b;
+  --card-border: #334155;
+  --muted: #94a3b8;
+  --muted-bg: #1e293b;
+  --primary: #818cf8;
+  --primary-hover: #6366f1;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f87171;
 }
 
 @theme inline {
@@ -16,6 +41,44 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme-aware component styles */
+.card {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.bg-muted {
+  background: var(--muted-bg);
+}
+
+/* Override white backgrounds in dark mode */
+.dark .bg-white {
+  background: var(--card-bg) !important;
+}
+
+.dark .bg-gray-50 {
+  background: var(--muted-bg) !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: var(--card-border) !important;
+}
+
+.dark .text-gray-900 {
+  color: var(--foreground) !important;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  color: var(--muted) !important;
 }
 
 /* 3D Flip Card Styles */

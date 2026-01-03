@@ -6,9 +6,9 @@ if (!apiKey) {
     console.warn("GEMINI_API_KEY is not defined in environment variables.");
 }
 
-const genAI = new GoogleGenerativeAI(apiKey || "dummy-key");
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-export const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+export const model = genAI?.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export interface AIResponse {
     definitionTr: string;
@@ -19,7 +19,10 @@ export interface AIResponse {
 }
 
 export async function generateWordDetails(word: string): Promise<AIResponse | null> {
-    if (!apiKey) return null;
+    if (!apiKey || !model) {
+        console.error("Gemini API key or model not available");
+        return null;
+    }
 
     try {
         const prompt = `
@@ -46,3 +49,4 @@ export async function generateWordDetails(word: string): Promise<AIResponse | nu
         return null;
     }
 }
+

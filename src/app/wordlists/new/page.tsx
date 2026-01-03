@@ -42,6 +42,7 @@ export default function NewWordListPage() {
         if (!word) return;
 
         setGenerating(true);
+        setError('');
         try {
             const res = await fetch('/api/ai/generate', {
                 method: 'POST',
@@ -49,19 +50,16 @@ export default function NewWordListPage() {
                 body: JSON.stringify({ word }),
             });
 
+            const data = await res.json();
+
             if (res.ok) {
-                const data = await res.json();
                 setCurrentWord({ ...currentWord, ...data });
             } else {
-                if (res.status === 503) {
-                    setError('AI servisi için API anahtarı eksik. Lütfen .env dosyanızı kontrol edin.');
-                } else {
-                    setError('Kelime detayları oluşturulamadı.');
-                }
+                setError(data.error || 'Kelime detayları oluşturulamadı.');
             }
         } catch (err) {
             console.error(err);
-            setError('Bir hata oluştu.');
+            setError('Bir hata oluştu. Lütfen tekrar deneyin.');
         } finally {
             setGenerating(false);
         }

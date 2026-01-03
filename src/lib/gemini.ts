@@ -8,7 +8,7 @@ if (!apiKey) {
 
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-export const model = genAI?.getGenerativeModel({ model: "gemini-1.5-flash" });
+export const model = genAI?.getGenerativeModel({ model: "gemini-pro" });
 
 export interface AIResponse {
     definitionTr: string;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { BookOpen, Briefcase, Plane, GraduationCap, Code, Heart, Plus, FolderOpen } from 'lucide-react';
+import { BookOpen, Briefcase, Plane, GraduationCap, Code, Heart, Plus, FolderOpen, FileSpreadsheet } from 'lucide-react';
 
 interface Category {
     id: string;
@@ -98,14 +98,23 @@ export default function CategoriesPage() {
             {/* User's Word Lists */}
             <section>
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-gray-900">📝 Kişisel Listelerim</h2>
-                    <Link
-                        href="/wordlists/new"
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors font-medium text-sm"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Yeni Liste
-                    </Link>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">📝 Kişisel Listelerim</h2>
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href="/wordlists/import"
+                            className="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors font-medium text-sm"
+                        >
+                            <FileSpreadsheet className="w-4 h-4" />
+                            İçe Aktar
+                        </Link>
+                        <Link
+                            href="/wordlists/new"
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors font-medium text-sm"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Yeni Liste
+                        </Link>
+                    </div>
                 </div>
 
                 {!session ? (

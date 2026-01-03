@@ -17,16 +17,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // Check localStorage first
+        // Check localStorage for saved theme preference
         const stored = localStorage.getItem('vocabmaster-theme') as Theme | null;
 
         if (stored) {
+            // Use saved preference if exists
             setThemeState(stored);
-        } else {
-            // Check system preference
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            setThemeState(prefersDark ? 'dark' : 'light');
         }
+        // Otherwise keep default 'light' theme - no system preference check
 
         setMounted(true);
     }, []);

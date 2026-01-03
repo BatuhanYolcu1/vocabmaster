@@ -10,7 +10,8 @@ import {
     Headphones,
     Play,
     Star,
-    BookOpen
+    BookOpen,
+    Mic
 } from 'lucide-react';
 
 interface QuizMode {
@@ -84,6 +85,16 @@ const quizModes: QuizMode[] = [
         xpMultiplier: 3,
         difficulty: '✨ Yeni',
         href: '/study/story',
+    },
+    {
+        id: 'speaking',
+        name: 'Konuşma Koçu',
+        description: 'Mikrofon ile telaffuzunu test et ve geliştir.',
+        icon: <Mic className="w-8 h-8" />,
+        color: 'from-rose-500 to-pink-600',
+        xpMultiplier: 2.5,
+        difficulty: '🎙️ Yeni',
+        href: '/study/speaking',
     },
 ];
 

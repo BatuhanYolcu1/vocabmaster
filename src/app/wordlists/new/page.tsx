@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Plus, X, Sparkles, Check, Edit2 } from 'lucide-react';
+import { ArrowLeft, Save, Plus, X, Check, Edit2 } from 'lucide-react';
 
 interface WordInput {
     word: string;
@@ -33,37 +33,8 @@ export default function NewWordListPage() {
     const [currentWord, setCurrentWord] = useState<WordInput>({ ...emptyWord });
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [saving, setSaving] = useState(false);
-    const [generating, setGenerating] = useState(false);
     const [error, setError] = useState('');
     const wordInputRef = useRef<HTMLInputElement>(null);
-
-    const generateDetails = async () => {
-        const word = currentWord.word.trim();
-        if (!word) return;
-
-        setGenerating(true);
-        setError('');
-        try {
-            const res = await fetch('/api/ai/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ word }),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setCurrentWord({ ...currentWord, ...data });
-            } else {
-                setError(data.error || 'Kelime detayları oluşturulamadı.');
-            }
-        } catch (err) {
-            console.error(err);
-            setError('Bir hata oluştu. Lütfen tekrar deneyin.');
-        } finally {
-            setGenerating(false);
-        }
-    };
 
     const addOrUpdateWord = () => {
         if (!currentWord.word.trim() || !currentWord.turkishTranslation.trim()) {
@@ -239,36 +210,20 @@ export default function NewWordListPage() {
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 İngilizce Kelime *
                             </label>
-                            <div className="flex gap-2">
-                                <input
-                                    ref={wordInputRef}
-                                    type="text"
-                                    value={currentWord.word}
-                                    onChange={(e) => updateCurrentWord('word', e.target.value)}
-                                    placeholder="resilient"
-                                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' && e.ctrlKey) {
-                                            e.preventDefault();
-                                            addOrUpdateWord();
-                                        }
-                                    }}
-                                />
-                                <button
-                                    type="button"
-                                    onClick={generateDetails}
-                                    disabled={generating || !currentWord.word.trim()}
-                                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white rounded-lg hover:from-violet-600 hover:to-fuchsia-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-sm font-medium"
-                                    title="AI ile Otomatik Doldur"
-                                >
-                                    {generating ? (
-                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    ) : (
-                                        <Sparkles className="w-4 h-4" />
-                                    )}
-                                    <span className="hidden sm:inline">AI Doldur</span>
-                                </button>
-                            </div>
+                            <input
+                                ref={wordInputRef}
+                                type="text"
+                                value={currentWord.word}
+                                onChange={(e) => updateCurrentWord('word', e.target.value)}
+                                placeholder="resilient"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && e.ctrlKey) {
+                                        e.preventDefault();
+                                        addOrUpdateWord();
+                                    }
+                                }}
+                            />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">

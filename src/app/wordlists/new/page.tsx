@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Save, Plus, X, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, Plus, X, Sparkles, Check, Edit2 } from 'lucide-react';
 
 interface WordInput {
     word: string;
@@ -29,16 +29,19 @@ export default function NewWordListPage() {
     const router = useRouter();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [words, setWords] = useState<WordInput[]>([{ ...emptyWord }]);
+    const [words, setWords] = useState<WordInput[]>([]);
+    const [currentWord, setCurrentWord] = useState<WordInput>({ ...emptyWord });
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [saving, setSaving] = useState(false);
-    const [generating, setGenerating] = useState<number | null>(null);
+    const [generating, setGenerating] = useState(false);
     const [error, setError] = useState('');
+    const wordInputRef = useRef<HTMLInputElement>(null);
 
-    const generateDetails = async (index: number) => {
-        const word = words[index].word.trim();
+    const generateDetails = async () => {
+        const word = currentWord.word.trim();
         if (!word) return;
 
-        setGenerating(index);
+        setGenerating(true);
         try {
             const res = await fetch('/api/ai/generate', {
                 method: 'POST',
@@ -48,9 +51,7 @@ export default function NewWordListPage() {
 
             if (res.ok) {
                 const data = await res.json();
-                const newWords = [...words];
-                newWords[index] = { ...newWords[index], ...data };
-                setWords(newWords);
+                setCurrentWord({ ...currentWord, ...data });
             } else {
                 if (res.status === 503) {
                     setError('AI servisi için API anahtarı eksik. Lütfen .env dosyanızı kontrol edin.');
@@ -62,24 +63,54 @@ export default function NewWordListPage() {
             console.error(err);
             setError('Bir hata oluştu.');
         } finally {
-            setGenerating(null);
+            setGenerating(false);
         }
     };
 
-    const addWord = () => {
-        setWords([...words, { ...emptyWord }]);
+    const addOrUpdateWord = () => {
+        if (!currentWord.word.trim() || !currentWord.turkishTranslation.trim()) {
+            setError('İngilizce kelime ve Türkçe anlamı gereklidir.');
+            return;
+        }
+
+        if (editingIndex !== null) {
+            // Update existing word
+            const newWords = [...words];
+            newWords[editingIndex] = { ...currentWord };
+            setWords(newWords);
+            setEditingIndex(null);
+        } else {
+            // Add new word
+            setWords([...words, { ...currentWord }]);
+        }
+
+        // Clear form and focus
+        setCurrentWord({ ...emptyWord });
+        setError('');
+        wordInputRef.current?.focus();
+    };
+
+    const editWord = (index: number) => {
+        setCurrentWord({ ...words[index] });
+        setEditingIndex(index);
+        wordInputRef.current?.focus();
+    };
+
+    const cancelEdit = () => {
+        setCurrentWord({ ...emptyWord });
+        setEditingIndex(null);
     };
 
     const removeWord = (index: number) => {
-        if (words.length > 1) {
-            setWords(words.filter((_, i) => i !== index));
+        setWords(words.filter((_, i) => i !== index));
+        if (editingIndex === index) {
+            setCurrentWord({ ...emptyWord });
+            setEditingIndex(null);
         }
     };
 
-    const updateWord = (index: number, field: keyof WordInput, value: string) => {
-        const newWords = [...words];
-        newWords[index] = { ...newWords[index], [field]: value };
-        setWords(newWords);
+    const updateCurrentWord = (field: keyof WordInput, value: string) => {
+        setCurrentWord({ ...currentWord, [field]: value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -188,131 +219,191 @@ export default function NewWordListPage() {
                     </div>
                 </div>
 
-                {/* Words */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="font-semibold text-gray-900">Kelimeler ({words.length})</h2>
-                        <button
-                            type="button"
-                            onClick={addWord}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-colors font-medium text-sm"
-                        >
-                            <Plus className="w-4 h-4" />
-                            Kelime Ekle
-                        </button>
+                {/* Add Word Form */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-indigo-100">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="font-semibold text-gray-900">
+                            {editingIndex !== null ? `Kelime Düzenle` : 'Yeni Kelime Ekle'}
+                        </h2>
+                        {editingIndex !== null && (
+                            <button
+                                type="button"
+                                onClick={cancelEdit}
+                                className="text-sm text-gray-500 hover:text-gray-700"
+                            >
+                                İptal
+                            </button>
+                        )}
                     </div>
 
-                    {words.map((word, index) => (
-                        <div key={index} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="text-sm font-medium text-gray-500">Kelime {index + 1}</span>
-                                {words.length > 1 && (
-                                    <button
-                                        type="button"
-                                        onClick={() => removeWord(index)}
-                                        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                                    >
-                                        <X className="w-4 h-4" />
-                                    </button>
-                                )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                İngilizce Kelime *
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    ref={wordInputRef}
+                                    type="text"
+                                    value={currentWord.word}
+                                    onChange={(e) => updateCurrentWord('word', e.target.value)}
+                                    placeholder="resilient"
+                                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && e.ctrlKey) {
+                                            e.preventDefault();
+                                            addOrUpdateWord();
+                                        }
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={generateDetails}
+                                    disabled={generating || !currentWord.word.trim()}
+                                    className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white rounded-lg hover:from-violet-600 hover:to-fuchsia-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-sm font-medium"
+                                    title="AI ile Otomatik Doldur"
+                                >
+                                    {generating ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <Sparkles className="w-4 h-4" />
+                                    )}
+                                    <span className="hidden sm:inline">AI Doldur</span>
+                                </button>
                             </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Türkçe Anlamı *
+                            </label>
+                            <input
+                                type="text"
+                                value={currentWord.turkishTranslation}
+                                onChange={(e) => updateCurrentWord('turkishTranslation', e.target.value)}
+                                placeholder="Dayanıklı, esnek"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Türkçe Tanım
+                            </label>
+                            <input
+                                type="text"
+                                value={currentWord.definitionTr}
+                                onChange={(e) => updateCurrentWord('definitionTr', e.target.value)}
+                                placeholder="Zorluklardan hızla toparlanabilen"
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Örnek Cümle (İngilizce)
+                            </label>
+                            <input
+                                type="text"
+                                value={currentWord.exampleSentence}
+                                onChange={(e) => updateCurrentWord('exampleSentence', e.target.value)}
+                                placeholder="She is very resilient."
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Örnek Cümle (Türkçe)
+                            </label>
+                            <input
+                                type="text"
+                                value={currentWord.exampleSentenceTr}
+                                onChange={(e) => updateCurrentWord('exampleSentenceTr', e.target.value)}
+                                placeholder="O çok dayanıklı."
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Kelime Türü
+                            </label>
+                            <select
+                                value={currentWord.type}
+                                onChange={(e) => updateCurrentWord('type', e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                            >
+                                <option value="noun">İsim</option>
+                                <option value="verb">Fiil</option>
+                                <option value="adjective">Sıfat</option>
+                                <option value="adverb">Zarf</option>
+                            </select>
+                        </div>
+                        <div className="flex items-end">
+                            <button
+                                type="button"
+                                onClick={addOrUpdateWord}
+                                className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-md font-medium"
+                            >
+                                {editingIndex !== null ? (
+                                    <>
+                                        <Check className="w-4 h-4" />
+                                        Güncelle
+                                    </>
+                                ) : (
+                                    <>
+                                        <Plus className="w-4 h-4" />
+                                        Ekle
+                                    </>
+                                )}
+                            </button>
+                            <span className="ml-3 text-xs text-gray-400">Ctrl+Enter</span>
+                        </div>
+                    </div>
+                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        İngilizce Kelime *
-                                    </label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            value={word.word}
-                                            onChange={(e) => updateWord(index, 'word', e.target.value)}
-                                            placeholder="resilient"
-                                            className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                        />
+                {/* Added Words List */}
+                {words.length > 0 && (
+                    <div className="space-y-3">
+                        <h2 className="font-semibold text-gray-900">Eklenen Kelimeler ({words.length})</h2>
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100">
+                            {words.map((word, index) => (
+                                <div key={index} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xs font-medium text-gray-400 w-6">{index + 1}.</span>
+                                            <div>
+                                                <span className="font-medium text-gray-900">{word.word}</span>
+                                                <span className="mx-2 text-gray-300">→</span>
+                                                <span className="text-gray-600">{word.turkishTranslation}</span>
+                                            </div>
+                                            <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 rounded">
+                                                {word.type === 'noun' ? 'İsim' : word.type === 'verb' ? 'Fiil' : word.type === 'adjective' ? 'Sıfat' : 'Zarf'}
+                                            </span>
+                                        </div>
+                                        {word.exampleSentence && (
+                                            <p className="text-sm text-gray-400 mt-1 ml-9 truncate">&quot;{word.exampleSentence}&quot;</p>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2 ml-4">
                                         <button
                                             type="button"
-                                            onClick={() => generateDetails(index)}
-                                            disabled={generating === index || !word.word.trim()}
-                                            className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white rounded-lg hover:from-violet-600 hover:to-fuchsia-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md text-sm font-medium"
-                                            title="AI ile Otomatik Doldur"
+                                            onClick={() => editWord(index)}
+                                            className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                            title="Düzenle"
                                         >
-                                            {generating === index ? (
-                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            ) : (
-                                                <Sparkles className="w-4 h-4" />
-                                            )}
-                                            <span className="hidden sm:inline">AI Doldur</span>
+                                            <Edit2 className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeWord(index)}
+                                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            title="Sil"
+                                        >
+                                            <X className="w-4 h-4" />
                                         </button>
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Türkçe Anlamı *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={word.turkishTranslation}
-                                        onChange={(e) => updateWord(index, 'turkishTranslation', e.target.value)}
-                                        placeholder="Dayanıklı, esnek"
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Türkçe Tanım
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={word.definitionTr}
-                                        onChange={(e) => updateWord(index, 'definitionTr', e.target.value)}
-                                        placeholder="Zorluklardan hızla toparlanabilen"
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Örnek Cümle (İngilizce)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={word.exampleSentence}
-                                        onChange={(e) => updateWord(index, 'exampleSentence', e.target.value)}
-                                        placeholder="She is very resilient."
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Örnek Cümle (Türkçe)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={word.exampleSentenceTr}
-                                        onChange={(e) => updateWord(index, 'exampleSentenceTr', e.target.value)}
-                                        placeholder="O çok dayanıklı."
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Kelime Türü
-                                    </label>
-                                    <select
-                                        value={word.type}
-                                        onChange={(e) => updateWord(index, 'type', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
-                                    >
-                                        <option value="noun">İsim</option>
-                                        <option value="verb">Fiil</option>
-                                        <option value="adjective">Sıfat</option>
-                                        <option value="adverb">Zarf</option>
-                                    </select>
-                                </div>
-                            </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
 
                 {/* Error */}
                 {error && (
@@ -325,7 +416,7 @@ export default function NewWordListPage() {
                 <div className="flex gap-4">
                     <button
                         type="submit"
-                        disabled={saving}
+                        disabled={saving || words.length === 0}
                         className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-2xl font-semibold hover:from-indigo-600 hover:to-violet-700 transition-all shadow-lg disabled:opacity-50"
                     >
                         <Save className="w-5 h-5" />

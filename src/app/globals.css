@@ -1,46 +1,23 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode selector */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Light Theme */
-  --background: #fafafa;
-  --foreground: #171717;
-  --card-bg: #ffffff;
-  --card-border: #e5e7eb;
-  --muted: #6b7280;
-  --muted-bg: #f3f4f6;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --error: #ef4444;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
 .dark {
   /* Dark Theme */
   --background: #0f172a;
   --foreground: #f1f5f9;
-  --card-bg: #1e293b;
-  --card-border: #334155;
-  --muted: #94a3b8;
-  --muted-bg: #1e293b;
-  --primary: #818cf8;
-  --primary-hover: #6366f1;
-  --success: #34d399;
-  --warning: #fbbf24;
-  --error: #f87171;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -59,18 +36,4 @@ body {
 
 .rotate-y-180 {
   transform: rotateY(180deg);
-}
-
-/* Smooth transitions for theme changes */
-* {
-  transition-property: background-color, border-color, color;
-  transition-duration: 0.2s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Disable transitions on animations */
-.animate-spin,
-.animate-pulse,
-.animate-bounce {
-  transition: none !important;
 }

@@ -71,25 +71,25 @@ export default function CategoriesPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Kelime Kategorileri</h1>
-                <p className="text-gray-600">Konulara göre kelime çalış veya kendi listelerini oluştur</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Kelime Kategorileri</h1>
+                <p className="text-gray-600 dark:text-gray-400">Konulara göre kelime çalış veya kendi listelerini oluştur</p>
             </div>
 
             {/* System Categories */}
             <section className="mb-12">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">📚 Hazır Kategoriler</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">📚 Hazır Kategoriler</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {categories.map((category) => (
                         <Link
                             key={category.id}
                             href={`/study?category=${category.nameTr}`}
-                            className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all"
+                            className="group bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-indigo-200 dark:hover:border-indigo-600 transition-all"
                         >
                             <div className={`inline-flex p-3 rounded-xl ${category.color} text-white mb-4 group-hover:scale-110 transition-transform`}>
                                 {category.icon}
                             </div>
-                            <h3 className="font-semibold text-gray-900 mb-1">{category.nameTr}</h3>
-                            <p className="text-sm text-gray-500">{category.wordCount} kelime</p>
+                            <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{category.nameTr}</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{category.wordCount} kelime</p>
                         </Link>
                     ))}
                 </div>
@@ -118,8 +118,8 @@ export default function CategoriesPage() {
                 </div>
 
                 {!session ? (
-                    <div className="bg-gray-50 rounded-2xl p-8 text-center">
-                        <p className="text-gray-600 mb-4">Kendi kelime listelerini oluşturmak için giriş yap</p>
+                    <div className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-8 text-center">
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">Kendi kelime listelerini oluşturmak için giriş yap</p>
                         <Link
                             href="/auth/signin"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-medium"
@@ -130,13 +130,13 @@ export default function CategoriesPage() {
                 ) : loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[1, 2].map((i) => (
-                            <div key={i} className="bg-gray-100 rounded-2xl h-32 animate-pulse" />
+                            <div key={i} className="bg-gray-100 dark:bg-slate-800 rounded-2xl h-32 animate-pulse" />
                         ))}
                     </div>
                 ) : wordLists.length === 0 ? (
-                    <div className="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-2xl p-8 text-center border-2 border-dashed border-indigo-200">
+                    <div className="bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-900/20 dark:to-violet-900/20 rounded-2xl p-8 text-center border-2 border-dashed border-indigo-200 dark:border-indigo-800">
                         <FolderOpen className="w-12 h-12 text-indigo-400 mx-auto mb-4" />
-                        <p className="text-gray-600 mb-4">Henüz liste oluşturmadın</p>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">Henüz liste oluşturmadın</p>
                         <Link
                             href="/wordlists/new"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-medium"
@@ -151,13 +151,13 @@ export default function CategoriesPage() {
                             <Link
                                 key={list.id}
                                 href={`/wordlists/${list.id}`}
-                                className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all"
+                                className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-indigo-200 dark:hover:border-indigo-600 transition-all"
                             >
-                                <h3 className="font-semibold text-gray-900 mb-1">{list.name}</h3>
+                                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{list.name}</h3>
                                 {list.description && (
-                                    <p className="text-sm text-gray-500 mb-2 line-clamp-1">{list.description}</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 line-clamp-1">{list.description}</p>
                                 )}
-                                <p className="text-sm text-indigo-600 font-medium">{list.wordCount} kelime</p>
+                                <p className="text-sm text-indigo-600 dark:text-indigo-400 font-medium">{list.wordCount} kelime</p>
                             </Link>
                         ))}
                     </div>

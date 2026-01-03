@@ -46,29 +46,29 @@ export default function StatsWidget() {
             icon: Clock,
             label: 'Tekrar Edilecek',
             value: stats.wordsToReview,
-            color: 'text-amber-600',
-            bg: 'bg-amber-50',
+            color: 'text-amber-600 dark:text-amber-400',
+            bg: 'bg-amber-50 dark:bg-amber-900/30',
         },
         {
             icon: BookCheck,
             label: 'Öğrenilen',
             value: stats.wordsLearned,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-50',
+            color: 'text-emerald-600 dark:text-emerald-400',
+            bg: 'bg-emerald-50 dark:bg-emerald-900/30',
         },
         {
             icon: Target,
             label: 'Günlük Hedef',
             value: stats.dailyGoal,
-            color: 'text-indigo-600',
-            bg: 'bg-indigo-50',
+            color: 'text-indigo-600 dark:text-indigo-400',
+            bg: 'bg-indigo-50 dark:bg-indigo-900/30',
         },
         {
             icon: Flame,
             label: 'Gün Serisi',
             value: stats.streak,
-            color: 'text-orange-600',
-            bg: 'bg-orange-50',
+            color: 'text-orange-600 dark:text-orange-400',
+            bg: 'bg-orange-50 dark:bg-orange-900/30',
         },
     ];
 
@@ -76,7 +76,7 @@ export default function StatsWidget() {
         return (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="bg-gray-50 rounded-2xl p-5 h-32 animate-pulse" />
+                    <div key={i} className="bg-gray-50 dark:bg-slate-800 rounded-2xl p-5 h-32 animate-pulse" />
                 ))}
             </div>
         );
@@ -87,13 +87,13 @@ export default function StatsWidget() {
             {items.map((item) => (
                 <div
                     key={item.label}
-                    className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                    className="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow"
                 >
                     <div className={`inline-flex p-3 rounded-xl ${item.bg} mb-3`}>
                         <item.icon className={`w-5 h-5 ${item.color}`} />
                     </div>
-                    <p className="text-2xl font-bold text-gray-900">{item.value}</p>
-                    <p className="text-sm text-gray-500">{item.label}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{item.value}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
                 </div>
             ))}
         </div>

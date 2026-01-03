@@ -41,8 +41,8 @@ export default function LearningChart() {
 
     if (loading) {
         return (
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-[400px] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+            <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-slate-700 h-[400px] flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-indigo-200 dark:border-indigo-800 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin" />
             </div>
         );
     }
@@ -50,11 +50,11 @@ export default function LearningChart() {
     const hasData = data.some(d => d.xp > 0);
 
     return (
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 h-[400px]">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Haftalık İlerleme</h3>
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-slate-700 h-[400px]">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Haftalık İlerleme</h3>
 
             {!hasData ? (
-                <div className="h-[300px] flex flex-col items-center justify-center text-gray-400">
+                <div className="h-[300px] flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
                     <div className="text-5xl mb-4">📊</div>
                     <p className="text-center">Henüz bu hafta çalışma yapmadın.</p>
                     <p className="text-sm text-center mt-1">Quiz bitirdikçe grafiğin burada oluşacak!</p>
@@ -69,7 +69,7 @@ export default function LearningChart() {
                                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-gray-200 dark:text-slate-600" />
                             <XAxis
                                 dataKey="name"
                                 axisLine={false}
@@ -84,10 +84,11 @@ export default function LearningChart() {
                             />
                             <Tooltip
                                 contentStyle={{
-                                    backgroundColor: '#fff',
+                                    backgroundColor: 'var(--card-bg, #fff)',
                                     borderRadius: '12px',
                                     border: 'none',
-                                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                                    color: 'var(--foreground, #111)'
                                 }}
                                 formatter={(value) => [`${value ?? 0} XP`, 'Kazanılan']}
                             />

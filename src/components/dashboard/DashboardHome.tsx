@@ -22,17 +22,17 @@ export default function DashboardHome() {
             {/* Welcome Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                         {session ? `Merhaba, ${session.user?.name} 👋` : 'Hoş Geldin!'}
                     </h1>
-                    <p className="text-gray-600 mt-1">
+                    <p className="text-gray-600 dark:text-gray-400 mt-1">
                         Bugün öğrenmek için harika bir gün. Hedeflerine ulaşmaya hazır mısın?
                     </p>
                 </div>
 
                 <Link
                     href="/study/modes"
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-violet-700 transition-all shadow-lg shadow-indigo-200 group"
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-violet-700 transition-all shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 group"
                 >
                     <Play className="w-5 h-5 fill-current" />
                     <span>Hemen Çalış</span>
@@ -81,13 +81,13 @@ export default function DashboardHome() {
 
                     <Link
                         href="/leaderboard"
-                        className="block bg-white rounded-3xl p-6 border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all group"
+                        className="block bg-white dark:bg-slate-800 rounded-3xl p-6 border border-gray-100 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-600 hover:shadow-md transition-all group"
                     >
                         <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-bold text-gray-900">Liderlik Tablosu</h3>
+                            <h3 className="font-bold text-gray-900 dark:text-white">Liderlik Tablosu</h3>
                             <Map className="w-5 h-5 text-gray-400 group-hover:text-indigo-500 transition-colors" />
                         </div>
-                        <p className="text-sm text-gray-500">Arkadaşlarınla yarış ve sıralamada yüksel!</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Arkadaşlarınla yarış ve sıralamada yüksel!</p>
                     </Link>
                 </div>
             </div>

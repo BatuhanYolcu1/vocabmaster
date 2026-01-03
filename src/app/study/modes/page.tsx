@@ -105,12 +105,12 @@ export default function StudyModesPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
             <div className="text-center mb-10">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Çalışma Modu Seç</h1>
-                <p className="text-gray-600">Farklı modlarla kelime bilgini test et ve XP kazan</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Çalışma Modu Seç</h1>
+                <p className="text-gray-600 dark:text-gray-400">Farklı modlarla kelime bilgini test et ve XP kazan</p>
             </div>
 
             {/* Quick Start */}
-            <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200 mb-10">
+            <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200 dark:shadow-indigo-900/30 mb-10">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div>
                         <h2 className="text-xl font-bold mb-2">🚀 Hızlı Başla</h2>
@@ -134,7 +134,7 @@ export default function StudyModesPage() {
                     <Link
                         key={mode.id}
                         href={mode.href}
-                        className="group bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all"
+                        className="group bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-xl hover:border-indigo-200 dark:hover:border-indigo-600 transition-all"
                     >
                         <div className="flex items-center gap-6">
                             {/* Icon */}
@@ -145,16 +145,16 @@ export default function StudyModesPage() {
                             {/* Info */}
                             <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-1">
-                                    <h3 className="text-lg font-semibold text-gray-900">{mode.name}</h3>
-                                    <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{mode.name}</h3>
+                                    <span className="text-xs px-2 py-0.5 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-full">
                                         {mode.difficulty}
                                     </span>
                                 </div>
-                                <p className="text-gray-600 text-sm">{mode.description}</p>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm">{mode.description}</p>
                             </div>
 
                             {/* XP Multiplier */}
-                            <div className="hidden sm:flex items-center gap-1 px-4 py-2 bg-amber-50 text-amber-700 rounded-xl font-medium">
+                            <div className="hidden sm:flex items-center gap-1 px-4 py-2 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-xl font-medium">
                                 <Star className="w-4 h-4" />
                                 <span>{mode.xpMultiplier}x XP</span>
                             </div>
@@ -164,9 +164,9 @@ export default function StudyModesPage() {
             </div>
 
             {/* Tips */}
-            <div className="mt-10 bg-gray-50 rounded-2xl p-6">
-                <h3 className="font-semibold text-gray-900 mb-3">💡 İpuçları</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
+            <div className="mt-10 bg-gray-50 dark:bg-slate-800 rounded-2xl p-6">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-3">💡 İpuçları</h3>
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                     <li>• Kolay modlardan başlayıp zor modlara geç</li>
                     <li>• Her mod farklı XP çarpanı veriyor - zor modlar daha fazla XP!</li>
                     <li>• Klavye kısayolları ile daha hızlı çalış</li>

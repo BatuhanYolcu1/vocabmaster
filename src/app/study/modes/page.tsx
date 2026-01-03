@@ -10,7 +10,6 @@ import {
     Headphones,
     Play,
     Star,
-    BookOpen,
     Mic
 } from 'lucide-react';
 
@@ -75,16 +74,6 @@ const quizModes: QuizMode[] = [
         xpMultiplier: 2,
         difficulty: 'Zor',
         href: '/study/listening',
-    },
-    {
-        id: 'story',
-        name: 'Hikaye Modu',
-        description: 'AI ile oluşturulan hikayelerle bağlam içinde öğren.',
-        icon: <BookOpen className="w-8 h-8" />,
-        color: 'from-violet-500 to-purple-600',
-        xpMultiplier: 3,
-        difficulty: '✨ Yeni',
-        href: '/study/story',
     },
     {
         id: 'speaking',

@@ -44,43 +44,6 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Theme-aware component styles */
-.card {
-  background: var(--card-bg);
-  border-color: var(--card-border);
-}
-
-.text-muted {
-  color: var(--muted);
-}
-
-.bg-muted {
-  background: var(--muted-bg);
-}
-
-/* Override white backgrounds in dark mode */
-.dark .bg-white {
-  background: var(--card-bg) !important;
-}
-
-.dark .bg-gray-50 {
-  background: var(--muted-bg) !important;
-}
-
-.dark .border-gray-100,
-.dark .border-gray-200 {
-  border-color: var(--card-border) !important;
-}
-
-.dark .text-gray-900 {
-  color: var(--foreground) !important;
-}
-
-.dark .text-gray-600,
-.dark .text-gray-500 {
-  color: var(--muted) !important;
-}
-
 /* 3D Flip Card Styles */
 .perspective-1000 {
   perspective: 1000px;
@@ -98,7 +61,16 @@ body {
   transform: rotateY(180deg);
 }
 
-/* Smooth transitions for all interactive elements */
+/* Smooth transitions for theme changes */
 * {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable transitions on animations */
+.animate-spin,
+.animate-pulse,
+.animate-bounce {
+  transition: none !important;
 }

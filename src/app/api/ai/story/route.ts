@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
         const wordList = words.map(w => w.word).join(', ');
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
         const prompt = `You are a language learning assistant. Create a short, engaging story in English for a ${level} level learner.
 

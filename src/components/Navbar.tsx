@@ -93,7 +93,7 @@ export default function Navbar() {
                                     : 'text-[#8b9bb4] hover:text-white hover:bg-white/5'
                                     }`}
                             >
-                                Dashboard
+                                Ana Sayfa
                             </Link>
                             <Link
                                 href="/categories"

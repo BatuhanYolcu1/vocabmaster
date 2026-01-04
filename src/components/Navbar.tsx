@@ -9,6 +9,7 @@ export default function Navbar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
     const [xp, setXp] = useState(0);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         if (session?.user?.xp !== undefined) {
@@ -149,27 +150,57 @@ export default function Navbar() {
 
                         <div className="h-8 w-[1px] bg-white/10 hidden md:block"></div>
 
-                        {/* User Profile */}
+                        {/* User Profile Dropdown */}
                         {status === 'loading' ? (
                             <div className="w-8 h-8 rounded-full bg-[#1a2332] animate-pulse" />
                         ) : (
-                            <Link
-                                href="/profile"
-                                className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
-                            >
-                                <div
-                                    className="w-8 h-8 rounded-full bg-cover bg-center border-2 border-white/20 group-hover:border-[#135bec] transition-colors"
-                                    style={{
-                                        backgroundImage: session?.user?.image
-                                            ? `url("${session.user.image}")`
-                                            : 'linear-gradient(135deg, #135bec, #8b5cf6)'
-                                    }}
-                                />
-                                <span className="text-sm font-medium hidden sm:block text-white">
-                                    {session?.user?.name?.split(' ')[0] || 'Kullanıcı'}
-                                </span>
-                                <span className="material-symbols-outlined text-[#8b9bb4] text-[18px]">expand_more</span>
-                            </Link>
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                    className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
+                                >
+                                    <div
+                                        className="w-8 h-8 rounded-full bg-cover bg-center border-2 border-white/20 group-hover:border-[#135bec] transition-colors"
+                                        style={{
+                                            backgroundImage: session?.user?.image
+                                                ? `url("${session.user.image}")`
+                                                : 'linear-gradient(135deg, #135bec, #8b5cf6)'
+                                        }}
+                                    />
+                                    <span className="text-sm font-medium hidden sm:block text-white">
+                                        {session?.user?.name?.split(' ')[0] || 'Kullanıcı'}
+                                    </span>
+                                    <span className={`material-symbols-outlined text-[#8b9bb4] text-[18px] transition-transform ${isMenuOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {isMenuOpen && (
+                                    <>
+                                        <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
+                                        <div className="absolute right-0 mt-2 w-48 py-2 rounded-2xl bg-[#1a2332]/95 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)] z-50">
+                                            <Link
+                                                href="/profile"
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="flex items-center gap-3 px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-[#135bec]">person</span>
+                                                <span className="text-sm font-medium">Profilim</span>
+                                            </Link>
+                                            <div className="h-[1px] bg-white/10 mx-3 my-1" />
+                                            <button
+                                                onClick={() => {
+                                                    setIsMenuOpen(false);
+                                                    signOut();
+                                                }}
+                                                className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:bg-red-500/10 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined">logout</span>
+                                                <span className="text-sm font-medium">Çıkış Yap</span>
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         )}
                     </div>
                 </div>

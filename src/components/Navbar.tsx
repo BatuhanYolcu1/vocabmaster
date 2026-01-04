@@ -153,8 +153,8 @@ export default function Navbar() {
                         {status === 'loading' ? (
                             <div className="w-8 h-8 rounded-full bg-[#1a2332] animate-pulse" />
                         ) : (
-                            <button
-                                onClick={() => signOut()}
+                            <Link
+                                href="/profile"
                                 className="flex items-center gap-3 pl-1 pr-4 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
                             >
                                 <div
@@ -169,7 +169,7 @@ export default function Navbar() {
                                     {session?.user?.name?.split(' ')[0] || 'Kullanıcı'}
                                 </span>
                                 <span className="material-symbols-outlined text-[#8b9bb4] text-[18px]">expand_more</span>
-                            </button>
+                            </Link>
                         )}
                     </div>
                 </div>

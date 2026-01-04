@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Coiny&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 /* Enable class-based dark mode selector */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -48,7 +48,7 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Coiny', cursive;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 

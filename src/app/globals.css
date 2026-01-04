@@ -1,24 +1,186 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
 
 /* Enable class-based dark mode selector */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   /* Light Theme */
-  --background: #f8fafc;
+  --background: #f6f6f8;
   --foreground: #0f172a;
+  --primary: #135bec;
+  --primary-glow: #3b82f6;
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-surface: rgba(30, 41, 59, 0.4);
 }
 
 .dark {
-  /* Dark Theme */
-  --background: #0f172a;
+  /* Dark Theme - Stitch Design */
+  --background: #0b0f17;
   --foreground: #f1f5f9;
+  --card-bg: rgba(35, 47, 72, 0.4);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 #0f172a;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
+  font-family: 'Lexend', sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Glass Panel Effect */
+.glass-panel {
+  background: rgba(35, 47, 72, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Glass Card Effect */
+.glass-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(17, 23, 34, 0.6) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(17, 23, 34, 0.8) 100%);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Glass Button Effect */
+.glass-button {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Active Glass State */
+.glass-active {
+  background: rgba(19, 91, 236, 0.15);
+  border-color: rgba(19, 91, 236, 0.3);
+}
+
+/* Text Glow */
+.text-glow {
+  text-shadow: 0 0 20px rgba(19, 91, 236, 0.6);
+}
+
+/* Primary Glow Text */
+.primary-glow-text {
+  text-shadow: 0 0 20px rgba(19, 91, 236, 0.6);
+}
+
+/* Animation Keyframes */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-float {
+  animation: float 20s infinite ease-in-out;
+}
+
+.animate-float-delayed {
+  animation: float 25s infinite ease-in-out reverse;
+}
+
+/* Gradient Blob Classes */
+.gradient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  z-index: 0;
+  animation: float 10s ease-in-out infinite;
+}
+
+/* Progress Bar Shine Effect */
+.progress-shine {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shine 2s infinite;
+}
+
+/* Background Mesh */
+.bg-mesh {
+  background-color: #101622;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(19, 91, 236, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(19, 91, 236, 0.1) 0px, transparent 50%);
 }
 
 /* 3D Flip Card Styles */
@@ -36,4 +198,10 @@ body {
 
 .rotate-y-180 {
   transform: rotateY(180deg);
+}
+
+/* Selection Colors */
+::selection {
+  background-color: #135bec;
+  color: white;
 }

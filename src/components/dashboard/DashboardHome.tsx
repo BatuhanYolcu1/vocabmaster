@@ -3,28 +3,6 @@
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-    Play,
-    Target,
-    ArrowRight,
-    BookOpen,
-    Flame,
-    Clock,
-    Trophy,
-    Zap,
-    Star,
-    TrendingUp,
-    ChevronRight,
-    Sparkles
-} from 'lucide-react';
-import {
-    AreaChart,
-    Area,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer
-} from 'recharts';
 
 interface DashboardStats {
     wordsToReview: number;
@@ -44,14 +22,8 @@ export default function DashboardHome() {
         weeklyProgress: []
     });
     const [loading, setLoading] = useState(true);
-    const [greeting, setGreeting] = useState('Merhaba');
 
     useEffect(() => {
-        const hour = new Date().getHours();
-        if (hour < 12) setGreeting('Günaydın');
-        else if (hour < 18) setGreeting('İyi Günler');
-        else setGreeting('İyi Akşamlar');
-
         async function fetchStats() {
             try {
                 const res = await fetch('/api/stats');
@@ -74,18 +46,20 @@ export default function DashboardHome() {
         fetchStats();
     }, []);
 
-    const dailyProgress = Math.min((stats.wordsLearned / stats.dailyGoal) * 100, 100);
     const firstName = session?.user?.name?.split(' ')[0] || 'Öğrenci';
+    const dailyProgress = Math.min((stats.wordsLearned / stats.dailyGoal) * 100, 100);
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="min-h-screen bg-[#0b0f17] relative">
+                <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px] pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
+                <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px] pointer-events-none" />
+                <div className="max-w-[1400px] mx-auto px-4 md:px-10 py-8">
                     <div className="animate-pulse space-y-8">
-                        <div className="h-32 bg-gradient-to-r from-indigo-100 to-violet-100 dark:from-slate-800 dark:to-slate-700 rounded-3xl" />
+                        <div className="h-24 bg-[#232f48]/40 rounded-3xl" />
                         <div className="grid grid-cols-4 gap-4">
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="h-28 bg-white dark:bg-slate-800 rounded-2xl" />
+                                <div key={i} className="h-32 bg-[#232f48]/40 rounded-3xl" />
                             ))}
                         </div>
                     </div>
@@ -95,250 +69,202 @@ export default function DashboardHome() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative overflow-x-hidden">
+            {/* Ambient Background Lighting */}
+            <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px] pointer-events-none z-0 animate-pulse" style={{ animationDuration: '8s' }} />
+            <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px] pointer-events-none z-0" />
+            <div className="fixed top-[40%] left-[30%] w-[20%] h-[20%] rounded-full bg-cyan-500/10 blur-[80px] pointer-events-none z-0" />
 
+            <div className="relative z-10 max-w-[1400px] mx-auto px-4 md:px-10 py-8 space-y-8">
                 {/* Hero Section */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 rounded-3xl p-8 text-white shadow-2xl shadow-indigo-500/25">
-                    {/* Background Effects */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-                    <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl" />
-
-                    <div className="relative flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                                    <Sparkles className="w-6 h-6" />
-                                </div>
-                                <span className="text-indigo-200 text-sm font-medium">VocabMaster Premium</span>
-                            </div>
-                            <h1 className="text-4xl lg:text-5xl font-bold">
-                                {greeting}, <span className="bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">{firstName}</span>! ✨
-                            </h1>
-                            <p className="text-indigo-100 text-lg max-w-xl">
-                                Bugün harika işler başarabilirsin. Hedefine ulaşmak için sadece birkaç kelime kaldı!
-                            </p>
-                        </div>
-
+                <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+                    <div className="flex flex-col gap-2">
+                        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-white mb-1">
+                            Merhaba, <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#135bec] to-purple-400">{firstName}!</span>
+                        </h1>
+                        <p className="text-[#92a4c9] text-lg font-light">
+                            Bugün öğrenmek için harika bir gün. Hedefine çok yakınsın!
+                        </p>
+                    </div>
+                    <div className="flex gap-3">
                         <Link
                             href="/study/modes"
-                            className="group flex items-center gap-3 px-8 py-4 bg-white text-indigo-600 rounded-2xl font-bold text-lg hover:bg-indigo-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
+                            className="h-12 px-6 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold text-sm hover:shadow-[0_0_20px_rgba(19,91,236,0.5)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
                         >
-                            <Play className="w-6 h-6 fill-current" />
-                            <span>Çalışmaya Başla</span>
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            <span className="material-symbols-outlined">play_circle</span>
+                            Hemen Başla
                         </Link>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="relative mt-8 pt-6 border-t border-white/20">
-                        <div className="flex items-center justify-between text-sm mb-2">
-                            <span className="text-indigo-200">Günlük Hedef</span>
-                            <span className="font-bold">{stats.wordsLearned} / {stats.dailyGoal} kelime</span>
-                        </div>
-                        <div className="h-3 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
-                            <div
-                                className="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full transition-all duration-1000 ease-out relative"
-                                style={{ width: `${dailyProgress}%` }}
-                            >
-                                <div className="absolute inset-0 bg-white/30 animate-pulse" />
-                            </div>
-                        </div>
-                        {dailyProgress >= 100 && (
-                            <div className="flex items-center gap-2 mt-3 text-yellow-300">
-                                <Trophy className="w-5 h-5" />
-                                <span className="font-medium">Günlük hedefini tamamladın! 🎉</span>
-                            </div>
-                        )}
+                        <Link
+                            href="/wordlists/new"
+                            className="h-12 px-6 rounded-full glass-button text-white font-medium text-sm flex items-center gap-2"
+                        >
+                            <span className="material-symbols-outlined">add_circle</span>
+                            Kelime Ekle
+                        </Link>
                     </div>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="group bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 hover:border-amber-200 dark:hover:border-amber-600 transition-all hover:shadow-xl hover:-translate-y-1">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="p-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-lg shadow-amber-200 dark:shadow-amber-900/30">
-                                <Clock className="w-5 h-5 text-white" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Stat 1: To Review */}
+                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-all" />
+                        <div className="flex justify-between items-start mb-4 relative z-10">
+                            <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400">
+                                <span className="material-symbols-outlined">warning</span>
                             </div>
-                            <TrendingUp className="w-4 h-4 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.wordsToReview}</p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Tekrar Edilecek</p>
-                    </div>
-
-                    <div className="group bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 hover:border-emerald-200 dark:hover:border-emerald-600 transition-all hover:shadow-xl hover:-translate-y-1">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="p-3 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30">
-                                <BookOpen className="w-5 h-5 text-white" />
-                            </div>
-                            <Star className="w-4 h-4 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.wordsLearned}</p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Öğrenilen</p>
-                    </div>
-
-                    <div className="group bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-600 transition-all hover:shadow-xl hover:-translate-y-1">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="p-3 bg-gradient-to-br from-indigo-400 to-violet-500 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
-                                <Target className="w-5 h-5 text-white" />
-                            </div>
-                            <Zap className="w-4 h-4 text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.dailyGoal}</p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Günlük Hedef</p>
-                    </div>
-
-                    <div className="group bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 hover:border-orange-200 dark:hover:border-orange-600 transition-all hover:shadow-xl hover:-translate-y-1">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="p-3 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl shadow-lg shadow-orange-200 dark:shadow-orange-900/30">
-                                <Flame className="w-5 h-5 text-white" />
-                            </div>
-                            {stats.streak > 0 && (
-                                <span className="text-xs font-bold text-orange-500 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded-full">
-                                    🔥 Aktif
-                                </span>
+                            {stats.wordsToReview > 0 && (
+                                <span className="text-xs font-bold px-2 py-1 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/20">Önemli</span>
                             )}
                         </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{stats.streak}</p>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Gün Serisi</p>
+                        <div className="relative z-10">
+                            <p className="text-[#92a4c9] text-sm font-medium mb-1">Tekrar Edilecek</p>
+                            <p className="text-3xl font-bold text-white">{stats.wordsToReview}</p>
+                        </div>
+                    </div>
+
+                    {/* Stat 2: Learned */}
+                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all" />
+                        <div className="flex justify-between items-start mb-4 relative z-10">
+                            <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                                <span className="material-symbols-outlined">check_circle</span>
+                            </div>
+                        </div>
+                        <div className="relative z-10">
+                            <p className="text-[#92a4c9] text-sm font-medium mb-1">Öğrenilen Kelime</p>
+                            <p className="text-3xl font-bold text-white">{stats.wordsLearned}</p>
+                        </div>
+                    </div>
+
+                    {/* Stat 3: Daily Goal */}
+                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
+                        <div className="flex justify-between items-start mb-4 relative z-10">
+                            <div className="w-10 h-10 rounded-full bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
+                                <span className="material-symbols-outlined">flag</span>
+                            </div>
+                            <span className="text-xs font-bold px-2 py-1 rounded bg-[#135bec]/20 text-blue-200 border border-[#135bec]/20">
+                                {Math.round(dailyProgress)}%
+                            </span>
+                        </div>
+                        <div className="relative z-10">
+                            <p className="text-[#92a4c9] text-sm font-medium mb-1">Günlük Hedef</p>
+                            <div className="flex items-baseline gap-1">
+                                <p className="text-3xl font-bold text-white">{stats.wordsLearned}</p>
+                                <p className="text-xl font-medium text-[#92a4c9]">/{stats.dailyGoal}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Stat 4: Streak */}
+                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden border-orange-500/30">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition-all" />
+                        <div className="flex justify-between items-start mb-4 relative z-10">
+                            <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 animate-pulse">
+                                <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+                            </div>
+                        </div>
+                        <div className="relative z-10">
+                            <p className="text-[#92a4c9] text-sm font-medium mb-1">Gün Serisi</p>
+                            <p className="text-3xl font-bold text-white">{stats.streak} Gün</p>
+                        </div>
                     </div>
                 </div>
 
-                {/* Main Content Grid */}
+                {/* Bento Grid Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    {/* Chart Section */}
-                    <div className="lg:col-span-2 bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700">
-                        <div className="flex items-center justify-between mb-6">
+                    {/* Main Chart Section */}
+                    <div className="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col h-full min-h-[350px]">
+                        <div className="flex justify-between items-center mb-6">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Haftalık İlerleme</h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-400">Son 7 günlük performansın</p>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5 rounded-full">
-                                <TrendingUp className="w-4 h-4" />
-                                <span className="font-medium">XP Kazanımı</span>
+                                <h3 className="text-lg font-bold text-white">Haftalık Aktivite</h3>
+                                <p className="text-sm text-[#92a4c9]">Son 7 günlük performansın</p>
                             </div>
                         </div>
-
-                        {stats.weeklyProgress.some(d => d.xp > 0) ? (
-                            <div className="h-[280px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={stats.weeklyProgress}>
-                                        <defs>
-                                            <linearGradient id="colorXpNew" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
-                                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                                            </linearGradient>
-                                        </defs>
-                                        <XAxis
-                                            dataKey="name"
-                                            axisLine={false}
-                                            tickLine={false}
-                                            tick={{ fill: '#94a3b8', fontSize: 12 }}
-                                            dy={10}
-                                        />
-                                        <YAxis
-                                            axisLine={false}
-                                            tickLine={false}
-                                            tick={{ fill: '#94a3b8', fontSize: 12 }}
-                                            width={40}
-                                        />
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: 'rgba(255,255,255,0.95)',
-                                                borderRadius: '16px',
-                                                border: 'none',
-                                                boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                                                padding: '12px 16px'
-                                            }}
-                                            formatter={(value) => [`${value} XP`, 'Kazanılan']}
-                                        />
-                                        <Area
-                                            type="monotone"
-                                            dataKey="xp"
-                                            stroke="#8b5cf6"
-                                            strokeWidth={3}
-                                            fillOpacity={1}
-                                            fill="url(#colorXpNew)"
-                                        />
-                                    </AreaChart>
-                                </ResponsiveContainer>
+                        <div className="flex-1 w-full relative">
+                            {/* Chart Bars */}
+                            <div className="absolute inset-0 flex items-end justify-between px-2 pb-6 gap-2">
+                                {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((day, index) => {
+                                    const heights = [40, 65, 30, 85, 50, 20, 45];
+                                    return (
+                                        <div key={day} className="flex flex-col items-center justify-end h-full gap-2 group w-full">
+                                            <div
+                                                className="w-full max-w-[40px] bg-[#135bec]/20 rounded-t-lg relative group-hover:bg-[#135bec]/40 transition-all duration-500"
+                                                style={{ height: `${heights[index]}%` }}
+                                            >
+                                                <div className="absolute bottom-0 w-full bg-[#135bec] h-1 rounded-full shadow-[0_0_10px_rgba(19,91,236,0.8)]" />
+                                            </div>
+                                            <span className="text-xs text-[#92a4c9] font-medium">{day}</span>
+                                        </div>
+                                    );
+                                })}
                             </div>
-                        ) : (
-                            <div className="h-[280px] flex flex-col items-center justify-center">
-                                <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-900/30 dark:to-violet-900/30 rounded-2xl flex items-center justify-center mb-4">
-                                    <TrendingUp className="w-10 h-10 text-indigo-400" />
-                                </div>
-                                <p className="text-slate-600 dark:text-slate-400 font-medium">Henüz bu hafta çalışma yapmadın</p>
-                                <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">Quiz bitirdikçe grafiğin burada oluşacak!</p>
+                            {/* Grid Lines */}
+                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
+                                {[1, 2, 3, 4, 5].map(i => (
+                                    <div key={i} className="w-full h-[1px] bg-white/5 border-t border-dashed border-white/10" />
+                                ))}
                             </div>
-                        )}
+                        </div>
                     </div>
 
-                    {/* Sidebar */}
-                    <div className="space-y-6">
+                    {/* Right Column Stack */}
+                    <div className="flex flex-col gap-6">
+                        {/* Goal Progress Detail */}
+                        <div className="glass-panel rounded-3xl p-6 relative overflow-hidden">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-base font-bold text-white">Günlük İlerleme</h3>
+                                <span className="text-xs font-mono text-[#135bec] bg-[#135bec]/10 px-2 py-1 rounded">
+                                    {stats.dailyGoal - stats.wordsLearned > 0 ? `${stats.dailyGoal - stats.wordsLearned} kelime kaldı` : 'Tamamlandı!'}
+                                </span>
+                            </div>
+                            <div className="relative h-4 w-full bg-[#111722] rounded-full overflow-hidden mb-2 shadow-inner">
+                                <div
+                                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-[#135bec] rounded-full shadow-[0_0_20px_rgba(19,91,236,0.5)]"
+                                    style={{ width: `${dailyProgress}%` }}
+                                >
+                                    <div className="absolute top-0 right-0 h-full w-[20px] bg-white/20 blur-[4px]" />
+                                </div>
+                            </div>
+                            <p className="text-xs text-[#92a4c9]">İstikrarını koruyorsun! Böyle devam et.</p>
+                        </div>
+
+                        {/* Tip of the Day */}
+                        <div className="glass-panel rounded-3xl p-6 relative bg-gradient-to-br from-[#232f48]/40 to-purple-900/20 border-purple-500/20">
+                            <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl" />
+                            <div className="flex items-center gap-3 mb-3">
+                                <span className="material-symbols-outlined text-purple-400">lightbulb</span>
+                                <h3 className="text-base font-bold text-white">Günün İpucu</h3>
+                            </div>
+                            <p className="text-sm text-gray-300 leading-relaxed italic">
+                                &quot;Kelimeleri bağlam içinde öğrenmek (cümle kurarak), tek başına ezberlemeye göre hatırlama oranını %40 artırır.&quot;
+                            </p>
+                        </div>
+
                         {/* Quick Actions */}
-                        <div className="space-y-3">
-                            <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">Hızlı Erişim</h3>
-
-                            <Link href="/categories" className="group block bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30 transform hover:scale-[1.02] transition-all">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <BookOpen className="w-8 h-8 mb-3 opacity-90" />
-                                        <h4 className="text-lg font-bold">Kelimelerim</h4>
-                                        <p className="text-emerald-100 text-sm mt-1">Listelerini yönet</p>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                        <div className="glass-panel rounded-3xl p-4 flex justify-around items-center">
+                            <Link href="/study/multiple-choice" className="flex flex-col items-center gap-1 group">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-[#135bec] group-hover:border-[#135bec] transition-all duration-300 shadow-lg">
+                                    <span className="material-symbols-outlined text-white text-[20px]">quiz</span>
                                 </div>
+                                <span className="text-[10px] text-[#92a4c9] uppercase tracking-wider font-bold">Test</span>
                             </Link>
-
-                            <Link href="/achievements" className="group block bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-5 text-white shadow-lg shadow-amber-500/25 hover:shadow-xl hover:shadow-amber-500/30 transform hover:scale-[1.02] transition-all">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <Trophy className="w-8 h-8 mb-3 opacity-90" />
-                                        <h4 className="text-lg font-bold">Başarımlar</h4>
-                                        <p className="text-amber-100 text-sm mt-1">Rozetlerini keşfet</p>
-                                    </div>
-                                    <ChevronRight className="w-5 h-5 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                            <div className="w-[1px] h-8 bg-white/5" />
+                            <Link href="/study/flashcard" className="flex flex-col items-center gap-1 group">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-purple-600 group-hover:border-purple-600 transition-all duration-300 shadow-lg">
+                                    <span className="material-symbols-outlined text-white text-[20px]">style</span>
                                 </div>
+                                <span className="text-[10px] text-[#92a4c9] uppercase tracking-wider font-bold">Kartlar</span>
+                            </Link>
+                            <div className="w-[1px] h-8 bg-white/5" />
+                            <Link href="/study/matching" className="flex flex-col items-center gap-1 group">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-pink-600 group-hover:border-pink-600 transition-all duration-300 shadow-lg">
+                                    <span className="material-symbols-outlined text-white text-[20px]">gamepad</span>
+                                </div>
+                                <span className="text-[10px] text-[#92a4c9] uppercase tracking-wider font-bold">Oyun</span>
                             </Link>
                         </div>
-
-                        {/* Daily Tip */}
-                        <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600 rounded-2xl p-6 text-white shadow-lg shadow-violet-500/25 relative overflow-hidden">
-                            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-                            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-purple-400/20 rounded-full blur-xl" />
-
-                            <div className="relative">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="text-2xl">💡</span>
-                                    <h4 className="font-bold">Günün İpucu</h4>
-                                </div>
-                                <p className="text-violet-100 text-sm leading-relaxed">
-                                    Beynimiz uyurken öğrendiklerimizi işler. Uyumadan önce 10 dakika kelime tekrarı yapmak, kalıcılığı %40 artırır!
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Leaderboard Preview */}
-                        <Link
-                            href="/leaderboard"
-                            className="group block bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700 hover:border-indigo-200 dark:hover:border-indigo-600 transition-all hover:shadow-xl"
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-xl shadow-lg">
-                                        <Trophy className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-slate-900 dark:text-white">Liderlik Tablosu</h4>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400">Sıralamanda yüksel!</p>
-                                    </div>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
-                            </div>
-                        </Link>
                     </div>
                 </div>
             </div>

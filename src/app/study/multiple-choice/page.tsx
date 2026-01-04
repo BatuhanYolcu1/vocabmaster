@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
 
 interface Word {
     id: string;
@@ -21,7 +20,7 @@ interface Question {
 
 export default function MultipleChoicePage() {
     const router = useRouter();
-    const { data: session, update } = useSession(); // update eklendi
+    const { data: session, update } = useSession();
 
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,7 +32,6 @@ export default function MultipleChoicePage() {
 
     const xpProcessed = useRef(false);
 
-    // Fetch words and create questions
     useEffect(() => {
         async function fetchWords() {
             try {
@@ -54,7 +52,6 @@ export default function MultipleChoicePage() {
         fetchWords();
     }, []);
 
-    // XP submission
     useEffect(() => {
         if (showResult && !xpProcessed.current) {
             const xpEarned = score.correct * 15;
@@ -62,10 +59,7 @@ export default function MultipleChoicePage() {
                 fetch('/api/xp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        amount: xpEarned,
-                        source: 'multiple-choice'
-                    })
+                    body: JSON.stringify({ amount: xpEarned, source: 'multiple-choice' })
                 })
                     .then(res => {
                         if (res.ok) {
@@ -79,15 +73,12 @@ export default function MultipleChoicePage() {
         }
     }, [showResult, score.correct, update]);
 
-    // Generate multiple choice questions
     function generateQuestions(words: Word[]): Question[] {
         return words.map((word, index) => {
-            // Get 3 random wrong answers
             const otherWords = words.filter((_, i) => i !== index);
             const shuffled = otherWords.sort(() => Math.random() - 0.5).slice(0, 3);
             const wrongAnswers = shuffled.map(w => w.turkishTranslation);
 
-            // Create options array with correct answer at random position
             const correctIndex = Math.floor(Math.random() * 4);
             const options: string[] = [];
             let wrongIndex = 0;
@@ -96,21 +87,16 @@ export default function MultipleChoicePage() {
                 if (i === correctIndex) {
                     options.push(word.turkishTranslation);
                 } else {
-                    options.push(wrongAnswers[wrongIndex++] || '???'); // Fallback if not enough words
+                    options.push(wrongAnswers[wrongIndex++] || '???');
                 }
             }
 
-            return {
-                word,
-                options,
-                correctIndex,
-            };
+            return { word, options, correctIndex };
         });
     }
 
-    // Handle answer selection
     const handleAnswer = useCallback((optionIndex: number) => {
-        if (selectedAnswer !== null) return; // Already answered
+        if (selectedAnswer !== null) return;
 
         setSelectedAnswer(optionIndex);
         const correct = optionIndex === questions[currentIndex].correctIndex;
@@ -123,7 +109,6 @@ export default function MultipleChoicePage() {
         }
     }, [selectedAnswer, questions, currentIndex]);
 
-    // Handle next question
     const handleNext = useCallback(() => {
         if (currentIndex < questions.length - 1) {
             setCurrentIndex(prev => prev + 1);
@@ -134,7 +119,6 @@ export default function MultipleChoicePage() {
         }
     }, [currentIndex, questions.length]);
 
-    // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (selectedAnswer === null) {
@@ -155,33 +139,33 @@ export default function MultipleChoicePage() {
 
     if (loading) {
         return (
-            <div className="max-w-2xl mx-auto px-4 py-12">
-                <div className="flex items-center justify-center h-64">
-                    <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-                </div>
+            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin" />
             </div>
         );
     }
 
     if (questions.length === 0) {
         return (
-            <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-                <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100">
-                    <XCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">Yeterli Kelime Bulunamadı</h2>
-                    <p className="text-gray-600 mb-6">
+            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center px-4">
+                <div className="glass-panel rounded-3xl p-8 max-w-md text-center">
+                    <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
+                        <span className="material-symbols-outlined text-4xl text-slate-400">quiz</span>
+                    </div>
+                    <h2 className="text-2xl font-bold text-white mb-3">Yeterli Kelime Bulunamadı</h2>
+                    <p className="text-[#92a4c9] mb-8">
                         Bu modda çalışmak için en az 4 kelimeye ihtiyacınız var.
                     </p>
-                    <div className="flex justify-center gap-4">
+                    <div className="flex gap-4 justify-center">
                         <Link
                             href="/wordlists/new"
-                            className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+                            className="px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-semibold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                         >
                             Kelime Ekle
                         </Link>
                         <Link
                             href="/study/modes"
-                            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                            className="px-6 py-3 glass-button text-white rounded-xl font-medium"
                         >
                             Geri Dön
                         </Link>
@@ -196,44 +180,53 @@ export default function MultipleChoicePage() {
         const xpEarned = score.correct * 15;
 
         return (
-            <div className="max-w-2xl mx-auto px-4 py-12">
-                <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg mb-6">
-                        <CheckCircle className="w-10 h-10 text-white" />
-                    </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Quiz Tamamlandı! 🎉</h1>
-                    <p className="text-gray-600 mb-8">Harika iş çıkardın!</p>
+            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center px-4 relative">
+                {/* Ambient Background */}
+                <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-green-500/20 blur-[120px]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#135bec]/15 blur-[100px]" />
+                </div>
 
-                    <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 mb-8">
-                        <div className="grid grid-cols-3 gap-6 mb-6">
+                <div className="relative z-10 text-center max-w-lg">
+                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 shadow-[0_0_40px_rgba(34,197,94,0.4)] mb-8">
+                        <span className="material-symbols-outlined text-white text-5xl">emoji_events</span>
+                    </div>
+                    <h1 className="text-4xl font-black text-white mb-3">Quiz Tamamlandı! 🎉</h1>
+                    <p className="text-[#92a4c9] text-lg mb-8">Harika iş çıkardın!</p>
+
+                    <div className="glass-panel rounded-3xl p-8 mb-8">
+                        <div className="grid grid-cols-3 gap-8 mb-8">
                             <div className="text-center">
-                                <p className="text-3xl font-bold text-emerald-600">{score.correct}</p>
-                                <p className="text-sm text-gray-500">Doğru</p>
+                                <p className="text-4xl font-bold text-green-400">{score.correct}</p>
+                                <p className="text-sm text-[#92a4c9]">Doğru</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-3xl font-bold text-red-500">{score.wrong}</p>
-                                <p className="text-sm text-gray-500">Yanlış</p>
+                                <p className="text-4xl font-bold text-red-400">{score.wrong}</p>
+                                <p className="text-sm text-[#92a4c9]">Yanlış</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-3xl font-bold text-indigo-600">%{percentage}</p>
-                                <p className="text-sm text-gray-500">Başarı</p>
+                                <p className="text-4xl font-bold text-[#135bec]">%{percentage}</p>
+                                <p className="text-sm text-[#92a4c9]">Başarı</p>
                             </div>
                         </div>
-                        <div className="pt-6 border-t border-gray-100">
-                            <p className="text-amber-600 font-semibold text-lg">+{xpEarned} XP Kazandın! ⭐</p>
+                        <div className="pt-6 border-t border-white/10">
+                            <div className="flex items-center justify-center gap-2 text-amber-400 text-xl font-bold">
+                                <span className="material-symbols-outlined">star</span>
+                                +{xpEarned} XP Kazandın!
+                            </div>
                         </div>
                     </div>
 
                     <div className="flex gap-4 justify-center">
                         <Link
                             href="/study/modes"
-                            className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+                            className="px-6 py-3 glass-button text-white rounded-xl font-medium"
                         >
                             Mod Seç
                         </Link>
                         <button
                             onClick={() => window.location.reload()}
-                            className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all"
+                            className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:shadow-[0_0_30px_rgba(34,197,94,0.6)] transition-all"
                         >
                             Tekrar Oyna
                         </button>
@@ -247,98 +240,109 @@ export default function MultipleChoicePage() {
     if (!currentQuestion) return null;
 
     return (
-        <div className="max-w-2xl mx-auto px-4 py-8">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-                <Link
-                    href="/study/modes"
-                    className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
-                >
-                    <ArrowLeft className="w-5 h-5" />
-                    <span>Çıkış</span>
-                </Link>
-                <div className="text-sm text-gray-500">
-                    Soru {currentIndex + 1} / {questions.length}
-                </div>
+        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+            {/* Ambient Background */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-green-500/20 blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#135bec]/15 blur-[100px]" />
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full h-2 bg-gray-100 rounded-full mb-8 overflow-hidden">
-                <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300"
-                    style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
-                />
-            </div>
-
-            {/* Question Card */}
-            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 mb-6">
-                <p className="text-center text-gray-500 text-sm mb-4">Bu kelimenin Türkçe anlamı nedir?</p>
-                <h2 className="text-4xl font-bold text-center text-gray-900 mb-2">
-                    {currentQuestion.word.word}
-                </h2>
-            </div>
-
-            {/* Options */}
-            <div className="grid grid-cols-1 gap-3 mb-8">
-                {currentQuestion.options.map((option, index) => {
-                    let buttonStyle = 'bg-white border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50';
-
-                    if (selectedAnswer !== null) {
-                        if (index === currentQuestion.correctIndex) {
-                            buttonStyle = 'bg-emerald-50 border-2 border-emerald-500 text-emerald-700';
-                        } else if (index === selectedAnswer && !isCorrect) {
-                            buttonStyle = 'bg-red-50 border-2 border-red-500 text-red-700';
-                        } else {
-                            buttonStyle = 'bg-gray-50 border-2 border-gray-200 opacity-50';
-                        }
-                    }
-
-                    return (
-                        <button
-                            key={index}
-                            onClick={() => handleAnswer(index)}
-                            disabled={selectedAnswer !== null}
-                            className={`w-full p-4 rounded-xl font-medium text-left transition-all ${buttonStyle}`}
-                        >
-                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 mr-3 text-sm font-bold">
-                                {index + 1}
-                            </span>
-                            {option}
-                        </button>
-                    );
-                })}
-            </div>
-
-            {/* Feedback & Next Button */}
-            {selectedAnswer !== null && (
-                <div className="text-center">
-                    {isCorrect ? (
-                        <p className="text-emerald-600 font-semibold mb-4 flex items-center justify-center gap-2">
-                            <CheckCircle className="w-5 h-5" />
-                            Doğru! +15 XP
-                        </p>
-                    ) : (
-                        <p className="text-red-500 font-semibold mb-4 flex items-center justify-center gap-2">
-                            <XCircle className="w-5 h-5" />
-                            Yanlış! Doğru cevap: {currentQuestion.options[currentQuestion.correctIndex]}
-                        </p>
-                    )}
-
-                    <button
-                        onClick={handleNext}
-                        className="flex items-center gap-2 mx-auto px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+            <div className="relative z-10 max-w-2xl mx-auto px-4 py-8">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                    <Link
+                        href="/study/modes"
+                        className="flex items-center gap-2 text-[#92a4c9] hover:text-white transition-colors group"
                     >
-                        {currentIndex < questions.length - 1 ? 'Sonraki Soru' : 'Sonuçları Gör'}
-                        <ArrowRight className="w-4 h-4" />
-                    </button>
+                        <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                        <span>Çıkış</span>
+                    </Link>
+                    <div className="glass-panel px-4 py-2 rounded-full text-sm text-white font-medium">
+                        Soru {currentIndex + 1} / {questions.length}
+                    </div>
                 </div>
-            )}
 
-            {/* Keyboard hint */}
-            <p className="text-center text-sm text-gray-400 mt-8">
-                Kısayol: <kbd className="px-2 py-1 bg-gray-100 rounded text-xs">1-4</kbd> seç,
-                <kbd className="px-2 py-1 bg-gray-100 rounded text-xs ml-2">Enter</kbd> devam
-            </p>
+                {/* Progress Bar */}
+                <div className="w-full h-2 bg-white/10 rounded-full mb-8 overflow-hidden">
+                    <div
+                        className="h-full bg-gradient-to-r from-green-500 to-emerald-500 shadow-[0_0_10px_rgba(34,197,94,0.5)] transition-all duration-300"
+                        style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+                    />
+                </div>
+
+                {/* Question Card */}
+                <div className="glass-panel rounded-3xl p-8 mb-6 text-center">
+                    <p className="text-[#92a4c9] text-sm mb-4">Bu kelimenin Türkçe anlamı nedir?</p>
+                    <h2 className="text-5xl font-black text-white tracking-tight">
+                        {currentQuestion.word.word}
+                    </h2>
+                </div>
+
+                {/* Options */}
+                <div className="grid grid-cols-1 gap-3 mb-8">
+                    {currentQuestion.options.map((option, index) => {
+                        let buttonStyle = 'glass-card hover:border-[#135bec]/50 hover:bg-white/5';
+
+                        if (selectedAnswer !== null) {
+                            if (index === currentQuestion.correctIndex) {
+                                buttonStyle = 'bg-green-500/20 border-green-500 text-green-300';
+                            } else if (index === selectedAnswer && !isCorrect) {
+                                buttonStyle = 'bg-red-500/20 border-red-500 text-red-300';
+                            } else {
+                                buttonStyle = 'bg-white/5 border-white/5 opacity-50';
+                            }
+                        }
+
+                        return (
+                            <button
+                                key={index}
+                                onClick={() => handleAnswer(index)}
+                                disabled={selectedAnswer !== null}
+                                className={`w-full p-5 rounded-2xl font-medium text-left transition-all border ${buttonStyle}`}
+                            >
+                                <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 text-[#92a4c9] mr-4 text-sm font-bold">
+                                    {index + 1}
+                                </span>
+                                <span className="text-white">{option}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                {/* Feedback & Next Button */}
+                {selectedAnswer !== null && (
+                    <div className="text-center">
+                        {isCorrect ? (
+                            <div className="flex items-center justify-center gap-2 text-green-400 font-semibold mb-4">
+                                <span className="material-symbols-outlined">check_circle</span>
+                                Doğru! +15 XP
+                            </div>
+                        ) : (
+                            <div className="text-red-400 font-semibold mb-4">
+                                <div className="flex items-center justify-center gap-2 mb-1">
+                                    <span className="material-symbols-outlined">cancel</span>
+                                    Yanlış!
+                                </div>
+                                <p className="text-sm text-[#92a4c9]">Doğru cevap: {currentQuestion.options[currentQuestion.correctIndex]}</p>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={handleNext}
+                            className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
+                        >
+                            {currentIndex < questions.length - 1 ? 'Sonraki Soru' : 'Sonuçları Gör'}
+                            <span className="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                    </div>
+                )}
+
+                {/* Keyboard hint */}
+                <p className="text-center text-sm text-slate-500 mt-8">
+                    Kısayol: <kbd className="px-2 py-0.5 bg-slate-800 rounded text-xs mx-1">1-4</kbd> seç,
+                    <kbd className="px-2 py-0.5 bg-slate-800 rounded text-xs ml-2">Enter</kbd> devam
+                </p>
+            </div>
         </div>
     );
 }

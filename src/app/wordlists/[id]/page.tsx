@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Play, Edit, Trash2, Plus } from 'lucide-react';
 
 interface Word {
     id: string;
@@ -55,9 +54,7 @@ export default function WordListDetailPage() {
 
         setDeleting(true);
         try {
-            const res = await fetch(`/api/wordlists/${listId}`, {
-                method: 'DELETE',
-            });
+            const res = await fetch(`/api/wordlists/${listId}`, { method: 'DELETE' });
             if (res.ok) {
                 router.push('/categories');
             }
@@ -70,16 +67,8 @@ export default function WordListDetailPage() {
 
     if (loading) {
         return (
-            <div className="max-w-4xl mx-auto px-4 py-12">
-                <div className="animate-pulse space-y-4">
-                    <div className="h-8 bg-gray-200 rounded w-1/3" />
-                    <div className="h-4 bg-gray-200 rounded w-1/2" />
-                    <div className="space-y-2 mt-8">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="h-20 bg-gray-100 rounded-xl" />
-                        ))}
-                    </div>
-                </div>
+            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
             </div>
         );
     }
@@ -87,93 +76,121 @@ export default function WordListDetailPage() {
     if (!wordList) return null;
 
     return (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-8">
-                <div className="flex items-center gap-4">
-                    <Link
-                        href="/categories"
-                        className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-                    >
-                        <ArrowLeft className="w-5 h-5" />
-                    </Link>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">{wordList.name}</h1>
-                        {wordList.description && (
-                            <p className="text-gray-600">{wordList.description}</p>
-                        )}
-                        <p className="text-sm text-indigo-600 font-medium mt-1">
-                            {wordList.words.length} kelime
-                        </p>
-                    </div>
-                </div>
+        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+            {/* Ambient Background */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px]" />
+            </div>
 
-                {session && (
-                    <div className="flex gap-2">
+            <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/categories"
+                            className="p-2 rounded-xl glass-button text-[#92a4c9] hover:text-white transition-colors"
+                        >
+                            <span className="material-symbols-outlined">arrow_back</span>
+                        </Link>
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">{wordList.name}</h1>
+                            {wordList.description && (
+                                <p className="text-[#92a4c9] mt-1">{wordList.description}</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href={`/wordlists/${listId}/add`}
+                            className="flex items-center gap-2 px-4 py-2 glass-button text-white rounded-xl font-medium"
+                        >
+                            <span className="material-symbols-outlined text-lg">add</span>
+                            Kelime Ekle
+                        </Link>
                         <button
                             onClick={handleDelete}
                             disabled={deleting}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Sil"
+                            className="p-2 rounded-xl glass-button text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                            title="Listeyi Sil"
                         >
-                            <Trash2 className="w-5 h-5" />
+                            <span className="material-symbols-outlined">delete</span>
                         </button>
                     </div>
-                )}
-            </div>
+                </div>
 
-            {/* Actions */}
-            <div className="flex gap-4 mb-8">
-                <Link
-                    href={`/study?list=${listId}`}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white rounded-xl font-semibold hover:from-indigo-600 hover:to-violet-700 transition-all shadow-lg"
-                >
-                    <Play className="w-5 h-5" />
-                    Bu Listeyle Çalış
-                </Link>
-                <Link
-                    href={`/wordlists/${listId}/add`}
-                    className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
-                >
-                    <Plus className="w-5 h-5" />
-                    Kelime Ekle
-                </Link>
-            </div>
-
-            {/* Words List */}
-            <div className="space-y-3">
-                {wordList.words.map((word) => (
-                    <div
-                        key={word.id}
-                        className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                {/* Action Buttons */}
+                <div className="flex gap-4 mb-8">
+                    <Link
+                        href={`/study/flashcard?list=${listId}`}
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-2xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
                     >
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="flex items-center gap-2">
-                                    <h3 className="font-semibold text-gray-900">{word.word}</h3>
-                                    <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
-                                        {word.type}
-                                    </span>
-                                </div>
-                                <p className="text-indigo-600 font-medium">{word.turkishTranslation}</p>
-                                {word.definitionTr && (
-                                    <p className="text-sm text-gray-500 mt-1">{word.definitionTr}</p>
-                                )}
-                            </div>
+                        <span className="material-symbols-outlined text-2xl">play_circle</span>
+                        Flashcard İle Çalış
+                    </Link>
+                    <Link
+                        href={`/study/multiple-choice?list=${listId}`}
+                        className="flex-1 flex items-center justify-center gap-3 px-6 py-4 glass-button text-white rounded-2xl font-medium"
+                    >
+                        <span className="material-symbols-outlined text-2xl">quiz</span>
+                        Test İle Çalış
+                    </Link>
+                </div>
+
+                {/* Word Count */}
+                <div className="glass-panel rounded-2xl p-4 mb-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
+                            <span className="material-symbols-outlined">menu_book</span>
+                        </div>
+                        <div>
+                            <p className="text-white font-medium">{wordList.words.length} Kelime</p>
+                            <p className="text-[#92a4c9] text-sm">Bu listede</p>
                         </div>
                     </div>
-                ))}
+                </div>
 
-                {wordList.words.length === 0 && (
-                    <div className="text-center py-12 bg-gray-50 rounded-2xl">
-                        <p className="text-gray-500 mb-4">Bu listede henüz kelime yok</p>
+                {/* Words List */}
+                {wordList.words.length === 0 ? (
+                    <div className="glass-panel rounded-2xl p-12 text-center">
+                        <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
+                            <span className="material-symbols-outlined text-4xl text-slate-400">inbox</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-white mb-2">Henüz kelime yok</h3>
+                        <p className="text-[#92a4c9] mb-6">Bu listeye kelime ekleyerek başlayın</p>
                         <Link
                             href={`/wordlists/${listId}/add`}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-medium"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-semibold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                         >
-                            <Plus className="w-4 h-4" />
+                            <span className="material-symbols-outlined">add</span>
                             Kelime Ekle
                         </Link>
+                    </div>
+                ) : (
+                    <div className="glass-panel rounded-2xl divide-y divide-white/5">
+                        {wordList.words.map((word, index) => (
+                            <div key={word.id} className="flex items-center justify-between p-4 hover:bg-white/5 transition-colors group">
+                                <div className="flex items-center gap-4 flex-1 min-w-0">
+                                    <span className="text-xs font-medium text-slate-500 w-6">{index + 1}.</span>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-3 mb-1">
+                                            <span className="font-medium text-white">{word.word}</span>
+                                            <span className="text-slate-600">→</span>
+                                            <span className="text-[#92a4c9]">{word.turkishTranslation}</span>
+                                            <span className="text-xs px-2 py-0.5 bg-white/5 text-slate-400 rounded border border-white/5">
+                                                {word.type === 'noun' ? 'İsim' : word.type === 'verb' ? 'Fiil' : word.type === 'adjective' ? 'Sıfat' : 'Zarf'}
+                                            </span>
+                                        </div>
+                                        {word.definitionTr && (
+                                            <p className="text-sm text-slate-500 truncate">{word.definitionTr}</p>
+                                        )}
+                                    </div>
+                                </div>
+                                <button className="p-2 text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+                                    <span className="material-symbols-outlined text-lg">volume_up</span>
+                                </button>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

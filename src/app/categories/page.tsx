@@ -36,6 +36,7 @@ export default function CategoriesPage() {
     const [categories, setCategories] = useState<Category[]>(defaultCategories);
     const [wordLists, setWordLists] = useState<WordList[]>([]);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState<'my-lists' | 'categories'>('my-lists');
 
     useEffect(() => {
         async function fetchData() {
@@ -68,237 +69,147 @@ export default function CategoriesPage() {
     const totalWords = wordLists.reduce((acc, list) => acc + (list._count?.items || 0), 0);
 
     return (
-        <div className="min-h-screen bg-[#101622] text-white font-['Lexend'] relative overflow-x-hidden">
-            {/* Background Ambient Effects */}
+        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+            {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#135bec] rounded-full blur-[80px] opacity-40" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#4f46e5] rounded-full blur-[80px] opacity-40" />
-                <div className="absolute top-[40%] left-[40%] w-[400px] h-[400px] bg-[#0ea5e9] rounded-full blur-[100px] opacity-20" />
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px]" />
             </div>
 
-            {/* Main Layout */}
-            <div className="relative z-10 flex h-screen w-full overflow-hidden">
-                {/* Sidebar */}
-                <aside className="hidden lg:flex flex-col w-72 h-full glass-panel border-r border-white/5">
-                    <div className="flex flex-col h-full p-6">
-                        {/* Branding */}
-                        <div className="flex items-center gap-3 mb-10 px-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#135bec] to-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                <span className="material-symbols-outlined text-white text-[24px]">school</span>
-                            </div>
-                            <h1 className="text-xl font-bold tracking-tight text-white">VocabMaster</h1>
-                        </div>
-
-                        {/* User Profile Snippet */}
-                        {session && (
-                            <div className="flex items-center gap-3 mb-8 p-3 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm">
-                                <div
-                                    className="w-10 h-10 rounded-full bg-cover bg-center ring-2 ring-[#135bec]/50"
-                                    style={{
-                                        backgroundImage: session?.user?.image
-                                            ? `url("${session.user.image}")`
-                                            : 'linear-gradient(135deg, #135bec, #8b5cf6)'
-                                    }}
-                                />
-                                <div className="flex flex-col">
-                                    <p className="text-white text-sm font-medium leading-none">{session.user?.name || 'Kullanıcı'}</p>
-                                    <p className="text-blue-200 text-xs font-normal mt-1">Premium Üye</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Navigation Links */}
-                        <div className="flex flex-col gap-2 flex-1 overflow-y-auto">
-                            <p className="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Kütüphane</p>
-                            <Link href="/categories" className="flex items-center gap-3 px-4 py-3 rounded-xl glass-active transition-colors group">
-                                <span className="material-symbols-outlined text-white group-hover:scale-110 transition-transform">dashboard</span>
-                                <p className="text-sm font-medium">Genel Görünüm</p>
-                            </Link>
-                            <Link href="/favorites" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group">
-                                <span className="material-symbols-outlined text-gray-400 group-hover:text-white transition-colors">favorite</span>
-                                <p className="text-gray-300 group-hover:text-white text-sm font-medium transition-colors">Favoriler</p>
-                            </Link>
-
-                            <div className="h-px bg-white/10 my-4 mx-3" />
-
-                            <p className="px-3 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Kategoriler</p>
-                            {categories.slice(0, 3).map(cat => (
-                                <Link
-                                    key={cat.id}
-                                    href={`/categories/${cat.slug}`}
-                                    className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group"
-                                >
-                                    <span className="material-symbols-outlined text-gray-400 group-hover:text-white">{cat.icon}</span>
-                                    <p className="text-gray-300 group-hover:text-white text-sm font-medium">{cat.name}</p>
-                                </Link>
-                            ))}
-                        </div>
-
-                        {/* Bottom Action */}
-                        <Link
-                            href="/wordlists/new"
-                            className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl h-12 bg-[#135bec] hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-95"
-                        >
-                            <span className="material-symbols-outlined text-lg">add</span>
-                            <span>Yeni Liste</span>
-                        </Link>
+            <div className="relative z-10 max-w-6xl mx-auto px-4 lg:px-8 py-8">
+                {/* Page Header */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                    <div>
+                        <h1 className="text-4xl font-black text-white mb-2">Kelime Listeleri</h1>
+                        <p className="text-[#8b9bb4]">
+                            {wordLists.length} liste • {totalWords} kelime
+                        </p>
                     </div>
-                </aside>
+                    <Link
+                        href="/wordlists/new"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
+                    >
+                        <span className="material-symbols-outlined">add</span>
+                        Yeni Liste
+                    </Link>
+                </div>
 
-                {/* Main Content */}
-                <main className="flex-1 flex flex-col h-full overflow-hidden relative">
-                    {/* Top Header */}
-                    <header className="h-20 flex items-center justify-between px-8 py-4 border-b border-white/5 glass-panel sticky top-0 z-20">
-                        <button className="lg:hidden p-2 text-white hover:bg-white/10 rounded-full mr-4">
-                            <span className="material-symbols-outlined">menu</span>
-                        </button>
+                {/* Tab Switcher */}
+                <div className="flex gap-2 mb-8 p-1 bg-[#1a2332]/80 rounded-full w-fit border border-white/5">
+                    <button
+                        onClick={() => setActiveTab('my-lists')}
+                        className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === 'my-lists'
+                                ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
+                                : 'text-[#8b9bb4] hover:text-white'
+                            }`}
+                    >
+                        Listelerim
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('categories')}
+                        className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === 'categories'
+                                ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
+                                : 'text-[#8b9bb4] hover:text-white'
+                            }`}
+                    >
+                        Hazır Kategoriler
+                    </button>
+                </div>
 
-                        <div className="flex-1 max-w-xl">
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <span className="material-symbols-outlined text-gray-400 group-focus-within:text-[#135bec] transition-colors">search</span>
-                                </div>
-                                <input
-                                    className="block w-full pl-11 pr-4 py-2.5 bg-[#1e293b]/50 border border-white/10 rounded-full text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#135bec]/50 focus:bg-[#1e293b]/80 transition-all"
-                                    placeholder="Kelime listelerinde ara..."
-                                />
+                {/* My Lists Tab */}
+                {activeTab === 'my-lists' && (
+                    <div className="space-y-6">
+                        {loading ? (
+                            <div className="flex items-center justify-center py-20">
+                                <div className="w-12 h-12 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
                             </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 ml-6">
-                            <button className="relative p-2.5 text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors">
-                                <span className="material-symbols-outlined">notifications</span>
-                                <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-[#111722]" />
-                            </button>
-                            <button className="p-2.5 text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors">
-                                <span className="material-symbols-outlined">settings</span>
-                            </button>
-                        </div>
-                    </header>
-
-                    {/* Scrollable Page Content */}
-                    <div className="flex-1 overflow-y-auto p-6 lg:p-10">
-                        <div className="max-w-7xl mx-auto flex flex-col gap-8 pb-10">
-                            {/* Page Heading */}
-                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                                <div className="flex flex-col gap-2">
-                                    <h2 className="text-4xl lg:text-5xl font-black text-white tracking-tight text-glow">Kelime Listelerim</h2>
-                                    <p className="text-blue-200/70 text-base font-light">
-                                        Toplam {wordLists.length} liste ve {totalWords} kelime ile öğrenme yolculuğun devam ediyor.
-                                    </p>
+                        ) : wordLists.length === 0 ? (
+                            <div className="glass-panel rounded-3xl p-12 text-center">
+                                <div className="w-20 h-20 rounded-full bg-[#135bec]/20 flex items-center justify-center mx-auto mb-6">
+                                    <span className="material-symbols-outlined text-4xl text-[#135bec]">folder_open</span>
                                 </div>
-                                <div className="flex gap-3">
-                                    <Link
-                                        href="/wordlists/import"
-                                        className="flex items-center justify-center gap-2 h-10 px-5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-all"
-                                    >
-                                        <span className="material-symbols-outlined text-lg">file_upload</span>
-                                        <span>İçe Aktar</span>
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Filter Chips */}
-                            <div className="flex gap-3 overflow-x-auto pb-2">
-                                <button className="flex items-center justify-center h-9 px-5 rounded-full bg-white text-[#135bec] text-sm font-bold shadow-lg shadow-white/10 transition-transform active:scale-95 whitespace-nowrap">
-                                    Tümü
-                                </button>
-                                <button className="flex items-center justify-center h-9 px-5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white text-sm font-medium transition-all whitespace-nowrap">
-                                    Devam Edenler
-                                </button>
-                                <button className="flex items-center justify-center h-9 px-5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white text-sm font-medium transition-all whitespace-nowrap">
-                                    Tamamlananlar
-                                </button>
-                                <button className="flex items-center justify-center h-9 px-5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white text-sm font-medium transition-all whitespace-nowrap">
-                                    <span className="material-symbols-outlined text-base mr-1.5 text-pink-500">favorite</span>
-                                    Favoriler
-                                </button>
-                            </div>
-
-                            {/* Content Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {/* Create New List Card */}
+                                <h3 className="text-2xl font-bold text-white mb-3">Henüz liste yok</h3>
+                                <p className="text-[#8b9bb4] mb-8 max-w-md mx-auto">
+                                    İlk kelime listeni oluştur ve öğrenmeye başla. Kendi kelimelerini ekleyebilir veya hazır kategorilerden seçebilirsin.
+                                </p>
                                 <Link
                                     href="/wordlists/new"
-                                    className="group flex flex-col items-center justify-center h-full min-h-[320px] rounded-2xl border-2 border-dashed border-white/10 bg-white/5 hover:bg-white/10 cursor-pointer transition-all hover:border-[#135bec]/50"
+                                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                                 >
-                                    <div className="w-16 h-16 rounded-full bg-white/5 group-hover:bg-[#135bec]/20 flex items-center justify-center mb-4 transition-colors">
-                                        <span className="material-symbols-outlined text-3xl text-gray-400 group-hover:text-[#135bec] transition-colors">add</span>
-                                    </div>
-                                    <p className="text-white text-lg font-bold">Yeni Liste Oluştur</p>
-                                    <p className="text-gray-400 text-sm mt-1">Kendi kelime setini hazırla</p>
+                                    <span className="material-symbols-outlined">add</span>
+                                    İlk Listeni Oluştur
                                 </Link>
-
-                                {/* User Word Lists */}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {wordLists.map((list) => (
                                     <Link
                                         key={list.id}
                                         href={`/wordlists/${list.id}`}
-                                        className="glass-card rounded-2xl overflow-hidden flex flex-col group p-5 relative min-h-[300px]"
+                                        className="glass-card rounded-2xl p-5 group"
                                     >
-                                        <div className="absolute top-4 right-4">
-                                            <span className="material-symbols-outlined text-gray-500 hover:text-pink-500 transition-colors cursor-pointer">favorite</span>
-                                        </div>
-                                        <div className="mb-4">
-                                            <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec] mb-3">
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
                                                 <span className="material-symbols-outlined">folder</span>
                                             </div>
-                                            <h3 className="text-xl font-bold text-white group-hover:text-[#135bec] transition-colors">{list.name}</h3>
-                                        </div>
-                                        <p className="text-gray-400 text-sm mb-6 flex-1">{list.description || 'Özel kelime listem'}</p>
-                                        <div className="space-y-3">
-                                            <div className="w-full bg-white/5 rounded-full h-1.5">
-                                                <div className="bg-gradient-to-r from-[#135bec] to-blue-500 h-1.5 rounded-full" style={{ width: '30%' }} />
-                                            </div>
-                                            <div className="flex justify-between text-xs text-gray-400">
-                                                <span>{list._count?.items || 0} Kelime</span>
-                                                <span className="text-white font-medium">%30</span>
-                                            </div>
-                                        </div>
-                                        <button className="w-full mt-6 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold py-2.5 rounded-full transition-colors flex items-center justify-center gap-2 group-hover:bg-[#135bec] group-hover:border-[#135bec]/50">
-                                            <span>Çalış</span>
-                                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                        </button>
-                                    </Link>
-                                ))}
-
-                                {/* System Categories */}
-                                {categories.map((cat) => (
-                                    <Link
-                                        key={cat.id}
-                                        href={`/categories/${cat.slug}`}
-                                        className="glass-card rounded-2xl overflow-hidden flex flex-col group p-5 relative min-h-[300px]"
-                                    >
-                                        <div className="mb-4">
-                                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform`}>
-                                                <span className="material-symbols-outlined">{cat.icon}</span>
-                                            </div>
-                                            <h3 className="text-xl font-bold text-white group-hover:text-[#135bec] transition-colors">{cat.name}</h3>
-                                        </div>
-                                        <p className="text-gray-400 text-sm mb-6 flex-1">{cat.description}</p>
-                                        <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-white/5">
-                                            <span className="flex items-center gap-1">
-                                                <span className="material-symbols-outlined text-base">format_list_numbered</span>
-                                                {cat.wordCount} Kelime
+                                            <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-lg">
+                                                {list._count?.items || 0} kelime
                                             </span>
-                                            <button className="bg-[#135bec] hover:bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full transition-colors shadow-lg shadow-blue-900/20">
-                                                Başla
-                                            </button>
+                                        </div>
+                                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#135bec] transition-colors">
+                                            {list.name}
+                                        </h3>
+                                        <p className="text-sm text-[#8b9bb4] line-clamp-2 mb-4">
+                                            {list.description || 'Özel kelime listem'}
+                                        </p>
+                                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                            <div className="flex items-center gap-2 text-xs text-[#8b9bb4]">
+                                                <span className="material-symbols-outlined text-sm">schedule</span>
+                                                <span>Son güncelleme</span>
+                                            </div>
+                                            <span className="material-symbols-outlined text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all">
+                                                arrow_forward
+                                            </span>
                                         </div>
                                     </Link>
                                 ))}
                             </div>
-                        </div>
+                        )}
                     </div>
+                )}
 
-                    {/* Floating Action Button (Mobile) */}
-                    <Link
-                        href="/wordlists/new"
-                        className="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-[#135bec] text-white rounded-full shadow-2xl flex items-center justify-center z-50"
-                    >
-                        <span className="material-symbols-outlined text-2xl">add</span>
-                    </Link>
-                </main>
+                {/* Categories Tab */}
+                {activeTab === 'categories' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {categories.map((cat) => (
+                            <Link
+                                key={cat.id}
+                                href={`/categories/${cat.slug}`}
+                                className="glass-card rounded-2xl p-5 group"
+                            >
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform`}>
+                                        <span className="material-symbols-outlined">{cat.icon}</span>
+                                    </div>
+                                    <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-lg">
+                                        {cat.wordCount} kelime
+                                    </span>
+                                </div>
+                                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#135bec] transition-colors">
+                                    {cat.name}
+                                </h3>
+                                <p className="text-sm text-[#8b9bb4] line-clamp-2 mb-4">
+                                    {cat.description}
+                                </p>
+                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                    <button className="text-xs font-medium text-[#135bec] hover:underline">
+                                        Başla →
+                                    </button>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

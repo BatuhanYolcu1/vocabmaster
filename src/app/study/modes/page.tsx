@@ -1,255 +1,187 @@
 'use client';
 
-import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import {
-    Layers,
-    CheckSquare,
-    PenLine,
-    Link2,
-    Headphones,
-    Play,
-    Star,
-    Mic,
-    Zap,
-    ArrowRight,
-    Sparkles,
-    Trophy,
-    Target
-} from 'lucide-react';
+import Link from 'next/link';
 
-interface QuizMode {
-    id: string;
-    name: string;
-    description: string;
-    icon: React.ReactNode;
-    gradient: string;
-    shadowColor: string;
-    xpMultiplier: number;
-    difficulty: string;
-    difficultyColor: string;
-    href: string;
-}
-
-const quizModes: QuizMode[] = [
+const studyModes = [
     {
         id: 'flashcard',
-        name: 'Flashcard',
-        description: 'Klasik çevirmeli kart modu. Kelimeyi gör, anlamını hatırla.',
-        icon: <Layers className="w-7 h-7" />,
-        gradient: 'from-indigo-500 to-violet-600',
-        shadowColor: 'shadow-indigo-500/30',
-        xpMultiplier: 1,
-        difficulty: 'Kolay',
-        difficultyColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-        href: '/study/flashcard',
+        title: 'Flashcard',
+        description: 'Klasik kart yöntemiyle kelimeleri hızlıca tekrar et ve hafızanı tazele.',
+        icon: 'style',
+        gradient: 'from-blue-500 to-blue-700',
+        glowColor: 'bg-blue-500',
+        tag: 'Popüler',
+        tagColor: 'text-blue-400 bg-blue-400/10',
+        href: '/study/flashcard'
     },
     {
         id: 'multiple-choice',
-        name: 'Çoktan Seçmeli',
-        description: '4 seçenek arasından doğru anlamı bul.',
-        icon: <CheckSquare className="w-7 h-7" />,
-        gradient: 'from-emerald-500 to-teal-600',
-        shadowColor: 'shadow-emerald-500/30',
-        xpMultiplier: 1.5,
-        difficulty: 'Orta',
-        difficultyColor: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-        href: '/study/multiple-choice',
+        title: 'Çoktan Seçmeli',
+        description: 'Doğru cevabı şıklar arasından bul ve hızlı düşünme yeteneğini geliştir.',
+        icon: 'quiz',
+        gradient: 'from-purple-500 to-purple-700',
+        glowColor: 'bg-purple-500',
+        tag: 'Hızlı',
+        tagColor: 'text-purple-400 bg-purple-400/10',
+        href: '/study/multiple-choice'
     },
     {
         id: 'typing',
-        name: 'Yazarak Cevapla',
-        description: 'Türkçe anlamı görüp İngilizce kelimeyi yaz.',
-        icon: <PenLine className="w-7 h-7" />,
-        gradient: 'from-amber-500 to-orange-600',
-        shadowColor: 'shadow-amber-500/30',
-        xpMultiplier: 2,
-        difficulty: 'Zor',
-        difficultyColor: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400',
-        href: '/study/typing',
+        title: 'Yazarak Cevapla',
+        description: 'Kelimenin yazılışını pratik yap, harf hatalarını ortadan kaldır.',
+        icon: 'edit_note',
+        gradient: 'from-pink-500 to-pink-700',
+        glowColor: 'bg-pink-500',
+        tag: 'Zor',
+        tagColor: 'text-pink-400 bg-pink-400/10',
+        href: '/study/typing'
     },
     {
         id: 'matching',
-        name: 'Eşleştirme',
-        description: 'Kelimeleri anlamlarıyla eşleştir. Hız önemli!',
-        icon: <Link2 className="w-7 h-7" />,
-        gradient: 'from-pink-500 to-rose-600',
-        shadowColor: 'shadow-pink-500/30',
-        xpMultiplier: 2.5,
-        difficulty: 'Orta',
-        difficultyColor: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-        href: '/study/matching',
+        title: 'Eşleştirme',
+        description: 'Kelimeleri anlamlarıyla eşleştir, bağlantıları görsel olarak kur.',
+        icon: 'join_inner',
+        gradient: 'from-green-500 to-green-700',
+        glowColor: 'bg-green-500',
+        tag: 'Eğlenceli',
+        tagColor: 'text-green-400 bg-green-400/10',
+        href: '/study/matching'
     },
     {
         id: 'listening',
-        name: 'Dinleme',
-        description: 'Kelimeyi dinle ve doğru yazılışını seç.',
-        icon: <Headphones className="w-7 h-7" />,
-        gradient: 'from-cyan-500 to-blue-600',
-        shadowColor: 'shadow-cyan-500/30',
-        xpMultiplier: 2,
-        difficulty: 'Zor',
-        difficultyColor: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400',
-        href: '/study/listening',
+        title: 'Dinleme',
+        description: 'Telaffuzu dikkatlice dinle ve kelimeyi anlamlandırarak yaz.',
+        icon: 'headphones',
+        gradient: 'from-amber-500 to-amber-700',
+        glowColor: 'bg-amber-500',
+        tag: 'İşitsel',
+        tagColor: 'text-amber-400 bg-amber-400/10',
+        href: '/study/listening'
     },
     {
         id: 'speaking',
-        name: 'Konuşma Koçu',
-        description: 'Mikrofon ile telaffuzunu test et ve geliştir.',
-        icon: <Mic className="w-7 h-7" />,
-        gradient: 'from-rose-500 to-pink-600',
-        shadowColor: 'shadow-rose-500/30',
-        xpMultiplier: 2.5,
-        difficulty: '🎙️ Yeni',
-        difficultyColor: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400',
+        title: 'Konuşma Koçu',
+        description: 'Yapay zeka ile telaffuzunu geliştir, anında geri bildirim al.',
+        icon: 'mic',
+        gradient: 'from-red-500 to-red-700',
+        glowColor: 'bg-red-500',
+        tag: 'İnteraktif',
+        tagColor: 'text-red-400 bg-red-400/10',
         href: '/study/speaking',
-    },
+        isAI: true
+    }
 ];
 
 export default function StudyModesPage() {
-    const { } = useSession();
+    const { data: session } = useSession();
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-violet-950">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <div className="min-h-screen bg-[#101622] text-white font-['Lexend'] relative overflow-x-hidden">
+            {/* Ambient Background Blobs */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div
+                    className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full blur-[80px] opacity-60 animate-float"
+                    style={{ background: 'radial-gradient(circle, rgba(19, 91, 236, 0.4) 0%, rgba(19, 91, 236, 0) 70%)' }}
+                />
+                <div
+                    className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full blur-[80px] opacity-50 animate-float-delayed"
+                    style={{ background: 'radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 70%)' }}
+                />
+            </div>
 
-                {/* Hero Header */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-3xl p-8 text-white shadow-2xl shadow-violet-500/25">
-                    {/* Background Effects */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/3" />
-                    <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-pink-400/20 rounded-full blur-xl" />
-
-                    <div className="relative">
-                        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-white/20 backdrop-blur-sm rounded-xl">
-                                        <Sparkles className="w-6 h-6" />
-                                    </div>
-                                    <span className="text-violet-200 text-sm font-medium">Çalışma Merkezi</span>
-                                </div>
-                                <h1 className="text-3xl lg:text-4xl font-bold">
-                                    Çalışma Modu Seç 🎯
-                                </h1>
-                                <p className="text-violet-100 text-lg max-w-xl">
-                                    Farklı modlarla kelime bilgini test et ve XP kazan
+            <div className="relative z-10 flex min-h-screen w-full flex-col">
+                {/* Main Content */}
+                <main className="flex-grow flex flex-col items-center justify-start py-8 px-4 sm:px-8">
+                    <div className="w-full max-w-[1000px] flex flex-col gap-10">
+                        {/* Page Heading & Stats Summary */}
+                        <div className="flex flex-col gap-6 text-center md:text-left md:flex-row md:items-end md:justify-between">
+                            <div className="flex flex-col gap-2">
+                                <span className="text-[#135bec] font-bold text-sm tracking-widest uppercase">Öğrenme Merkezi</span>
+                                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                                    Çalışma Modu <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-[#135bec]">Seçimi</span>
+                                </h2>
+                                <p className="text-[#92a4c9] text-lg font-light max-w-lg">
+                                    Bugün hangi yöntemle kelime hazineni geliştirmek istersiniz?
                                 </p>
                             </div>
-
-                            <Link
-                                href="/study/flashcard"
-                                className="group flex items-center gap-3 px-8 py-4 bg-white text-violet-600 rounded-2xl font-bold text-lg hover:bg-violet-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 transform"
-                            >
-                                <Zap className="w-6 h-6" />
-                                <span>Hızlı Başla</span>
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
-                        </div>
-
-                        {/* Quick Stats */}
-                        <div className="mt-8 pt-6 border-t border-white/20 grid grid-cols-3 gap-6">
-                            <div className="text-center">
-                                <div className="flex items-center justify-center gap-2 text-2xl font-bold mb-1">
-                                    <Target className="w-5 h-5 text-violet-200" />
-                                    6
+                            {/* Mini Stats Widget */}
+                            <div className="glass-panel p-4 rounded-xl flex items-center gap-6 mt-4 md:mt-0 self-center md:self-end hover:bg-white/5 transition-all cursor-default">
+                                <div className="text-center">
+                                    <p className="text-xs text-[#92a4c9] uppercase font-semibold">Hedef</p>
+                                    <p className="text-white font-bold text-xl">50/100</p>
                                 </div>
-                                <p className="text-violet-200 text-sm">Çalışma Modu</p>
-                            </div>
-                            <div className="text-center">
-                                <div className="flex items-center justify-center gap-2 text-2xl font-bold mb-1">
-                                    <Star className="w-5 h-5 text-yellow-300" />
-                                    2.5x
+                                <div className="h-8 w-[1px] bg-white/10" />
+                                <div className="text-center">
+                                    <p className="text-xs text-[#92a4c9] uppercase font-semibold">Seviye</p>
+                                    <p className="text-white font-bold text-xl">B2</p>
                                 </div>
-                                <p className="text-violet-200 text-sm">Max XP Çarpanı</p>
-                            </div>
-                            <div className="text-center">
-                                <div className="flex items-center justify-center gap-2 text-2xl font-bold mb-1">
-                                    <Trophy className="w-5 h-5 text-amber-300" />
-                                    ∞
-                                </div>
-                                <p className="text-violet-200 text-sm">Sınırsız Quiz</p>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* Quiz Modes Grid */}
-                <section>
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="p-2 bg-violet-100 dark:bg-violet-900/30 rounded-xl">
-                            <Play className="w-5 h-5 text-violet-600 dark:text-violet-400" />
-                        </div>
-                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Tüm Modlar</h2>
-                    </div>
-
-                    <div className="grid gap-4">
-                        {quizModes.map((mode) => (
-                            <Link
-                                key={mode.id}
-                                href={mode.href}
-                                className="group relative overflow-hidden bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-                            >
-                                {/* Hover gradient overlay */}
-                                <div className={`absolute inset-0 bg-gradient-to-r ${mode.gradient} opacity-0 group-hover:opacity-5 transition-opacity`} />
-
-                                <div className="relative flex items-center gap-6">
-                                    {/* Icon */}
-                                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${mode.gradient} text-white shadow-lg ${mode.shadowColor} group-hover:scale-110 group-hover:rotate-3 transition-transform`}>
-                                        {mode.icon}
-                                    </div>
-
-                                    {/* Info */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-3 mb-1.5">
-                                            <h3 className="text-lg font-bold text-slate-900 dark:text-white">{mode.name}</h3>
-                                            <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${mode.difficultyColor}`}>
-                                                {mode.difficulty}
-                                            </span>
+                        {/* Grid of Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {studyModes.map((mode) => (
+                                <Link
+                                    key={mode.id}
+                                    href={mode.href}
+                                    className="group glass-card relative overflow-hidden rounded-[24px] p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(19,91,236,0.2)] hover:border-[#135bec]/40 cursor-pointer"
+                                >
+                                    <div className={`absolute -right-12 -top-12 h-40 w-40 rounded-full ${mode.glowColor}/20 blur-[50px] transition-all group-hover:${mode.glowColor}/30`} />
+                                    <div className="relative z-10 flex flex-col h-full gap-4">
+                                        <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${mode.gradient} shadow-lg text-white group-hover:scale-110 transition-transform duration-300`}>
+                                            <span className="material-symbols-outlined text-3xl">{mode.icon}</span>
                                         </div>
-                                        <p className="text-slate-600 dark:text-slate-400 text-sm">{mode.description}</p>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <h3 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">{mode.title}</h3>
+                                                {mode.isAI && (
+                                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white text-black">AI</span>
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-gray-400 leading-relaxed font-light">{mode.description}</p>
+                                        </div>
+                                        <div className="flex items-center justify-between border-t border-white/5 pt-4 mt-2">
+                                            <span className={`text-xs font-medium ${mode.tagColor} px-2 py-1 rounded-md`}>{mode.tag}</span>
+                                            <span className="material-symbols-outlined text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
+                                        </div>
                                     </div>
-
-                                    {/* XP Multiplier */}
-                                    <div className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 text-amber-700 dark:text-amber-400 rounded-xl font-bold border border-amber-200 dark:border-amber-800/50">
-                                        <Star className="w-5 h-5 fill-current" />
-                                        <span>{mode.xpMultiplier}x XP</span>
-                                    </div>
-
-                                    {/* Arrow */}
-                                    <ArrowRight className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-violet-500 group-hover:translate-x-1 transition-all" />
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Tips Section */}
-                <section className="bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-600 rounded-3xl p-8 text-white shadow-2xl shadow-violet-500/25 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-pink-400/20 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
-
-                    <div className="relative">
-                        <div className="flex items-center gap-3 mb-6">
-                            <span className="text-3xl">💡</span>
-                            <h3 className="text-xl font-bold">Pro İpuçları</h3>
-                        </div>
-                        <div className="grid sm:grid-cols-3 gap-6">
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                <div className="text-2xl mb-2">📈</div>
-                                <p className="text-violet-100 text-sm">Kolay modlardan başlayıp zor modlara geç</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                <div className="text-2xl mb-2">⭐</div>
-                                <p className="text-violet-100 text-sm">Zor modlar daha fazla XP kazandırır!</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                                <div className="text-2xl mb-2">⌨️</div>
-                                <p className="text-violet-100 text-sm">Klavye kısayolları ile daha hızlı çalış</p>
-                            </div>
+                                </Link>
+                            ))}
                         </div>
                     </div>
-                </section>
+                </main>
+
+                {/* Footer */}
+                <footer className="relative z-10 mt-auto w-full border-t border-white/5 bg-[#111722]/80 backdrop-blur-sm">
+                    <div className="mx-auto flex max-w-[1200px] flex-col gap-8 px-6 py-10">
+                        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+                            <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                                <span className="material-symbols-outlined text-2xl">school</span>
+                                <span className="text-lg font-bold">VocabMaster</span>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-center gap-8">
+                                <a className="text-sm font-medium text-[#92a4c9] hover:text-white transition-colors" href="#">Gizlilik Politikası</a>
+                                <a className="text-sm font-medium text-[#92a4c9] hover:text-white transition-colors" href="#">Kullanım Koşulları</a>
+                                <a className="text-sm font-medium text-[#92a4c9] hover:text-white transition-colors" href="#">Yardım</a>
+                            </div>
+                            <div className="flex gap-4">
+                                <a className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-[#92a4c9] hover:bg-[#135bec] hover:text-white transition-all" href="#">
+                                    <span className="text-sm">X</span>
+                                </a>
+                                <a className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-[#92a4c9] hover:bg-pink-600 hover:text-white transition-all" href="#">
+                                    <span className="text-sm">Ig</span>
+                                </a>
+                                <a className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-[#92a4c9] hover:bg-[#5865F2] hover:text-white transition-all" href="#">
+                                    <span className="text-sm">Dc</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-xs text-[#92a4c9] font-light">© 2024 VocabMaster. Tüm hakları saklıdır.</p>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </div>
     );

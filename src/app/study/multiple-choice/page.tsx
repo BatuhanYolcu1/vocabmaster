@@ -139,7 +139,7 @@ export default function MultipleChoicePage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
                 <div className="w-16 h-16 border-4 border-green-500/20 border-t-green-500 rounded-full animate-spin" />
             </div>
         );
@@ -147,7 +147,7 @@ export default function MultipleChoicePage() {
 
     if (questions.length === 0) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center px-4">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
                 <div className="glass-panel rounded-3xl p-8 max-w-md text-center">
                     <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
                         <span className="material-symbols-outlined text-4xl text-slate-400">quiz</span>
@@ -180,7 +180,7 @@ export default function MultipleChoicePage() {
         const xpEarned = score.correct * 15;
 
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center px-4 relative">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4 relative">
                 {/* Ambient Background */}
                 <div className="fixed inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-green-500/20 blur-[120px]" />
@@ -240,7 +240,7 @@ export default function MultipleChoicePage() {
     if (!currentQuestion) return null;
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-green-500/20 blur-[120px]" />

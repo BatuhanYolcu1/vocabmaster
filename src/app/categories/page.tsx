@@ -69,7 +69,7 @@ export default function CategoriesPage() {
     const totalWords = wordLists.reduce((acc, list) => acc + (list._count?.items || 0), 0);
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px]" />
@@ -99,8 +99,8 @@ export default function CategoriesPage() {
                     <button
                         onClick={() => setActiveTab('my-lists')}
                         className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === 'my-lists'
-                                ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
-                                : 'text-[#8b9bb4] hover:text-white'
+                            ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
+                            : 'text-[#8b9bb4] hover:text-white'
                             }`}
                     >
                         Listelerim
@@ -108,8 +108,8 @@ export default function CategoriesPage() {
                     <button
                         onClick={() => setActiveTab('categories')}
                         className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === 'categories'
-                                ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
-                                : 'text-[#8b9bb4] hover:text-white'
+                            ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
+                            : 'text-[#8b9bb4] hover:text-white'
                             }`}
                     >
                         Hazır Kategoriler

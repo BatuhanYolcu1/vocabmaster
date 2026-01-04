@@ -69,7 +69,7 @@ export default function DashboardHome() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative overflow-x-hidden">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative overflow-x-hidden">
             {/* Ambient Background Lighting */}
             <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px] pointer-events-none z-0 animate-pulse" style={{ animationDuration: '8s' }} />
             <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px] pointer-events-none z-0" />

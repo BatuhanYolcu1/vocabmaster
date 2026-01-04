@@ -170,7 +170,7 @@ export default function MatchingGamePage() {
     const xpEarned = matchedPairs * 25;
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-pink-500/20 blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
@@ -270,19 +270,19 @@ export default function MatchingGamePage() {
                             onClick={() => handleCardClick(card)}
                             disabled={card.isMatched || isGameComplete}
                             className={`group relative aspect-[3/4] rounded-2xl p-3 text-center font-medium transition-all duration-300 overflow-hidden ${card.isMatched
-                                    ? 'scale-95 opacity-60'
-                                    : card.isSelected
-                                        ? 'scale-105'
-                                        : 'hover:scale-102 hover:-translate-y-1'
+                                ? 'scale-95 opacity-60'
+                                : card.isSelected
+                                    ? 'scale-105'
+                                    : 'hover:scale-102 hover:-translate-y-1'
                                 }`}
                             style={{ animationDelay: `${index * 50}ms` }}
                         >
                             {/* Card Background */}
                             <div className={`absolute inset-0 transition-all duration-300 ${card.isMatched
-                                    ? 'bg-gradient-to-br from-green-500/30 to-emerald-600/30 border-2 border-green-400/50'
-                                    : card.isSelected
-                                        ? 'bg-gradient-to-br from-pink-500/40 to-purple-600/40 border-2 border-pink-400/80 shadow-[0_0_30px_rgba(236,72,153,0.5)]'
-                                        : 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-white/10 group-hover:border-pink-400/50 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]'
+                                ? 'bg-gradient-to-br from-green-500/30 to-emerald-600/30 border-2 border-green-400/50'
+                                : card.isSelected
+                                    ? 'bg-gradient-to-br from-pink-500/40 to-purple-600/40 border-2 border-pink-400/80 shadow-[0_0_30px_rgba(236,72,153,0.5)]'
+                                    : 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-white/10 group-hover:border-pink-400/50 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]'
                                 }`} />
 
                             {/* Shimmer effect on hover */}
@@ -298,12 +298,12 @@ export default function MatchingGamePage() {
                             {/* Card Content */}
                             <div className="relative z-10 h-full flex items-center justify-center">
                                 <span className={`text-sm sm:text-base transition-all ${card.isMatched
-                                        ? 'text-green-300'
-                                        : card.isSelected
-                                            ? 'text-white font-bold'
-                                            : card.type === 'word'
-                                                ? 'text-white font-semibold'
-                                                : 'text-pink-200'
+                                    ? 'text-green-300'
+                                    : card.isSelected
+                                        ? 'text-white font-bold'
+                                        : card.type === 'word'
+                                            ? 'text-white font-semibold'
+                                            : 'text-pink-200'
                                     }`}>
                                     {card.text}
                                 </span>

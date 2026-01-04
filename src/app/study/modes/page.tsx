@@ -77,7 +77,7 @@ export default function StudyModesPage() {
     const { data: session } = useSession();
 
     return (
-        <div className="min-h-screen bg-[#101622] text-white font-['Lexend'] relative overflow-x-hidden">
+        <div className="min-h-screen bg-[#101622] text-white relative overflow-x-hidden">
             {/* Ambient Background Blobs */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div

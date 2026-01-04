@@ -122,7 +122,7 @@ export default function NewWordListPage() {
 
     if (!session) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
                 <div className="glass-panel rounded-3xl p-8 text-center">
                     <p className="text-[#92a4c9] mb-4">Liste oluşturmak için giriş yapmalısınız</p>
                     <Link href="/login" className="text-[#135bec] hover:text-blue-400 transition-colors">
@@ -134,7 +134,7 @@ export default function NewWordListPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px]" />

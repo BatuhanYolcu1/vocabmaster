@@ -67,7 +67,7 @@ export default function FlashcardPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin mx-auto mb-4" />
                     <p className="text-[#92a4c9]">Çalışma oturumu yükleniyor...</p>
@@ -78,7 +78,7 @@ export default function FlashcardPage() {
 
     if (cards.length === 0) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center px-4">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
                 <div className="glass-panel rounded-3xl p-8 max-w-md text-center">
                     <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
                         <span className="material-symbols-outlined text-4xl text-slate-400">inbox</span>
@@ -110,7 +110,7 @@ export default function FlashcardPage() {
     if (!currentCard) return null;
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-600/20 blur-[120px]" />

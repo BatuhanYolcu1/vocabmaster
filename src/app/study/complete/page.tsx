@@ -47,7 +47,7 @@ export default function StudyCompletePage() {
 
     if (!stats) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
                 <div className="glass-panel rounded-3xl p-8 text-center">
                     <p className="text-[#92a4c9] mb-4">Oturum verisi bulunamadı.</p>
                     <Link
@@ -65,7 +65,7 @@ export default function StudyCompletePage() {
     const totalXpEarned = (stats.goodCount * 5) + (stats.easyCount * 10);
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/20 blur-[120px]" />

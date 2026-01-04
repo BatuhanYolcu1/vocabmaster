@@ -67,7 +67,7 @@ export default function WordListDetailPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] flex items-center justify-center">
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
                 <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
             </div>
         );
@@ -76,7 +76,7 @@ export default function WordListDetailPage() {
     if (!wordList) return null;
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px]" />

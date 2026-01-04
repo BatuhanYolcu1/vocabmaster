@@ -38,7 +38,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white font-['Lexend'] relative flex items-center justify-center px-4">
+        <div className="min-h-screen bg-[#0b0f17] text-white relative flex items-center justify-center px-4">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />

@@ -40,7 +40,7 @@ export default function LeaderboardPage() {
     const currentUserData = users.find(u => u.id === (session?.user as { id?: string })?.id);
 
     return (
-        <div className="min-h-screen bg-mesh text-white font-['Lexend'] relative overflow-x-hidden">
+        <div className="min-h-screen bg-mesh text-white relative overflow-x-hidden">
             {/* Navbar */}
             <header className="sticky top-0 z-50 w-full glass-panel border-b-0">
                 <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">

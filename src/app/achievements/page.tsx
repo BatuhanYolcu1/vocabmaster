@@ -41,7 +41,7 @@ export default function AchievementsPage() {
     const progressPercent = Math.round((unlockedCount / achievements.length) * 100);
 
     return (
-        <div className="min-h-screen bg-[#101622] text-white font-['Lexend'] relative overflow-x-hidden">
+        <div className="min-h-screen bg-[#101622] text-white relative overflow-x-hidden">
             {/* Ambient Background Effects */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#135bec]/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
@@ -116,8 +116,8 @@ export default function AchievementsPage() {
                     <button
                         onClick={() => setFilter('all')}
                         className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 transition-transform active:scale-95 ${filter === 'all'
-                                ? 'bg-[#135bec] text-white shadow-lg shadow-[#135bec]/25'
-                                : 'bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white'
+                            ? 'bg-[#135bec] text-white shadow-lg shadow-[#135bec]/25'
+                            : 'bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white'
                             }`}
                     >
                         <span className="text-sm font-medium">Tümü</span>
@@ -125,8 +125,8 @@ export default function AchievementsPage() {
                     <button
                         onClick={() => setFilter('unlocked')}
                         className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 transition-all active:scale-95 ${filter === 'unlocked'
-                                ? 'bg-[#135bec] text-white shadow-lg shadow-[#135bec]/25'
-                                : 'bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white'
+                            ? 'bg-[#135bec] text-white shadow-lg shadow-[#135bec]/25'
+                            : 'bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white'
                             }`}
                     >
                         <span className="text-sm font-medium">Kazanılan</span>
@@ -134,8 +134,8 @@ export default function AchievementsPage() {
                     <button
                         onClick={() => setFilter('locked')}
                         className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 transition-all active:scale-95 ${filter === 'locked'
-                                ? 'bg-[#135bec] text-white shadow-lg shadow-[#135bec]/25'
-                                : 'bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white'
+                            ? 'bg-[#135bec] text-white shadow-lg shadow-[#135bec]/25'
+                            : 'bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white'
                             }`}
                     >
                         <span className="text-sm font-medium">Kilitli</span>

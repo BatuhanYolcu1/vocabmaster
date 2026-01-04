@@ -32,6 +32,7 @@ model User {
   achievements  UserAchievement[]
   wordLists     WordList[]
   dailyActivities DailyActivity[]
+  notifications Notification[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -185,4 +186,18 @@ model DailyActivity {
   updatedAt   DateTime @updatedAt
   
   @@unique([userId, date])
+}
+
+// Notifications for user alerts
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // streak_reminder, achievement_unlocked, level_up, review_due
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
 }

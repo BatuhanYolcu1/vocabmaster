@@ -2,14 +2,45 @@
 
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+
+interface SearchResult {
+    wordId: string;
+    word: string;
+    translation: string;
+    type: string;
+    level: string;
+    listId: string;
+    listName: string;
+}
+
+interface Notification {
+    id: string;
+    type: string;
+    title: string;
+    message: string;
+    read: boolean;
+    createdAt: string;
+}
 
 export default function Navbar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
+    const router = useRouter();
     const [xp, setXp] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    // Search state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [showSearchResults, setShowSearchResults] = useState(false);
+
+    // Notifications state
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
         if (session?.user?.xp !== undefined) {
@@ -36,6 +67,97 @@ export default function Navbar() {
         window.addEventListener('xp-updated', handleXpUpdate);
         return () => window.removeEventListener('xp-updated', handleXpUpdate);
     }, [session, pathname]);
+
+    // Debounced search
+    const searchWords = useCallback(async (query: string) => {
+        if (query.length < 2) {
+            setSearchResults([]);
+            return;
+        }
+        setIsSearching(true);
+        try {
+            const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+            if (res.ok) {
+                const data = await res.json();
+                setSearchResults(data.results);
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+        } finally {
+            setIsSearching(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchQuery.trim()) {
+                searchWords(searchQuery);
+                setShowSearchResults(true);
+            } else {
+                setSearchResults([]);
+                setShowSearchResults(false);
+            }
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery, searchWords]);
+
+    // Fetch notifications
+    const fetchNotifications = useCallback(async () => {
+        if (!session) return;
+        try {
+            const res = await fetch('/api/notifications');
+            if (res.ok) {
+                const data = await res.json();
+                setNotifications(data.notifications);
+                setUnreadCount(data.unreadCount);
+            }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    }, [session]);
+
+    useEffect(() => {
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 30000);
+        return () => clearInterval(interval);
+    }, [fetchNotifications]);
+
+    // Mark notification as read
+    const markAsRead = async (notificationId: string) => {
+        try {
+            await fetch('/api/notifications', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ notificationId })
+            });
+            setNotifications(prev =>
+                prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+            );
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    };
+
+    const markAllAsRead = async () => {
+        try {
+            await fetch('/api/notifications', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ markAllRead: true })
+            });
+            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            setUnreadCount(0);
+        } catch (error) {
+            console.error('Error marking all as read:', error);
+        }
+    };
+
+    const handleSearchResultClick = (result: SearchResult) => {
+        setShowSearchResults(false);
+        setSearchQuery('');
+        router.push(`/lists/${result.listId}`);
+    };
 
     // Landing Page Navbar (Unauthenticated) - Light theme to match landing page
     if (!session && status !== 'loading') {
@@ -128,13 +250,47 @@ export default function Navbar() {
 
                     <div className="flex items-center gap-4">
                         {/* Search Bar */}
-                        <label className="hidden md:flex items-center min-w-40 h-10 max-w-64 bg-[#1a2332]/80 rounded-full border border-white/5 px-4 group focus-within:border-[#135bec]/50 transition-colors">
-                            <span className="material-symbols-outlined text-[#8b9bb4] group-focus-within:text-[#135bec] transition-colors text-[20px]">search</span>
-                            <input
-                                className="w-full bg-transparent border-none focus:ring-0 text-sm text-white placeholder:text-[#8b9bb4] ml-2 outline-none"
-                                placeholder="Kelime ara..."
-                            />
-                        </label>
+                        <div className="relative hidden md:block">
+                            <label className="flex items-center min-w-40 h-10 max-w-64 bg-[#1a2332]/80 rounded-full border border-white/5 px-4 group focus-within:border-[#135bec]/50 transition-colors">
+                                <span className="material-symbols-outlined text-[#8b9bb4] group-focus-within:text-[#135bec] transition-colors text-[20px]">
+                                    {isSearching ? 'sync' : 'search'}
+                                </span>
+                                <input
+                                    className="w-full bg-transparent border-none focus:ring-0 text-sm text-white placeholder:text-[#8b9bb4] ml-2 outline-none"
+                                    placeholder="Kelime ara..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onFocus={() => searchQuery.length >= 2 && setShowSearchResults(true)}
+                                    onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
+                                />
+                            </label>
+
+                            {/* Search Results Dropdown */}
+                            {showSearchResults && searchResults.length > 0 && (
+                                <div className="absolute top-12 left-0 right-0 bg-[#1a2332]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                                    {searchResults.map((result) => (
+                                        <button
+                                            key={`${result.wordId}-${result.listId}`}
+                                            onClick={() => handleSearchResultClick(result)}
+                                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-left border-b border-white/5 last:border-0"
+                                        >
+                                            <span className="material-symbols-outlined text-[#135bec] text-lg">translate</span>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="text-white font-medium truncate">{result.word}</div>
+                                                <div className="text-[#8b9bb4] text-xs truncate">{result.translation}</div>
+                                            </div>
+                                            <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-full">{result.listName}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {showSearchResults && searchQuery.length >= 2 && searchResults.length === 0 && !isSearching && (
+                                <div className="absolute top-12 left-0 right-0 bg-[#1a2332]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 z-50">
+                                    <p className="text-[#8b9bb4] text-sm text-center">Sonuç bulunamadı</p>
+                                </div>
+                            )}
+                        </div>
 
                         {/* XP Badge */}
                         <div className="hidden sm:flex items-center gap-1.5 bg-orange-500/10 px-3 py-1.5 rounded-full border border-orange-500/20">
@@ -143,10 +299,75 @@ export default function Navbar() {
                         </div>
 
                         {/* Notifications */}
-                        <button className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors relative">
-                            <span className="material-symbols-outlined text-white text-[20px]">notifications</span>
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[#0d1321]"></span>
-                        </button>
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowNotifications(!showNotifications)}
+                                className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors relative"
+                            >
+                                <span className="material-symbols-outlined text-white text-[20px]">notifications</span>
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 min-w-5 h-5 flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full px-1">
+                                        {unreadCount > 9 ? '9+' : unreadCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* Notifications Dropdown */}
+                            {showNotifications && (
+                                <div className="absolute top-12 right-0 w-80 bg-[#1a2332]/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                                    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+                                        <span className="text-white font-medium">Bildirimler</span>
+                                        {unreadCount > 0 && (
+                                            <button
+                                                onClick={markAllAsRead}
+                                                className="text-xs text-[#135bec] hover:text-blue-400 transition-colors"
+                                            >
+                                                Tümünü okundu işaretle
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="max-h-80 overflow-y-auto">
+                                        {notifications.length === 0 ? (
+                                            <div className="p-8 text-center">
+                                                <span className="material-symbols-outlined text-[#8b9bb4] text-4xl mb-2">notifications_off</span>
+                                                <p className="text-[#8b9bb4] text-sm">Bildirim yok</p>
+                                            </div>
+                                        ) : (
+                                            notifications.map((notification) => (
+                                                <button
+                                                    key={notification.id}
+                                                    onClick={() => markAsRead(notification.id)}
+                                                    className={`w-full px-4 py-3 flex items-start gap-3 hover:bg-white/5 transition-colors text-left border-b border-white/5 last:border-0 ${!notification.read ? 'bg-[#135bec]/10' : ''
+                                                        }`}
+                                                >
+                                                    <span className={`material-symbols-outlined text-lg mt-0.5 ${notification.type === 'achievement_unlocked' ? 'text-yellow-400' :
+                                                        notification.type === 'level_up' ? 'text-green-400' :
+                                                            notification.type === 'streak_reminder' ? 'text-orange-400' :
+                                                                'text-blue-400'
+                                                        }`}>
+                                                        {notification.type === 'achievement_unlocked' ? 'emoji_events' :
+                                                            notification.type === 'level_up' ? 'trending_up' :
+                                                                notification.type === 'streak_reminder' ? 'local_fire_department' :
+                                                                    'schedule'}
+                                                    </span>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="text-white text-sm font-medium">{notification.title}</div>
+                                                        <div className="text-[#8b9bb4] text-xs mt-0.5 line-clamp-2">{notification.message}</div>
+                                                        <div className="text-[#8b9bb4]/60 text-xs mt-1">
+                                                            {new Date(notification.createdAt).toLocaleDateString('tr-TR')}
+                                                        </div>
+                                                    </div>
+                                                    {!notification.read && (
+                                                        <span className="w-2 h-2 bg-[#135bec] rounded-full mt-1.5"></span>
+                                                    )}
+                                                </button>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         <div className="h-8 w-[1px] bg-white/10 hidden md:block"></div>
 

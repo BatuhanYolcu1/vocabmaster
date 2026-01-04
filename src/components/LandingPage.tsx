@@ -5,7 +5,7 @@ import { ArrowRight, Brain, Zap, Trophy, Globe } from 'lucide-react';
 
 export default function LandingPage() {
     return (
-        <div className="bg-gradient-to-b from-slate-50 to-white min-h-screen">
+        <div className="bg-gradient-to-b from-slate-50 to-white min-h-screen -mt-24 pt-24">
             {/* Hero Section */}
             <div className="relative overflow-hidden">
                 <div className="mx-auto max-w-7xl">

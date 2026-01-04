@@ -272,27 +272,54 @@ export default function ProfilePage() {
                                 />
                             </div>
 
-                            {/* Profile Image URL */}
+                            {/* Avatar Selection */}
                             <div>
-                                <label className="block text-sm font-medium text-[#92a4c9] mb-2">Profil Resmi URL (isteğe bağlı)</label>
-                                <input
-                                    type="url"
-                                    value={editImage}
-                                    onChange={(e) => setEditImage(e.target.value)}
-                                    placeholder="https://example.com/avatar.jpg"
-                                    className="w-full px-4 py-3 rounded-xl bg-[#1e293b]/50 border border-white/10 text-white placeholder:text-[#8b9bb4] focus:border-[#135bec] focus:outline-none transition-colors"
-                                />
-                                <p className="mt-2 text-xs text-[#8b9bb4]">Gravatar, GitHub veya başka bir resim URL&apos;si kullanabilirsiniz</p>
+                                <label className="block text-sm font-medium text-[#92a4c9] mb-3">Avatar Seç</label>
+                                <div className="grid grid-cols-5 gap-3">
+                                    {[
+                                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
+                                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=c0aede',
+                                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=d1d4f9',
+                                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Max&backgroundColor=ffd5dc',
+                                        'https://api.dicebear.com/7.x/avataaars/svg?seed=Oscar&backgroundColor=b6e3f4',
+                                        'https://api.dicebear.com/7.x/bottts/svg?seed=Pixel&backgroundColor=c0aede',
+                                        'https://api.dicebear.com/7.x/bottts/svg?seed=Robot&backgroundColor=b6e3f4',
+                                        'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Happy&backgroundColor=ffd5dc',
+                                        'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Cool&backgroundColor=d1d4f9',
+                                        'https://api.dicebear.com/7.x/lorelei/svg?seed=Star&backgroundColor=c0aede',
+                                    ].map((avatarUrl, index) => (
+                                        <button
+                                            key={index}
+                                            type="button"
+                                            onClick={() => setEditImage(avatarUrl)}
+                                            className={`relative w-full aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${editImage === avatarUrl
+                                                    ? 'border-[#135bec] ring-2 ring-[#135bec]/50 shadow-[0_0_15px_rgba(19,91,236,0.4)]'
+                                                    : 'border-white/10 hover:border-white/30'
+                                                }`}
+                                        >
+                                            <img
+                                                src={avatarUrl}
+                                                alt={`Avatar ${index + 1}`}
+                                                className="w-full h-full object-cover"
+                                            />
+                                            {editImage === avatarUrl && (
+                                                <div className="absolute inset-0 bg-[#135bec]/20 flex items-center justify-center">
+                                                    <span className="material-symbols-outlined text-white text-2xl">check_circle</span>
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                                <p className="mt-3 text-xs text-[#8b9bb4] text-center">Beğendiğin avatara tıkla</p>
                             </div>
 
-                            {/* Preview */}
+                            {/* Selected Preview */}
                             {editImage && (
-                                <div className="flex items-center gap-4">
-                                    <span className="text-sm text-[#92a4c9]">Önizleme:</span>
-                                    <div
-                                        className="w-16 h-16 rounded-full bg-cover bg-center border-2 border-[#135bec]/50"
-                                        style={{ backgroundImage: `url("${editImage}")` }}
-                                    />
+                                <div className="flex items-center justify-center gap-4 p-4 bg-white/5 rounded-xl">
+                                    <span className="text-sm text-[#92a4c9]">Seçilen:</span>
+                                    <div className="w-16 h-16 rounded-full bg-cover bg-center border-2 border-[#135bec]/50 overflow-hidden">
+                                        <img src={editImage} alt="Selected avatar" className="w-full h-full object-cover" />
+                                    </div>
                                 </div>
                             )}
                         </div>

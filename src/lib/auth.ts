@@ -63,14 +63,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (token.id && session.user) {
                 session.user.id = token.id as string;
 
-                // Fetch user data
+                // Fetch user data including name and image for profile updates
                 try {
                     const dbUser = await prisma.user.findUnique({
                         where: { id: token.id as string },
-                        select: { xp: true, level: true, streak: true },
+                        select: { name: true, image: true, xp: true, level: true, streak: true },
                     });
 
                     if (dbUser) {
+                        // Update name and image from database (for profile edits)
+                        if (dbUser.name) session.user.name = dbUser.name;
+                        if (dbUser.image) session.user.image = dbUser.image;
                         session.user.xp = dbUser.xp;
                         session.user.level = dbUser.level;
                         session.user.streak = dbUser.streak;

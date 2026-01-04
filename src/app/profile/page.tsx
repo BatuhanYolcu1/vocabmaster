@@ -287,14 +287,24 @@ export default function ProfilePage() {
                                         'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Happy&backgroundColor=ffd5dc',
                                         'https://api.dicebear.com/7.x/fun-emoji/svg?seed=Cool&backgroundColor=d1d4f9',
                                         'https://api.dicebear.com/7.x/lorelei/svg?seed=Star&backgroundColor=c0aede',
+                                        'https://api.dicebear.com/7.x/adventurer/svg?seed=Zoe&backgroundColor=b6e3f4',
+                                        'https://api.dicebear.com/7.x/adventurer/svg?seed=Jack&backgroundColor=ffd5dc',
+                                        'https://api.dicebear.com/7.x/adventurer/svg?seed=Mia&backgroundColor=c0aede',
+                                        'https://api.dicebear.com/7.x/micah/svg?seed=Alex&backgroundColor=d1d4f9',
+                                        'https://api.dicebear.com/7.x/micah/svg?seed=Sam&backgroundColor=b6e3f4',
+                                        'https://api.dicebear.com/7.x/notionists/svg?seed=Chris&backgroundColor=ffd5dc',
+                                        'https://api.dicebear.com/7.x/notionists/svg?seed=Taylor&backgroundColor=c0aede',
+                                        'https://api.dicebear.com/7.x/thumbs/svg?seed=Thumbs1&backgroundColor=d1d4f9',
+                                        'https://api.dicebear.com/7.x/thumbs/svg?seed=Thumbs2&backgroundColor=b6e3f4',
+                                        'https://api.dicebear.com/7.x/big-smile/svg?seed=Smile1&backgroundColor=ffd5dc',
                                     ].map((avatarUrl, index) => (
                                         <button
                                             key={index}
                                             type="button"
                                             onClick={() => setEditImage(avatarUrl)}
                                             className={`relative w-full aspect-square rounded-xl overflow-hidden border-2 transition-all hover:scale-105 ${editImage === avatarUrl
-                                                    ? 'border-[#135bec] ring-2 ring-[#135bec]/50 shadow-[0_0_15px_rgba(19,91,236,0.4)]'
-                                                    : 'border-white/10 hover:border-white/30'
+                                                ? 'border-[#135bec] ring-2 ring-[#135bec]/50 shadow-[0_0_15px_rgba(19,91,236,0.4)]'
+                                                : 'border-white/10 hover:border-white/30'
                                                 }`}
                                         >
                                             <img

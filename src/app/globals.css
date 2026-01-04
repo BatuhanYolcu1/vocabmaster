@@ -5,13 +5,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Light Theme */
-  --background: #f6f6f8;
-  --foreground: #0f172a;
+  /* Dark Theme - Stitch Design (Default) */
+  --background: #0b0f17;
+  --foreground: #f1f5f9;
   --primary: #135bec;
   --primary-glow: #3b82f6;
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-surface: rgba(30, 41, 59, 0.4);
+  --card-bg: rgba(35, 47, 72, 0.4);
 }
 
 .dark {

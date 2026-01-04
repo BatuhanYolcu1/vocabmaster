@@ -14,7 +14,7 @@ interface UserStats {
 }
 
 export default function ProfilePage() {
-    const { data: session } = useSession();
+    const { data: session, update: updateSession } = useSession();
     const [stats, setStats] = useState<UserStats>({
         wordsLearned: 0,
         totalXP: 0,
@@ -23,6 +23,11 @@ export default function ProfilePage() {
         quizzesTaken: 0,
         accuracy: 0
     });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editName, setEditName] = useState('');
+    const [editImage, setEditImage] = useState('');
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         async function fetchStats() {
@@ -32,9 +37,9 @@ export default function ProfilePage() {
                     const data = await res.json();
                     setStats({
                         wordsLearned: data.wordsLearned || 0,
-                        totalXP: data.totalXP || session?.user?.xp || 0,
+                        totalXP: data.totalXp || session?.user?.xp || 0,
                         streak: data.streak || 0,
-                        level: Math.floor((data.totalXP || 0) / 1000) + 1,
+                        level: Math.floor((data.totalXp || 0) / 1000) + 1,
                         quizzesTaken: data.quizzesTaken || 0,
                         accuracy: data.accuracy || 0
                     });
@@ -45,6 +50,49 @@ export default function ProfilePage() {
         }
         if (session) fetchStats();
     }, [session]);
+
+    const openEditModal = () => {
+        setEditName(session?.user?.name || '');
+        setEditImage(session?.user?.image || '');
+        setError('');
+        setIsEditing(true);
+    };
+
+    const handleSave = async () => {
+        if (!editName.trim() || editName.trim().length < 2) {
+            setError('İsim en az 2 karakter olmalı');
+            return;
+        }
+
+        setSaving(true);
+        setError('');
+
+        try {
+            const res = await fetch('/api/profile', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: editName.trim(),
+                    image: editImage.trim() || null
+                })
+            });
+
+            if (res.ok) {
+                // Update session to reflect changes
+                await updateSession();
+                setIsEditing(false);
+                // Reload to see changes
+                window.location.reload();
+            } else {
+                const data = await res.json();
+                setError(data.error || 'Bir hata oluştu');
+            }
+        } catch {
+            setError('Bağlantı hatası');
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#0b0f17] text-white relative">
@@ -90,7 +138,10 @@ export default function ProfilePage() {
 
                         {/* Actions */}
                         <div className="flex flex-col gap-2">
-                            <button className="px-6 py-2.5 rounded-xl glass-button text-white font-medium flex items-center gap-2">
+                            <button
+                                onClick={openEditModal}
+                                className="px-6 py-2.5 rounded-xl glass-button text-white font-medium flex items-center gap-2 hover:bg-white/10 transition-all"
+                            >
                                 <span className="material-symbols-outlined text-lg">edit</span>
                                 Düzenle
                             </button>
@@ -184,6 +235,97 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
+
+            {/* Edit Modal */}
+            {isEditing && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="glass-panel rounded-3xl p-8 max-w-md w-full relative animate-in fade-in zoom-in duration-200">
+                        <button
+                            onClick={() => setIsEditing(false)}
+                            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#92a4c9] hover:text-white hover:bg-white/10 transition-all"
+                        >
+                            <span className="material-symbols-outlined">close</span>
+                        </button>
+
+                        <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[#135bec]">edit</span>
+                            Profili Düzenle
+                        </h2>
+
+                        {error && (
+                            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        <div className="space-y-6">
+                            {/* Name */}
+                            <div>
+                                <label className="block text-sm font-medium text-[#92a4c9] mb-2">İsim</label>
+                                <input
+                                    type="text"
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    placeholder="Adınız"
+                                    className="w-full px-4 py-3 rounded-xl bg-[#1e293b]/50 border border-white/10 text-white placeholder:text-[#8b9bb4] focus:border-[#135bec] focus:outline-none transition-colors"
+                                    maxLength={50}
+                                />
+                            </div>
+
+                            {/* Profile Image URL */}
+                            <div>
+                                <label className="block text-sm font-medium text-[#92a4c9] mb-2">Profil Resmi URL (isteğe bağlı)</label>
+                                <input
+                                    type="url"
+                                    value={editImage}
+                                    onChange={(e) => setEditImage(e.target.value)}
+                                    placeholder="https://example.com/avatar.jpg"
+                                    className="w-full px-4 py-3 rounded-xl bg-[#1e293b]/50 border border-white/10 text-white placeholder:text-[#8b9bb4] focus:border-[#135bec] focus:outline-none transition-colors"
+                                />
+                                <p className="mt-2 text-xs text-[#8b9bb4]">Gravatar, GitHub veya başka bir resim URL&apos;si kullanabilirsiniz</p>
+                            </div>
+
+                            {/* Preview */}
+                            {editImage && (
+                                <div className="flex items-center gap-4">
+                                    <span className="text-sm text-[#92a4c9]">Önizleme:</span>
+                                    <div
+                                        className="w-16 h-16 rounded-full bg-cover bg-center border-2 border-[#135bec]/50"
+                                        style={{ backgroundImage: `url("${editImage}")` }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-3 mt-8">
+                            <button
+                                onClick={() => setIsEditing(false)}
+                                className="flex-1 px-6 py-3 rounded-xl glass-button text-white font-medium"
+                            >
+                                İptal
+                            </button>
+                            <button
+                                onClick={handleSave}
+                                disabled={saving}
+                                className="flex-1 px-6 py-3 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                                {saving ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                                        Kaydediliyor...
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="material-symbols-outlined text-lg">save</span>
+                                        Kaydet
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

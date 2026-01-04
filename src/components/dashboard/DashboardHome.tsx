@@ -185,20 +185,37 @@ export default function DashboardHome() {
                         <div className="flex-1 w-full relative">
                             {/* Chart Bars */}
                             <div className="absolute inset-0 flex items-end justify-between px-2 pb-6 gap-2">
-                                {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((day, index) => {
-                                    const heights = [40, 65, 30, 85, 50, 20, 45];
-                                    return (
-                                        <div key={day} className="flex flex-col items-center justify-end h-full gap-2 group w-full">
-                                            <div
-                                                className="w-full max-w-[40px] bg-[#135bec]/20 rounded-t-lg relative group-hover:bg-[#135bec]/40 transition-all duration-500"
-                                                style={{ height: `${heights[index]}%` }}
-                                            >
-                                                <div className="absolute bottom-0 w-full bg-[#135bec] h-1 rounded-full shadow-[0_0_10px_rgba(19,91,236,0.8)]" />
+                                {stats.weeklyProgress.length > 0 ? (
+                                    stats.weeklyProgress.map((day, index) => {
+                                        // Calculate height based on XP, max 100%
+                                        const maxXp = Math.max(...stats.weeklyProgress.map(d => d.xp), 1);
+                                        const heightPercent = (day.xp / maxXp) * 100;
+                                        return (
+                                            <div key={index} className="flex flex-col items-center justify-end h-full gap-2 group w-full">
+                                                <div className="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-[#232f48] px-2 py-1 rounded text-xs text-white whitespace-nowrap z-10">
+                                                    {day.xp} XP
+                                                </div>
+                                                <div
+                                                    className="w-full max-w-[40px] bg-[#135bec]/20 rounded-t-lg relative group-hover:bg-[#135bec]/40 transition-all duration-500"
+                                                    style={{ height: `${Math.max(heightPercent, 5)}%` }}
+                                                >
+                                                    <div className="absolute bottom-0 w-full bg-[#135bec] h-1 rounded-full shadow-[0_0_10px_rgba(19,91,236,0.8)]" />
+                                                </div>
+                                                <span className="text-xs text-[#92a4c9] font-medium">{day.name}</span>
                                             </div>
+                                        );
+                                    })
+                                ) : (
+                                    ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((day) => (
+                                        <div key={day} className="flex flex-col items-center justify-end h-full gap-2 w-full">
+                                            <div
+                                                className="w-full max-w-[40px] bg-white/5 rounded-t-lg"
+                                                style={{ height: '5%' }}
+                                            />
                                             <span className="text-xs text-[#92a4c9] font-medium">{day}</span>
                                         </div>
-                                    );
-                                })}
+                                    ))
+                                )}
                             </div>
                             {/* Grid Lines */}
                             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">

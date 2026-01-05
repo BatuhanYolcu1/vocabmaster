@@ -82,6 +82,10 @@ export async function GET() {
             streak: user?.streak || 0,
             weeklyProgress,
             totalXp: user?.xp || 0,
+        }, {
+            headers: {
+                'Cache-Control': 'private, max-age=60, stale-while-revalidate=30',
+            }
         });
     } catch (error) {
         console.error('Error fetching stats:', error);

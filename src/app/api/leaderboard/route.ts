@@ -66,7 +66,11 @@ export async function GET(request: NextRequest) {
                 };
             });
 
-            return NextResponse.json(rankedUsers);
+            return NextResponse.json(rankedUsers, {
+                headers: {
+                    'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
+                }
+            });
         }
 
         // All-time leaderboard
@@ -92,7 +96,11 @@ export async function GET(request: NextRequest) {
             isCurrentUser: session?.user?.id === user.id
         }));
 
-        return NextResponse.json(rankedUsers);
+        return NextResponse.json(rankedUsers, {
+            headers: {
+                'Cache-Control': 'public, max-age=300, stale-while-revalidate=60',
+            }
+        });
     } catch (error) {
         console.error('Error fetching leaderboard:', error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });

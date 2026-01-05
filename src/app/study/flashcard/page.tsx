@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Flashcard from '@/components/Flashcard';
 import RatingButtons from '@/components/RatingButtons';
 import { useStudyStore } from '@/lib/store';
 import Link from 'next/link';
 
-export default function FlashcardPage() {
+function FlashcardContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const listId = searchParams.get('listId');
@@ -186,5 +186,20 @@ export default function FlashcardPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function FlashcardPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-[#92a4c9]">Yükleniyor...</p>
+                </div>
+            </div>
+        }>
+            <FlashcardContent />
+        </Suspense>
     );
 }

@@ -46,40 +46,7 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { name, description, words, copyFromTemplate } = body;
-
-        // Copy from template
-        if (copyFromTemplate) {
-            const template = await prisma.wordList.findFirst({
-                where: { id: copyFromTemplate, isSystem: true },
-                include: {
-                    items: {
-                        include: { word: true }
-                    }
-                }
-            });
-
-            if (!template) {
-                return NextResponse.json({ error: 'Template not found' }, { status: 404 });
-            }
-
-            // Create user's copy of the list
-            const userList = await prisma.wordList.create({
-                data: {
-                    name: template.name,
-                    description: template.description,
-                    userId: session.user.id,
-                    isSystem: false,
-                    items: {
-                        create: template.items.map(item => ({
-                            wordId: item.wordId
-                        }))
-                    }
-                }
-            });
-
-            return NextResponse.json({ id: userList.id, name: userList.name });
-        }
+        const { name, description, words } = body;
 
         if (!name || !words || words.length === 0) {
             return NextResponse.json({ error: 'Name and at least one word required' }, { status: 400 });

@@ -96,17 +96,14 @@ model WordList {
   id          String         @id @default(cuid())
   name        String
   description String?
-  userId      String?
-  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   items       WordListItem[]
-  
-  // System template fields
-  isSystem    Boolean        @default(false)
-  category    String?        // YDS, Günlük, Seyahat, etc.
   
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 }
+
 
 // Words in a word list
 model WordListItem {

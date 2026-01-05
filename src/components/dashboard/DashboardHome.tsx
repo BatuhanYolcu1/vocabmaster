@@ -247,40 +247,81 @@ export default function DashboardHome() {
                             <p className="text-xs text-[#92a4c9]">İstikrarını koruyorsun! Böyle devam et.</p>
                         </div>
 
-                        {/* Tip of the Day */}
+                        {/* Motivation Quote */}
                         <div className="glass-panel rounded-3xl p-6 relative bg-gradient-to-br from-[#232f48]/40 to-purple-900/20 border-purple-500/20">
                             <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl" />
                             <div className="flex items-center gap-3 mb-3">
-                                <span className="material-symbols-outlined text-purple-400">lightbulb</span>
-                                <h3 className="text-base font-bold text-white">Günün İpucu</h3>
+                                <span className="material-symbols-outlined text-purple-400">format_quote</span>
+                                <h3 className="text-base font-bold text-white">Günün Motivasyon Sözü</h3>
                             </div>
                             <p className="text-sm text-gray-300 leading-relaxed italic">
-                                &quot;Kelimeleri bağlam içinde öğrenmek (cümle kurarak), tek başına ezberlemeye göre hatırlama oranını %40 artırır.&quot;
+                                &quot;Her gün bir kelime öğrenmek, bir yılda 365 yeni kelime demek. Küçük adımlar büyük başarılar getirir.&quot;
                             </p>
                         </div>
 
-                        {/* Quick Actions */}
-                        <div className="glass-panel rounded-3xl p-4 flex justify-around items-center">
-                            <Link href="/study/multiple-choice" className="flex flex-col items-center gap-1 group">
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-[#135bec] group-hover:border-[#135bec] transition-all duration-300 shadow-lg">
-                                    <span className="material-symbols-outlined text-white text-[20px]">quiz</span>
-                                </div>
-                                <span className="text-[10px] text-[#92a4c9] uppercase tracking-wider font-bold">Test</span>
-                            </Link>
-                            <div className="w-[1px] h-8 bg-white/5" />
-                            <Link href="/study/flashcard" className="flex flex-col items-center gap-1 group">
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-purple-600 group-hover:border-purple-600 transition-all duration-300 shadow-lg">
-                                    <span className="material-symbols-outlined text-white text-[20px]">style</span>
-                                </div>
-                                <span className="text-[10px] text-[#92a4c9] uppercase tracking-wider font-bold">Kartlar</span>
-                            </Link>
-                            <div className="w-[1px] h-8 bg-white/5" />
-                            <Link href="/study/matching" className="flex flex-col items-center gap-1 group">
-                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-pink-600 group-hover:border-pink-600 transition-all duration-300 shadow-lg">
-                                    <span className="material-symbols-outlined text-white text-[20px]">gamepad</span>
-                                </div>
-                                <span className="text-[10px] text-[#92a4c9] uppercase tracking-wider font-bold">Oyun</span>
-                            </Link>
+                        {/* Quick Practice Access */}
+                        <div className="glass-panel rounded-3xl p-5">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="material-symbols-outlined text-[#135bec]">rocket_launch</span>
+                                <h3 className="text-base font-bold text-white">Hızlı Pratik</h3>
+                            </div>
+                            <div className="space-y-2">
+                                <Link
+                                    href="/study/multiple-choice"
+                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-[#135bec]/10 to-blue-600/5 border border-[#135bec]/20 hover:border-[#135bec]/50 hover:from-[#135bec]/20 hover:to-blue-600/10 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#135bec] to-blue-600 flex items-center justify-center shadow-lg shadow-[#135bec]/30">
+                                        <span className="material-symbols-outlined text-white text-lg">quiz</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <span className="text-white font-semibold text-sm">Çoktan Seçmeli</span>
+                                        <p className="text-[#92a4c9] text-xs">Hızlı test modu</p>
+                                    </div>
+                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-[#135bec] transition-colors">chevron_right</span>
+                                </Link>
+
+                                <Link
+                                    href="/study/flashcard"
+                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-purple-500/10 to-purple-600/5 border border-purple-500/20 hover:border-purple-500/50 hover:from-purple-500/20 hover:to-purple-600/10 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                                        <span className="material-symbols-outlined text-white text-lg">style</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <span className="text-white font-semibold text-sm">Bilgi Kartları</span>
+                                        <p className="text-[#92a4c9] text-xs">Klasik öğrenme</p>
+                                    </div>
+                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-purple-400 transition-colors">chevron_right</span>
+                                </Link>
+
+                                <Link
+                                    href="/study/matching"
+                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-pink-500/10 to-pink-600/5 border border-pink-500/20 hover:border-pink-500/50 hover:from-pink-500/20 hover:to-pink-600/10 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center shadow-lg shadow-pink-500/30">
+                                        <span className="material-symbols-outlined text-white text-lg">gamepad</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <span className="text-white font-semibold text-sm">Eşleştirme Oyunu</span>
+                                        <p className="text-[#92a4c9] text-xs">Eğlenceli pratik</p>
+                                    </div>
+                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-pink-400 transition-colors">chevron_right</span>
+                                </Link>
+
+                                <Link
+                                    href="/study/typing"
+                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-green-500/10 to-green-600/5 border border-green-500/20 hover:border-green-500/50 hover:from-green-500/20 hover:to-green-600/10 transition-all group"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shadow-lg shadow-green-500/30">
+                                        <span className="material-symbols-outlined text-white text-lg">keyboard</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <span className="text-white font-semibold text-sm">Yazarak Öğren</span>
+                                        <p className="text-[#92a4c9] text-xs">Hafızayı güçlendir</p>
+                                    </div>
+                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-green-400 transition-colors">chevron_right</span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

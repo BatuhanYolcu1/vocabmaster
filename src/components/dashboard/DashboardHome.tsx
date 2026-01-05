@@ -258,29 +258,57 @@ export default function DashboardHome() {
                                 &quot;Her gün bir kelime öğrenmek, bir yılda 365 yeni kelime demek. Küçük adımlar büyük başarılar getirir.&quot;
                             </p>
                         </div>
-
-                        {/* Practice CTA */}
-                        <Link
-                            href="/study/modes"
-                            className="glass-panel rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-[#135bec]/20 to-purple-600/10 border-[#135bec]/30 hover:border-[#135bec]/60 hover:from-[#135bec]/30 hover:to-purple-600/20 transition-all duration-300"
-                        >
-                            <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#135bec]/20 rounded-full blur-2xl group-hover:bg-[#135bec]/40 transition-all" />
-                            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-purple-600/20 rounded-full blur-xl" />
-                            <div className="relative z-10 flex items-center gap-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 flex items-center justify-center shadow-lg shadow-[#135bec]/40 group-hover:scale-110 transition-transform">
-                                    <span className="material-symbols-outlined text-white text-2xl">school</span>
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-bold text-white mb-1">Pratik Yap</h3>
-                                    <p className="text-sm text-[#92a4c9]">Tüm çalışma modlarını keşfet</p>
-                                </div>
-                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                                    <span className="material-symbols-outlined text-white group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                </div>
-                            </div>
-                        </Link>
                     </div>
                 </div>
+
+                {/* Practice CTA Banner - Full Width */}
+                <Link
+                    href="/study/modes"
+                    className="block glass-panel rounded-3xl p-8 relative overflow-hidden group bg-gradient-to-r from-[#135bec]/30 via-purple-600/20 to-pink-500/20 border-[#135bec]/40 hover:border-[#135bec]/80 hover:shadow-[0_0_60px_rgba(19,91,236,0.3)] transition-all duration-500"
+                >
+                    {/* Animated background elements */}
+                    <div className="absolute -right-20 -top-20 w-60 h-60 bg-[#135bec]/30 rounded-full blur-3xl group-hover:bg-[#135bec]/50 transition-all duration-700 animate-pulse" />
+                    <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-600/30 rounded-full blur-2xl group-hover:bg-purple-600/50 transition-all duration-700" />
+                    <div className="absolute right-1/3 top-1/2 w-32 h-32 bg-pink-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            {/* Animated Icon Stack */}
+                            <div className="relative">
+                                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#135bec] to-purple-600 flex items-center justify-center shadow-2xl shadow-[#135bec]/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <span className="material-symbols-outlined text-white text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>rocket_launch</span>
+                                </div>
+                                {/* Floating mini icons */}
+                                <div className="absolute -right-2 -top-2 w-8 h-8 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg animate-bounce" style={{ animationDuration: '2s' }}>
+                                    <span className="material-symbols-outlined text-white text-sm">quiz</span>
+                                </div>
+                                <div className="absolute -left-3 -bottom-1 w-7 h-7 rounded-lg bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center shadow-lg animate-bounce" style={{ animationDuration: '2.5s', animationDelay: '0.3s' }}>
+                                    <span className="material-symbols-outlined text-white text-xs">style</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-2xl md:text-3xl font-black text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-blue-200 transition-all">
+                                    🚀 Pratik Zamanı!
+                                </h3>
+                                <p className="text-base text-[#a8b5d1] max-w-md">
+                                    Test, kartlar, eşleştirme ve daha fazlası... Kelimelerini pekiştirmeye başla!
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <div className="hidden md:flex gap-2">
+                                <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-300 text-sm font-medium border border-blue-500/30">Quiz</span>
+                                <span className="px-3 py-1.5 rounded-full bg-purple-500/20 text-purple-300 text-sm font-medium border border-purple-500/30">Kartlar</span>
+                                <span className="px-3 py-1.5 rounded-full bg-pink-500/20 text-pink-300 text-sm font-medium border border-pink-500/30">Oyun</span>
+                            </div>
+                            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300 border border-white/20">
+                                <span className="material-symbols-outlined text-white text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                            </div>
+                        </div>
+                    </div>
+                </Link>
             </div>
         </div>
     );

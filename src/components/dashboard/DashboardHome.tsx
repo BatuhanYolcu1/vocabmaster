@@ -175,7 +175,7 @@ export default function DashboardHome() {
                 {/* Bento Grid Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main Chart Section */}
-                    <div className="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col h-full min-h-[350px]">
+                    <div className="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col h-full min-h-[280px]">
                         <div className="flex justify-between items-center mb-6">
                             <div>
                                 <h3 className="text-lg font-bold text-white">Haftalık Aktivite</h3>
@@ -259,70 +259,26 @@ export default function DashboardHome() {
                             </p>
                         </div>
 
-                        {/* Quick Practice Access */}
-                        <div className="glass-panel rounded-3xl p-5">
-                            <div className="flex items-center gap-2 mb-4">
-                                <span className="material-symbols-outlined text-[#135bec]">rocket_launch</span>
-                                <h3 className="text-base font-bold text-white">Hızlı Pratik</h3>
+                        {/* Practice CTA */}
+                        <Link
+                            href="/study/modes"
+                            className="glass-panel rounded-3xl p-6 relative overflow-hidden group bg-gradient-to-br from-[#135bec]/20 to-purple-600/10 border-[#135bec]/30 hover:border-[#135bec]/60 hover:from-[#135bec]/30 hover:to-purple-600/20 transition-all duration-300"
+                        >
+                            <div className="absolute -right-8 -top-8 w-32 h-32 bg-[#135bec]/20 rounded-full blur-2xl group-hover:bg-[#135bec]/40 transition-all" />
+                            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-purple-600/20 rounded-full blur-xl" />
+                            <div className="relative z-10 flex items-center gap-4">
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 flex items-center justify-center shadow-lg shadow-[#135bec]/40 group-hover:scale-110 transition-transform">
+                                    <span className="material-symbols-outlined text-white text-2xl">school</span>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-bold text-white mb-1">Pratik Yap</h3>
+                                    <p className="text-sm text-[#92a4c9]">Tüm çalışma modlarını keşfet</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                    <span className="material-symbols-outlined text-white group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <Link
-                                    href="/study/multiple-choice"
-                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-[#135bec]/10 to-blue-600/5 border border-[#135bec]/20 hover:border-[#135bec]/50 hover:from-[#135bec]/20 hover:to-blue-600/10 transition-all group"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#135bec] to-blue-600 flex items-center justify-center shadow-lg shadow-[#135bec]/30">
-                                        <span className="material-symbols-outlined text-white text-lg">quiz</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <span className="text-white font-semibold text-sm">Çoktan Seçmeli</span>
-                                        <p className="text-[#92a4c9] text-xs">Hızlı test modu</p>
-                                    </div>
-                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-[#135bec] transition-colors">chevron_right</span>
-                                </Link>
-
-                                <Link
-                                    href="/study/flashcard"
-                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-purple-500/10 to-purple-600/5 border border-purple-500/20 hover:border-purple-500/50 hover:from-purple-500/20 hover:to-purple-600/10 transition-all group"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                                        <span className="material-symbols-outlined text-white text-lg">style</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <span className="text-white font-semibold text-sm">Bilgi Kartları</span>
-                                        <p className="text-[#92a4c9] text-xs">Klasik öğrenme</p>
-                                    </div>
-                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-purple-400 transition-colors">chevron_right</span>
-                                </Link>
-
-                                <Link
-                                    href="/study/matching"
-                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-pink-500/10 to-pink-600/5 border border-pink-500/20 hover:border-pink-500/50 hover:from-pink-500/20 hover:to-pink-600/10 transition-all group"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center shadow-lg shadow-pink-500/30">
-                                        <span className="material-symbols-outlined text-white text-lg">gamepad</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <span className="text-white font-semibold text-sm">Eşleştirme Oyunu</span>
-                                        <p className="text-[#92a4c9] text-xs">Eğlenceli pratik</p>
-                                    </div>
-                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-pink-400 transition-colors">chevron_right</span>
-                                </Link>
-
-                                <Link
-                                    href="/study/typing"
-                                    className="flex items-center gap-4 p-3 rounded-2xl bg-gradient-to-r from-green-500/10 to-green-600/5 border border-green-500/20 hover:border-green-500/50 hover:from-green-500/20 hover:to-green-600/10 transition-all group"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shadow-lg shadow-green-500/30">
-                                        <span className="material-symbols-outlined text-white text-lg">keyboard</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <span className="text-white font-semibold text-sm">Yazarak Öğren</span>
-                                        <p className="text-[#92a4c9] text-xs">Hafızayı güçlendir</p>
-                                    </div>
-                                    <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-green-400 transition-colors">chevron_right</span>
-                                </Link>
-                            </div>
-                        </div>
+                        </Link>
                     </div>
                 </div>
             </div>

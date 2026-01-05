@@ -23,13 +23,14 @@ interface WordList {
 }
 
 const defaultCategories: Category[] = [
-    { id: '1', slug: 'general', name: 'Genel', description: 'Günlük hayatta kullanılan temel kelimeler', icon: 'menu_book', wordCount: 0, color: 'from-blue-500 to-blue-700' },
-    { id: '2', slug: 'business', name: 'İş Dünyası', description: 'Profesyonel iş hayatı terimleri', icon: 'business_center', wordCount: 0, color: 'from-purple-500 to-purple-700' },
-    { id: '3', slug: 'travel', name: 'Seyahat', description: 'Havalimanı, otel ve restoran diyalogları', icon: 'flight', wordCount: 0, color: 'from-orange-500 to-orange-700' },
-    { id: '4', slug: 'academic', name: 'Akademik', description: 'Akademik makaleler ve sınavlar için', icon: 'school', wordCount: 0, color: 'from-green-500 to-green-700' },
-    { id: '5', slug: 'technology', name: 'Teknoloji', description: 'Yazılım ve teknoloji terimleri', icon: 'computer', wordCount: 0, color: 'from-cyan-500 to-cyan-700' },
-    { id: '6', slug: 'health', name: 'Sağlık', description: 'Tıbbi terimler ve sağlık ifadeleri', icon: 'health_and_safety', wordCount: 0, color: 'from-pink-500 to-pink-700' },
+    { id: '1', slug: 'general', name: 'Genel', description: 'Günlük hayatta kullanılan temel kelimeler', icon: 'menu_book', wordCount: 100, color: 'from-blue-500 to-blue-700' },
+    { id: '2', slug: 'business', name: 'İş Dünyası', description: 'Profesyonel iş hayatı terimleri', icon: 'business_center', wordCount: 100, color: 'from-purple-500 to-purple-700' },
+    { id: '3', slug: 'travel', name: 'Seyahat', description: 'Havalimanı, otel ve restoran diyalogları', icon: 'flight', wordCount: 100, color: 'from-orange-500 to-orange-700' },
+    { id: '4', slug: 'academic', name: 'Akademik', description: 'Akademik makaleler ve sınavlar için', icon: 'school', wordCount: 100, color: 'from-green-500 to-green-700' },
+    { id: '5', slug: 'technology', name: 'Teknoloji', description: 'Yazılım ve teknoloji terimleri', icon: 'computer', wordCount: 100, color: 'from-cyan-500 to-cyan-700' },
+    { id: '6', slug: 'health', name: 'Sağlık', description: 'Tıbbi terimler ve sağlık ifadeleri', icon: 'health_and_safety', wordCount: 100, color: 'from-pink-500 to-pink-700' },
 ];
+
 
 export default function CategoriesPage() {
     const { data: session } = useSession();

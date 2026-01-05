@@ -13,7 +13,7 @@ const studyModes = [
         glowColor: 'bg-blue-500',
         tag: 'Popüler',
         tagColor: 'text-blue-400 bg-blue-400/10',
-        href: '/study/flashcard'
+        href: '/study/select'
     },
     {
         id: 'multiple-choice',
@@ -24,7 +24,7 @@ const studyModes = [
         glowColor: 'bg-purple-500',
         tag: 'Hızlı',
         tagColor: 'text-purple-400 bg-purple-400/10',
-        href: '/study/multiple-choice'
+        href: '/study/select'
     },
     {
         id: 'typing',
@@ -35,7 +35,7 @@ const studyModes = [
         glowColor: 'bg-pink-500',
         tag: 'Zor',
         tagColor: 'text-pink-400 bg-pink-400/10',
-        href: '/study/typing'
+        href: '/study/select'
     },
     {
         id: 'matching',
@@ -46,7 +46,7 @@ const studyModes = [
         glowColor: 'bg-green-500',
         tag: 'Eğlenceli',
         tagColor: 'text-green-400 bg-green-400/10',
-        href: '/study/matching'
+        href: '/study/select'
     },
     {
         id: 'listening',
@@ -57,7 +57,7 @@ const studyModes = [
         glowColor: 'bg-amber-500',
         tag: 'İşitsel',
         tagColor: 'text-amber-400 bg-amber-400/10',
-        href: '/study/listening'
+        href: '/study/select'
     },
     {
         id: 'speaking',
@@ -68,10 +68,11 @@ const studyModes = [
         glowColor: 'bg-red-500',
         tag: 'İnteraktif',
         tagColor: 'text-red-400 bg-red-400/10',
-        href: '/study/speaking',
+        href: '/study/select',
         isAI: true
     }
 ];
+
 
 export default function StudyModesPage() {
     const { data: session } = useSession();

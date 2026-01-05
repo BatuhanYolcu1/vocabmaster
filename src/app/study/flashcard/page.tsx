@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Flashcard from '@/components/Flashcard';
 import RatingButtons from '@/components/RatingButtons';
 import { useStudyStore } from '@/lib/store';
@@ -9,6 +9,9 @@ import Link from 'next/link';
 
 export default function FlashcardPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const listId = searchParams.get('listId');
+
     const {
         isSessionActive,
         cards,
@@ -21,10 +24,16 @@ export default function FlashcardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Redirect if no listId
+        if (!listId) {
+            router.push('/study/select');
+            return;
+        }
+
         async function initSession() {
             if (!isSessionActive) {
                 try {
-                    const res = await fetch('/api/words?limit=10');
+                    const res = await fetch(`/api/words?listId=${listId}&limit=20`);
                     if (res.ok) {
                         const words = await res.json();
                         if (words.length > 0) {
@@ -41,7 +50,8 @@ export default function FlashcardPage() {
             }
         }
         initSession();
-    }, [isSessionActive, startSession]);
+    }, [isSessionActive, startSession, listId, router]);
+
 
     useEffect(() => {
         if (!isSessionActive && cards.length > 0 && !loading) {

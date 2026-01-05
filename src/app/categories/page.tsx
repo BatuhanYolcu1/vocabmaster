@@ -4,16 +4,6 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-interface Category {
-    id: string;
-    slug: string;
-    name: string;
-    description: string;
-    icon: string;
-    wordCount: number;
-    color: string;
-}
-
 interface WordList {
     id: string;
     name: string;
@@ -22,44 +12,25 @@ interface WordList {
     createdAt: string;
 }
 
-const defaultCategories: Category[] = [
-    { id: '1', slug: 'general', name: 'Genel', description: 'Günlük hayatta kullanılan temel kelimeler', icon: 'menu_book', wordCount: 100, color: 'from-blue-500 to-blue-700' },
-    { id: '2', slug: 'business', name: 'İş Dünyası', description: 'Profesyonel iş hayatı terimleri', icon: 'business_center', wordCount: 100, color: 'from-purple-500 to-purple-700' },
-    { id: '3', slug: 'travel', name: 'Seyahat', description: 'Havalimanı, otel ve restoran diyalogları', icon: 'flight', wordCount: 100, color: 'from-orange-500 to-orange-700' },
-    { id: '4', slug: 'academic', name: 'Akademik', description: 'Akademik makaleler ve sınavlar için', icon: 'school', wordCount: 100, color: 'from-green-500 to-green-700' },
-    { id: '5', slug: 'technology', name: 'Teknoloji', description: 'Yazılım ve teknoloji terimleri', icon: 'computer', wordCount: 100, color: 'from-cyan-500 to-cyan-700' },
-    { id: '6', slug: 'health', name: 'Sağlık', description: 'Tıbbi terimler ve sağlık ifadeleri', icon: 'health_and_safety', wordCount: 100, color: 'from-pink-500 to-pink-700' },
-];
-
-
 export default function CategoriesPage() {
     const { data: session } = useSession();
-    const [categories, setCategories] = useState<Category[]>(defaultCategories);
     const [wordLists, setWordLists] = useState<WordList[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'my-lists' | 'categories'>('my-lists');
 
     useEffect(() => {
         async function fetchData() {
+            if (!session) {
+                setLoading(false);
+                return;
+            }
             try {
-                const [catRes, listsRes] = await Promise.all([
-                    fetch('/api/words/categories'),
-                    session ? fetch('/api/wordlists') : Promise.resolve(null)
-                ]);
-
-                if (catRes.ok) {
-                    const catData = await catRes.json();
-                    if (catData.length > 0) {
-                        setCategories(catData);
-                    }
-                }
-
-                if (listsRes && listsRes.ok) {
-                    const listsData = await listsRes.json();
-                    setWordLists(listsData);
+                const res = await fetch('/api/wordlists');
+                if (res.ok) {
+                    const data = await res.json();
+                    setWordLists(data);
                 }
             } catch (error) {
-                console.error('Failed to fetch data:', error);
+                console.error('Failed to fetch lists:', error);
             } finally {
                 setLoading(false);
             }
@@ -95,122 +66,81 @@ export default function CategoriesPage() {
                     </Link>
                 </div>
 
-                {/* Tab Switcher */}
-                <div className="flex gap-2 mb-8 p-1 bg-[#1a2332]/80 rounded-full w-fit border border-white/5">
-                    <button
-                        onClick={() => setActiveTab('my-lists')}
-                        className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === 'my-lists'
-                            ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
-                            : 'text-[#8b9bb4] hover:text-white'
-                            }`}
-                    >
-                        Listelerim
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('categories')}
-                        className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${activeTab === 'categories'
-                            ? 'bg-[#135bec] text-white shadow-[0_0_15px_rgba(19,91,236,0.4)]'
-                            : 'text-[#8b9bb4] hover:text-white'
-                            }`}
-                    >
-                        Hazır Kategoriler
-                    </button>
-                </div>
-
-                {/* My Lists Tab */}
-                {activeTab === 'my-lists' && (
-                    <div className="space-y-6">
-                        {loading ? (
-                            <div className="flex items-center justify-center py-20">
-                                <div className="w-12 h-12 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
+                {/* Word Lists */}
+                <div className="space-y-6">
+                    {loading ? (
+                        <div className="flex items-center justify-center py-20">
+                            <div className="w-12 h-12 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
+                        </div>
+                    ) : !session ? (
+                        <div className="glass-panel rounded-3xl p-12 text-center">
+                            <div className="w-20 h-20 rounded-full bg-[#135bec]/20 flex items-center justify-center mx-auto mb-6">
+                                <span className="material-symbols-outlined text-4xl text-[#135bec]">login</span>
                             </div>
-                        ) : wordLists.length === 0 ? (
-                            <div className="glass-panel rounded-3xl p-12 text-center">
-                                <div className="w-20 h-20 rounded-full bg-[#135bec]/20 flex items-center justify-center mx-auto mb-6">
-                                    <span className="material-symbols-outlined text-4xl text-[#135bec]">folder_open</span>
-                                </div>
-                                <h3 className="text-2xl font-bold text-white mb-3">Henüz liste yok</h3>
-                                <p className="text-[#8b9bb4] mb-8 max-w-md mx-auto">
-                                    İlk kelime listeni oluştur ve öğrenmeye başla. Kendi kelimelerini ekleyebilir veya hazır kategorilerden seçebilirsin.
-                                </p>
-                                <Link
-                                    href="/wordlists/new"
-                                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
-                                >
-                                    <span className="material-symbols-outlined">add</span>
-                                    İlk Listeni Oluştur
-                                </Link>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {wordLists.map((list) => (
-                                    <Link
-                                        key={list.id}
-                                        href={`/wordlists/${list.id}`}
-                                        className="glass-card rounded-2xl p-5 group"
-                                    >
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
-                                                <span className="material-symbols-outlined">folder</span>
-                                            </div>
-                                            <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-lg">
-                                                {list._count?.items || 0} kelime
-                                            </span>
-                                        </div>
-                                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#135bec] transition-colors">
-                                            {list.name}
-                                        </h3>
-                                        <p className="text-sm text-[#8b9bb4] line-clamp-2 mb-4">
-                                            {list.description || 'Özel kelime listem'}
-                                        </p>
-                                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                            <div className="flex items-center gap-2 text-xs text-[#8b9bb4]">
-                                                <span className="material-symbols-outlined text-sm">schedule</span>
-                                                <span>Son güncelleme</span>
-                                            </div>
-                                            <span className="material-symbols-outlined text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all">
-                                                arrow_forward
-                                            </span>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {/* Categories Tab */}
-                {activeTab === 'categories' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {categories.map((cat) => (
+                            <h3 className="text-2xl font-bold text-white mb-3">Giriş Yapın</h3>
+                            <p className="text-[#8b9bb4] mb-8 max-w-md mx-auto">
+                                Kelime listelerinizi görmek için giriş yapmanız gerekiyor.
+                            </p>
                             <Link
-                                key={cat.id}
-                                href={`/categories/${cat.slug}`}
-                                className="glass-card rounded-2xl p-5 group"
+                                href="/login"
+                                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                             >
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform`}>
-                                        <span className="material-symbols-outlined">{cat.icon}</span>
-                                    </div>
-                                    <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-lg">
-                                        {cat.wordCount} kelime
-                                    </span>
-                                </div>
-                                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#135bec] transition-colors">
-                                    {cat.name}
-                                </h3>
-                                <p className="text-sm text-[#8b9bb4] line-clamp-2 mb-4">
-                                    {cat.description}
-                                </p>
-                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                    <button className="text-xs font-medium text-[#135bec] hover:underline">
-                                        Başla →
-                                    </button>
-                                </div>
+                                Giriş Yap
                             </Link>
-                        ))}
-                    </div>
-                )}
+                        </div>
+                    ) : wordLists.length === 0 ? (
+                        <div className="glass-panel rounded-3xl p-12 text-center">
+                            <div className="w-20 h-20 rounded-full bg-[#135bec]/20 flex items-center justify-center mx-auto mb-6">
+                                <span className="material-symbols-outlined text-4xl text-[#135bec]">folder_open</span>
+                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-3">Henüz liste yok</h3>
+                            <p className="text-[#8b9bb4] mb-8 max-w-md mx-auto">
+                                İlk kelime listeni oluştur ve öğrenmeye başla!
+                            </p>
+                            <Link
+                                href="/wordlists/new"
+                                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
+                            >
+                                <span className="material-symbols-outlined">add</span>
+                                İlk Listeni Oluştur
+                            </Link>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {wordLists.map((list) => (
+                                <Link
+                                    key={list.id}
+                                    href={`/wordlists/${list.id}`}
+                                    className="glass-card rounded-2xl p-5 group"
+                                >
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
+                                            <span className="material-symbols-outlined">folder</span>
+                                        </div>
+                                        <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-lg">
+                                            {list._count?.items || 0} kelime
+                                        </span>
+                                    </div>
+                                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#135bec] transition-colors">
+                                        {list.name}
+                                    </h3>
+                                    <p className="text-sm text-[#8b9bb4] line-clamp-2 mb-4">
+                                        {list.description || 'Özel kelime listem'}
+                                    </p>
+                                    <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                        <div className="flex items-center gap-2 text-xs text-[#8b9bb4]">
+                                            <span className="material-symbols-outlined text-sm">schedule</span>
+                                            <span>Son güncelleme</span>
+                                        </div>
+                                        <span className="material-symbols-outlined text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all">
+                                            arrow_forward
+                                        </span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

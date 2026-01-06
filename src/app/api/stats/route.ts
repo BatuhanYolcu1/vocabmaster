@@ -33,6 +33,33 @@ export async function GET() {
             }
         });
 
+        // Get progress records for mastered/learning calculation
+        const progressRecords = await prisma.progress.findMany({
+            where: { userId }
+        });
+
+        const mastered = progressRecords.filter(p => {
+            const total = p.correctCount + p.wrongCount;
+            return total >= 3 && (p.correctCount / total) >= 0.7;
+        }).length;
+
+        const learning = progressRecords.length - mastered;
+
+        // Get weakest words
+        const weakWords = await prisma.progress.findMany({
+            where: {
+                userId,
+                wrongCount: { gt: 0 }
+            },
+            orderBy: { wrongCount: 'desc' },
+            take: 5,
+            include: {
+                word: {
+                    select: { word: true, turkishTranslation: true }
+                }
+            }
+        });
+
         // Get real weekly progress from DailyActivity
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -82,6 +109,19 @@ export async function GET() {
             streak: user?.streak || 0,
             weeklyProgress,
             totalXp: user?.xp || 0,
+            // New progress data
+            mastered,
+            learning,
+            totalStudied: progressRecords.length,
+            weakWords: weakWords.map(w => ({
+                word: w.word.word,
+                translation: w.word.turkishTranslation,
+                correctCount: w.correctCount,
+                wrongCount: w.wrongCount,
+                accuracy: w.correctCount + w.wrongCount > 0
+                    ? Math.round((w.correctCount / (w.correctCount + w.wrongCount)) * 100)
+                    : 0
+            }))
         }, {
             headers: {
                 'Cache-Control': 'private, max-age=60, stale-while-revalidate=30',
@@ -92,3 +132,4 @@ export async function GET() {
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
 }
+

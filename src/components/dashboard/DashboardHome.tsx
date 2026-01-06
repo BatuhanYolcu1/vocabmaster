@@ -261,53 +261,109 @@ export default function DashboardHome() {
                     </div>
                 </div>
 
-                {/* Practice CTA Banner - Full Width */}
+                {/* Practice CTA Banner - Full Width - Premium Design */}
                 <Link
                     href="/study/select"
-                    className="block glass-panel rounded-3xl p-8 relative overflow-hidden group bg-gradient-to-r from-[#135bec]/30 via-purple-600/20 to-pink-500/20 border-[#135bec]/40 hover:border-[#135bec]/80 hover:shadow-[0_0_60px_rgba(19,91,236,0.3)] transition-all duration-500"
+                    className="block relative overflow-hidden group rounded-[2rem] transition-all duration-700"
                 >
-                    {/* Animated background elements */}
-                    <div className="absolute -right-20 -top-20 w-60 h-60 bg-[#135bec]/30 rounded-full blur-3xl group-hover:bg-[#135bec]/50 transition-all duration-700 animate-pulse" />
-                    <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-600/30 rounded-full blur-2xl group-hover:bg-purple-600/50 transition-all duration-700" />
-                    <div className="absolute right-1/3 top-1/2 w-32 h-32 bg-pink-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                    {/* Layered Background */}
+                    <div className="absolute inset-0 bg-[#0d1220] rounded-[2rem]" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/10" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-cyan-500/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    {/* Animated Grid Pattern */}
+                    <div className="absolute inset-0 opacity-20" style={{
+                        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)',
+                        backgroundSize: '24px 24px'
+                    }} />
+
+                    {/* Floating Particles */}
+                    <div className="absolute top-6 left-[20%] w-1.5 h-1.5 bg-cyan-400 rounded-full animate-ping" style={{ animationDuration: '3s' }} />
+                    <div className="absolute bottom-8 left-[40%] w-1 h-1 bg-violet-400 rounded-full animate-ping" style={{ animationDuration: '4s', animationDelay: '1s' }} />
+                    <div className="absolute top-10 right-[30%] w-1 h-1 bg-rose-400 rounded-full animate-ping" style={{ animationDuration: '3.5s', animationDelay: '0.5s' }} />
+
+                    {/* Glowing Orb */}
+                    <div className="absolute -right-20 -top-20 w-72 h-72 bg-gradient-to-br from-cyan-500/30 to-violet-500/30 rounded-full blur-3xl group-hover:from-cyan-500/50 group-hover:to-violet-500/50 transition-all duration-700" />
+
+                    {/* Content */}
+                    <div className="relative z-10 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                        {/* Left Side */}
                         <div className="flex items-center gap-6">
-                            {/* Animated Icon Stack */}
-                            <div className="relative">
-                                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#135bec] to-purple-600 flex items-center justify-center shadow-2xl shadow-[#135bec]/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                                    <span className="material-symbols-outlined text-white text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>rocket_launch</span>
+                            {/* Orbital Icon System */}
+                            <div className="relative w-24 h-24 flex-shrink-0">
+                                {/* Outer Ring */}
+                                <div className="absolute inset-0 border-2 border-dashed border-white/10 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
+
+                                {/* Middle Ring */}
+                                <div className="absolute inset-2 border border-cyan-500/30 rounded-full" />
+
+                                {/* Core */}
+                                <div className="absolute inset-4 bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.5)] group-hover:shadow-[0_0_60px_rgba(6,182,212,0.7)] group-hover:scale-110 transition-all duration-500">
+                                    <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 text-white">
+                                        <path d="M12 2L15 8.5L22 9.5L17 14.5L18 21.5L12 18L6 21.5L7 14.5L2 9.5L9 8.5L12 2Z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.3" />
+                                    </svg>
                                 </div>
-                                {/* Floating mini icons */}
-                                <div className="absolute -right-2 -top-2 w-8 h-8 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg animate-bounce" style={{ animationDuration: '2s' }}>
-                                    <span className="material-symbols-outlined text-white text-sm">quiz</span>
+
+                                {/* Orbiting Elements */}
+                                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-5 h-5 bg-gradient-to-br from-emerald-400 to-green-600 rounded-lg flex items-center justify-center shadow-lg text-[10px] text-white animate-bounce" style={{ animationDuration: '2s' }}>
+                                    ⚡
                                 </div>
-                                <div className="absolute -left-3 -bottom-1 w-7 h-7 rounded-lg bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center shadow-lg animate-bounce" style={{ animationDuration: '2.5s', animationDelay: '0.3s' }}>
-                                    <span className="material-symbols-outlined text-white text-xs">style</span>
+                                <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-5 h-5 bg-gradient-to-br from-amber-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg text-[10px] text-white animate-bounce" style={{ animationDuration: '2.5s', animationDelay: '0.5s' }}>
+                                    ◈
+                                </div>
+                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-5 bg-gradient-to-br from-rose-400 to-pink-600 rounded-lg flex items-center justify-center shadow-lg text-[10px] text-white animate-bounce" style={{ animationDuration: '3s', animationDelay: '1s' }}>
+                                    ✦
                                 </div>
                             </div>
 
+                            {/* Text Content */}
                             <div>
-                                <h3 className="text-2xl md:text-3xl font-black text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-blue-200 transition-all">
-                                    🚀 Pratik Zamanı!
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-[10px] uppercase tracking-widest text-cyan-400 font-bold bg-cyan-500/10 px-2 py-1 rounded-md border border-cyan-500/20">
+                                        ◇ Bugün Hazır mısın?
+                                    </span>
+                                </div>
+                                <h3 className="text-2xl md:text-3xl font-black text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-300 group-hover:via-white group-hover:to-violet-300 transition-all duration-500">
+                                    Öğrenme Arenası
                                 </h3>
-                                <p className="text-base text-[#a8b5d1] max-w-md">
-                                    Test, kartlar, eşleştirme ve daha fazlası... Kelimelerini pekiştirmeye başla!
+                                <p className="text-sm text-[#7a8ba8] max-w-sm">
+                                    Beyin Kartları, Bilgi Yarışması, Parmak Hafızası ve daha fazlası seni bekliyor
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
-                            <div className="hidden md:flex gap-2">
-                                <span className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-300 text-sm font-medium border border-blue-500/30">Quiz</span>
-                                <span className="px-3 py-1.5 rounded-full bg-purple-500/20 text-purple-300 text-sm font-medium border border-purple-500/30">Kartlar</span>
-                                <span className="px-3 py-1.5 rounded-full bg-pink-500/20 text-pink-300 text-sm font-medium border border-pink-500/30">Oyun</span>
+                        {/* Right Side */}
+                        <div className="flex items-center gap-5">
+                            {/* Mode Pills */}
+                            <div className="hidden lg:flex items-center gap-2">
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                                    <span className="text-xs font-medium text-white/70">4 Mod</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                                    <span className="text-xs font-medium text-white/70">Akıllı SRS</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                                    <div className="w-2 h-2 rounded-full bg-violet-400" />
+                                    <span className="text-xs font-medium text-white/70">XP Kazan</span>
+                                </div>
                             </div>
-                            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300 border border-white/20">
-                                <span className="material-symbols-outlined text-white text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+
+                            {/* CTA Button */}
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-violet-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-80 transition-opacity" />
+                                <div className="relative w-14 h-14 bg-gradient-to-r from-cyan-500 to-violet-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-lg">
+                                    <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white group-hover:translate-x-0.5 transition-transform">
+                                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* Bottom Gradient Line */}
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
             </div>
         </div>

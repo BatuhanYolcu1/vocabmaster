@@ -299,21 +299,18 @@ export default function StudySelectPage() {
                 {/* Step 2: Mode Selection */}
                 {step === 'mode' && (
                     <div className="space-y-8 animate-fadeIn">
-                        <div className="text-center mb-10">
+                        <div className="text-center mb-10 pt-4">
                             <button
                                 onClick={() => setStep('list')}
-                                className="inline-flex items-center gap-2 text-[#6b7a94] hover:text-white transition-colors mb-6 text-sm"
+                                className="inline-flex items-center gap-2 text-[#6b7a94] hover:text-white transition-colors mb-4 text-sm"
                             >
                                 <span>←</span> Koleksiyona dön
                             </button>
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-400 text-xs font-medium mb-4">
-                                <span>◈</span> {selectedListData?.name}
-                            </div>
-                            <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent mb-4">
+                            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent mb-4">
                                 Öğrenme deneyimini seç
                             </h1>
                             <p className="text-[#6b7a94] max-w-md mx-auto">
-                                Her mod farklı bir öğrenme stili sunar, hangisi sana uygun?
+                                <span className="text-purple-400 font-medium">{selectedListData?.name}</span> için mod seç
                             </p>
                         </div>
 

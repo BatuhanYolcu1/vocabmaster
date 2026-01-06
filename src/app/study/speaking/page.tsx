@@ -190,7 +190,7 @@ export default function SpeakingPage() {
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-3">Tarayıcı Desteklenmiyor</h2>
                     <p className="text-[#8b9bb4] mb-8">Konuşma tanıma özelliği bu tarayıcıda çalışmıyor. Lütfen Chrome veya Edge kullanın.</p>
-                    <Link href="/study/modes" className="px-6 py-3 bg-[#135bec] text-white rounded-xl font-medium">
+                    <Link href="/study/select" className="px-6 py-3 bg-[#135bec] text-white rounded-xl font-medium">
                         Diğer Modlara Dön
                     </Link>
                 </div>
@@ -222,7 +222,7 @@ export default function SpeakingPage() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
-                        <Link href="/study/modes" className="p-2 rounded-lg text-[#8b9bb4] hover:text-white hover:bg-white/5 transition-colors">
+                        <Link href="/study/select" className="p-2 rounded-lg text-[#8b9bb4] hover:text-white hover:bg-white/5 transition-colors">
                             <span className="material-symbols-outlined">arrow_back</span>
                         </Link>
                         <div>
@@ -264,7 +264,7 @@ export default function SpeakingPage() {
                             <h2 className="text-2xl font-bold text-white mb-2">Tebrikler!</h2>
                             <p className="text-white/80 mb-6">{score} / {attempts} kelimeyi doğru telaffuz ettin</p>
                             <div className="flex justify-center gap-4">
-                                <Link href="/study/modes" className="px-6 py-3 bg-white/20 text-white rounded-xl font-medium hover:bg-white/30 transition-colors">
+                                <Link href="/study/select" className="px-6 py-3 bg-white/20 text-white rounded-xl font-medium hover:bg-white/30 transition-colors">
                                     Bitir
                                 </Link>
                                 <button onClick={() => window.location.reload()} className="px-6 py-3 bg-white text-rose-600 rounded-xl font-bold">

@@ -164,7 +164,7 @@ export default function MultipleChoicePage() {
                             Kelime Ekle
                         </Link>
                         <Link
-                            href="/study/modes"
+                            href="/study/select"
                             className="px-6 py-3 glass-button text-white rounded-xl font-medium"
                         >
                             Geri Dön
@@ -219,7 +219,7 @@ export default function MultipleChoicePage() {
 
                     <div className="flex gap-4 justify-center">
                         <Link
-                            href="/study/modes"
+                            href="/study/select"
                             className="px-6 py-3 glass-button text-white rounded-xl font-medium"
                         >
                             Mod Seç
@@ -251,7 +251,7 @@ export default function MultipleChoicePage() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link
-                        href="/study/modes"
+                        href="/study/select"
                         className="flex items-center gap-2 text-[#92a4c9] hover:text-white transition-colors group"
                     >
                         <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>

@@ -54,7 +54,7 @@ export default function LeaderboardPage() {
 
                         <nav className="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
                             <a className="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors" href="/">Öğren</a>
-                            <a className="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors" href="/study/modes">Pratik</a>
+                            <a className="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors" href="/study/select">Pratik</a>
                             <a className="px-5 py-2 text-sm font-medium text-white bg-[#135bec] shadow-lg shadow-[#135bec]/30 rounded-full" href="/leaderboard">Liderlik</a>
                         </nav>
 

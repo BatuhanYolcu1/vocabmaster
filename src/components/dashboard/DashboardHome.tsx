@@ -88,7 +88,7 @@ export default function DashboardHome() {
                     </div>
                     <div className="flex gap-3">
                         <Link
-                            href="/study/modes"
+                            href="/study/select"
                             className="h-12 px-6 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold text-sm hover:shadow-[0_0_20px_rgba(19,91,236,0.5)] hover:scale-105 transition-all duration-300 flex items-center gap-2"
                         >
                             <span className="material-symbols-outlined">play_circle</span>
@@ -263,7 +263,7 @@ export default function DashboardHome() {
 
                 {/* Practice CTA Banner - Full Width */}
                 <Link
-                    href="/study/modes"
+                    href="/study/select"
                     className="block glass-panel rounded-3xl p-8 relative overflow-hidden group bg-gradient-to-r from-[#135bec]/30 via-purple-600/20 to-pink-500/20 border-[#135bec]/40 hover:border-[#135bec]/80 hover:shadow-[0_0_60px_rgba(19,91,236,0.3)] transition-all duration-500"
                 >
                     {/* Animated background elements */}

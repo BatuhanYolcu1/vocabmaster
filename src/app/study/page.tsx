@@ -20,7 +20,7 @@ export default function StudyPage() {
                     Birçok farklı çalışma modundan sana en uygun olanını seç ve öğrenmeye başla!
                 </p>
                 <Link
-                    href="/study/modes"
+                    href="/study/select"
                     className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-2xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
                 >
                     <span className="material-symbols-outlined">play_circle</span>

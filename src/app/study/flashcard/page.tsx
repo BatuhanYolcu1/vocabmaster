@@ -131,7 +131,7 @@ function FlashcardContent() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link
-                        href="/study/modes"
+                        href="/study/select"
                         className="flex items-center gap-2 text-[#92a4c9] hover:text-white transition-colors group"
                     >
                         <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>

@@ -31,7 +31,7 @@ export default function WeakSpots() {
             </div>
 
             <Link
-                href="/study/modes"
+                href="/study/select"
                 className="block w-full text-center py-3 mt-2 bg-amber-500 text-white rounded-xl font-semibold hover:bg-amber-600 transition-colors shadow-lg shadow-amber-200 dark:shadow-amber-900/30"
             >
                 Çalışmaya Başla

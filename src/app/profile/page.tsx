@@ -222,7 +222,7 @@ export default function ProfilePage() {
                             </div>
                             <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
                         </Link>
-                        <Link href="/study/modes" className="glass-card rounded-xl p-4 flex items-center gap-4 group">
+                        <Link href="/study/select" className="glass-card rounded-xl p-4 flex items-center gap-4 group">
                             <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 group-hover:scale-110 transition-transform">
                                 <span className="material-symbols-outlined">play_circle</span>
                             </div>

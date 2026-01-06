@@ -228,7 +228,7 @@ export default function Navbar() {
                                 Kelimeler
                             </Link>
                             <Link
-                                href="/study/modes"
+                                href="/study/select"
                                 className={`text-sm font-medium px-4 py-2 rounded-full transition-all ${pathname.startsWith('/study')
                                     ? 'text-white bg-[#135bec] shadow-[0_0_20px_rgba(19,91,236,0.5)]'
                                     : 'text-[#8b9bb4] hover:text-white hover:bg-white/5'

@@ -164,7 +164,7 @@ export default function ListeningQuizPage() {
                         </div>
 
                         <div className="flex gap-4 justify-center">
-                            <Link href="/study/modes" className="px-6 py-3 glass-button text-white rounded-xl font-semibold">
+                            <Link href="/study/select" className="px-6 py-3 glass-button text-white rounded-xl font-semibold">
                                 Mod Seç
                             </Link>
                             <button onClick={() => window.location.reload()} className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-semibold shadow-[0_0_20px_rgba(6,182,212,0.4)]">
@@ -190,7 +190,7 @@ export default function ListeningQuizPage() {
             <div className="relative z-10 max-w-2xl mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
-                    <Link href="/study/modes" className="flex items-center gap-2 text-[#8b9bb4] hover:text-white transition-colors">
+                    <Link href="/study/select" className="flex items-center gap-2 text-[#8b9bb4] hover:text-white transition-colors">
                         <span className="material-symbols-outlined">arrow_back</span>
                         <span>Çıkış</span>
                     </Link>

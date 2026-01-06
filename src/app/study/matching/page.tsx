@@ -182,7 +182,7 @@ export default function MatchingGamePage() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link
-                        href="/study/modes"
+                        href="/study/select"
                         className="flex items-center gap-2 text-[#8b9bb4] hover:text-white transition-colors"
                     >
                         <span className="material-symbols-outlined">arrow_back</span>
@@ -246,7 +246,7 @@ export default function MatchingGamePage() {
                             </div>
                             <div className="flex gap-4 justify-center">
                                 <Link
-                                    href="/study/modes"
+                                    href="/study/select"
                                     className="px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-xl font-semibold hover:bg-white/20 transition-all"
                                 >
                                     Mod Seç

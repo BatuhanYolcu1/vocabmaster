@@ -203,11 +203,8 @@ export default function StudySelectPage() {
                 {/* Step 1: List Selection */}
                 {step === 'list' && (
                     <div className="space-y-8 animate-fadeIn">
-                        <div className="text-center mb-10">
-                            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-cyan-400 text-xs font-medium mb-4">
-                                <span>◈</span> KELİME KOLEKSİYONU
-                            </div>
-                            <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent mb-4">
+                        <div className="text-center mb-10 pt-4">
+                            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent mb-4">
                                 Hangi koleksiyonla başlayalım?
                             </h1>
                             <p className="text-[#6b7a94] max-w-md mx-auto">

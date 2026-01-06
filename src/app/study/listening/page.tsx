@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
@@ -10,7 +11,10 @@ interface Word {
     turkishTranslation: string;
 }
 
-export default function ListeningQuizPage() {
+function ListeningQuizContent() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const listId = searchParams.get('listId');
     const { update } = useSession();
     const [words, setWords] = useState<Word[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,9 +29,15 @@ export default function ListeningQuizPage() {
     const xpProcessed = useRef(false);
 
     useEffect(() => {
+        // Redirect if no listId
+        if (!listId) {
+            router.push('/study/select');
+            return;
+        }
+
         async function fetchWords() {
             try {
-                const res = await fetch('/api/words?limit=10');
+                const res = await fetch(`/api/words?listId=${listId}&limit=10`);
                 if (res.ok) {
                     const data = await res.json();
                     setWords(data);
@@ -39,7 +49,7 @@ export default function ListeningQuizPage() {
             }
         }
         fetchWords();
-    }, []);
+    }, [listId, router]);
 
     useEffect(() => {
         if (words.length > 0 && currentIndex < words.length) {
@@ -280,5 +290,20 @@ export default function ListeningQuizPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function ListeningQuizPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-[#92a4c9]">Yükleniyor...</p>
+                </div>
+            </div>
+        }>
+            <ListeningQuizContent />
+        </Suspense>
     );
 }

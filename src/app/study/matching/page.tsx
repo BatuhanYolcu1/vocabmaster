@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
@@ -19,7 +20,10 @@ interface Card {
     isSelected: boolean;
 }
 
-export default function MatchingGamePage() {
+function MatchingGameContent() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const listId = searchParams.get('listId');
     const { update } = useSession();
     const [words, setWords] = useState<Word[]>([]);
     const [cards, setCards] = useState<Card[]>([]);
@@ -35,9 +39,15 @@ export default function MatchingGamePage() {
 
     // Fetch and setup game
     useEffect(() => {
+        // Redirect if no listId
+        if (!listId) {
+            router.push('/study/select');
+            return;
+        }
+
         async function fetchWords() {
             try {
-                const res = await fetch('/api/words?limit=6');
+                const res = await fetch(`/api/words?listId=${listId}&limit=6`);
                 if (res.ok) {
                     const data = await res.json();
                     setWords(data);
@@ -50,7 +60,7 @@ export default function MatchingGamePage() {
             }
         }
         fetchWords();
-    }, []);
+    }, [listId, router]);
 
     // Timer update
     useEffect(() => {
@@ -344,5 +354,20 @@ export default function MatchingGamePage() {
                 }
             `}</style>
         </div>
+    );
+}
+
+export default function MatchingGamePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-[#92a4c9]">Yükleniyor...</p>
+                </div>
+            </div>
+        }>
+            <MatchingGameContent />
+        </Suspense>
     );
 }

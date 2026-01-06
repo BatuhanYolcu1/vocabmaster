@@ -14,7 +14,7 @@ interface WordList {
 
 const studyModes = [
     { id: 'flashcard', name: 'Flashcard', icon: 'style', description: 'Kartlarla öğren', color: 'from-blue-500 to-blue-600' },
-    { id: 'quiz', name: 'Quiz', icon: 'quiz', description: 'Kendini test et', color: 'from-green-500 to-green-600' },
+    { id: 'multiple-choice', name: 'Quiz', icon: 'quiz', description: 'Kendini test et', color: 'from-green-500 to-green-600' },
     { id: 'typing', name: 'Yazarak Öğren', icon: 'keyboard', description: 'Yazarak pekiştir', color: 'from-purple-500 to-purple-600' },
     { id: 'matching', name: 'Eşleştirme', icon: 'compare_arrows', description: 'Kelimeleri eşleştir', color: 'from-orange-500 to-orange-600' },
 ];
@@ -135,8 +135,8 @@ export default function StudySelectPage() {
                                         onClick={() => handleListSelect(list.id)}
                                         disabled={list._count?.items === 0}
                                         className={`glass-card rounded-2xl p-5 text-left group transition-all ${list._count?.items === 0
-                                                ? 'opacity-50 cursor-not-allowed'
-                                                : 'hover:border-[#135bec]/50 cursor-pointer'
+                                            ? 'opacity-50 cursor-not-allowed'
+                                            : 'hover:border-[#135bec]/50 cursor-pointer'
                                             }`}
                                     >
                                         <div className="flex items-start justify-between mb-4">

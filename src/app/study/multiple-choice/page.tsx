@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -18,8 +18,10 @@ interface Question {
     correctIndex: number;
 }
 
-export default function MultipleChoicePage() {
+function MultipleChoiceContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const listId = searchParams.get('listId');
     const { data: session, update } = useSession();
 
     const [questions, setQuestions] = useState<Question[]>([]);
@@ -33,9 +35,15 @@ export default function MultipleChoicePage() {
     const xpProcessed = useRef(false);
 
     useEffect(() => {
+        // Redirect if no listId
+        if (!listId) {
+            router.push('/study/select');
+            return;
+        }
+
         async function fetchWords() {
             try {
-                const res = await fetch('/api/words?limit=10');
+                const res = await fetch(`/api/words?listId=${listId}&limit=10`);
                 if (res.ok) {
                     const words: Word[] = await res.json();
                     if (words.length >= 4) {
@@ -50,7 +58,7 @@ export default function MultipleChoicePage() {
             }
         }
         fetchWords();
-    }, []);
+    }, [listId, router]);
 
     useEffect(() => {
         if (showResult && !xpProcessed.current) {
@@ -344,5 +352,20 @@ export default function MultipleChoicePage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function MultipleChoicePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-[#92a4c9]">Yükleniyor...</p>
+                </div>
+            </div>
+        }>
+            <MultipleChoiceContent />
+        </Suspense>
     );
 }

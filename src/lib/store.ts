@@ -56,8 +56,10 @@ export const useStudyStore = create<StudyStore>()(
                 const { cards, currentIndex, stats } = get();
                 if (currentIndex >= cards.length || !stats) return;
 
+                const currentCard = cards[currentIndex];
+
                 // Update the card with new SRS values
-                const updatedCard = calculateNextReview(cards[currentIndex], rating);
+                const updatedCard = calculateNextReview(currentCard, rating);
                 const updatedCards = [...cards];
                 updatedCards[currentIndex] = updatedCard;
 
@@ -71,6 +73,18 @@ export const useStudyStore = create<StudyStore>()(
                     cards: updatedCards,
                     stats: newStats,
                 });
+
+                // Persist progress to database (fire and forget)
+                const isCorrect = rating !== 'hard';
+                fetch('/api/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wordId: currentCard.word.id,
+                        rating,
+                        isCorrect
+                    })
+                }).catch(err => console.error('Failed to update progress:', err));
 
                 // Move to next card
                 get().nextCard();

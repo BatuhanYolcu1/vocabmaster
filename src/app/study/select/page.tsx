@@ -99,6 +99,24 @@ const studyModes = [
         glow: 'rgba(251, 146, 60, 0.4)',
         tag: '🧩 Bulmaca'
     },
+    {
+        id: 'listening',
+        name: 'Ses Hafızası',
+        icon: 'listening',
+        description: 'Dinle ve tanı',
+        gradient: 'from-sky-400 via-cyan-500 to-teal-600',
+        glow: 'rgba(14, 165, 233, 0.4)',
+        tag: '🎧 Dinleme'
+    },
+    {
+        id: 'speaking',
+        name: 'Ses Çıkışı',
+        icon: 'speaking',
+        description: 'Söyle ve kontrol et',
+        gradient: 'from-pink-400 via-rose-500 to-red-600',
+        glow: 'rgba(244, 114, 182, 0.4)',
+        tag: '🎤 Konuşma'
+    },
 ];
 
 export default function StudySelectPage() {

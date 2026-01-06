@@ -338,7 +338,7 @@ export default function DashboardHome() {
                             <div className="hidden lg:flex items-center gap-2">
                                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
                                     <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                                    <span className="text-xs font-medium text-white/70">4 Mod</span>
+                                    <span className="text-xs font-medium text-white/70">6 Mod</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
                                     <div className="w-2 h-2 rounded-full bg-emerald-400" />

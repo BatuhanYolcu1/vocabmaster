@@ -20,6 +20,7 @@ function FlashcardContent() {
         startSession,
         flipCard,
         rateCard,
+        stats,
     } = useStudyStore();
     const [loading, setLoading] = useState(true);
 
@@ -54,10 +55,19 @@ function FlashcardContent() {
 
 
     useEffect(() => {
-        if (!isSessionActive && cards.length > 0 && !loading) {
-            router.push('/study/complete');
+        if (!isSessionActive && cards.length > 0 && !loading && stats) {
+            // Pass stats via URL parameters
+            const params = new URLSearchParams({
+                total: stats.totalWords.toString(),
+                hard: stats.hardCount.toString(),
+                good: stats.goodCount.toString(),
+                easy: stats.easyCount.toString(),
+                start: stats.startTime,
+                end: stats.endTime || new Date().toISOString(),
+            });
+            router.push(`/study/complete?${params.toString()}`);
         }
-    }, [isSessionActive, cards.length, loading, router]);
+    }, [isSessionActive, cards.length, loading, router, stats]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {

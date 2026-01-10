@@ -3,28 +3,52 @@
 import Link from 'next/link';
 import { useStudyStore } from '@/lib/store';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-export default function StudyCompletePage() {
-    const { stats, lastCompletedStats, resetSession, _hasHydrated } = useStudyStore();
+interface SessionStats {
+    totalWords: number;
+    hardCount: number;
+    goodCount: number;
+    easyCount: number;
+    startTime: string;
+    endTime: string;
+}
+
+function StudyCompleteContent() {
+    const searchParams = useSearchParams();
+    const { resetSession } = useStudyStore();
     const { update } = useSession();
-    const [isHydrated, setIsHydrated] = useState(false);
 
-    // Wait for hydration
-    useEffect(() => {
-        setIsHydrated(true);
-    }, []);
+    // Get stats from URL parameters
+    const sessionStats: SessionStats | null = (() => {
+        const total = searchParams.get('total');
+        const hard = searchParams.get('hard');
+        const good = searchParams.get('good');
+        const easy = searchParams.get('easy');
+        const start = searchParams.get('start');
+        const end = searchParams.get('end');
 
-    // Use lastCompletedStats if available, otherwise use stats
-    const sessionStats = lastCompletedStats || stats;
+        if (total && hard && good && easy && start && end) {
+            return {
+                totalWords: parseInt(total),
+                hardCount: parseInt(hard),
+                goodCount: parseInt(good),
+                easyCount: parseInt(easy),
+                startTime: start,
+                endTime: end,
+            };
+        }
+        return null;
+    })();
 
     useEffect(() => {
         // Refresh session to update XP display in navbar
-        if (sessionStats && isHydrated) {
+        if (sessionStats) {
             update();
             window.dispatchEvent(new Event('xp-updated'));
         }
-    }, [sessionStats, update, isHydrated]);
+    }, [sessionStats, update]);
 
     const getDuration = () => {
         if (!sessionStats?.startTime || !sessionStats?.endTime) return '0 dk';
@@ -37,15 +61,6 @@ export default function StudyCompletePage() {
     const handleStartAgain = () => {
         resetSession();
     };
-
-    // Show loading while hydrating
-    if (!isHydrated) {
-        return (
-            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
-                <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
-            </div>
-        );
-    }
 
     if (!sessionStats) {
         return (
@@ -170,7 +185,7 @@ export default function StudyCompletePage() {
                         Ana Sayfa
                     </Link>
                     <Link
-                        href="/study/flashcard"
+                        href="/study/select"
                         onClick={handleStartAgain}
                         className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
                     >
@@ -180,5 +195,17 @@ export default function StudyCompletePage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function StudyCompletePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
+            </div>
+        }>
+            <StudyCompleteContent />
+        </Suspense>
     );
 }

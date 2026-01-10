@@ -117,6 +117,12 @@ export async function POST(
                 }))
             });
 
+            // Update the word list's updatedAt timestamp
+            await tx.wordList.update({
+                where: { id },
+                data: { updatedAt: new Date() }
+            });
+
             return wordIds;
         }, {
             timeout: 30000, // 30 second timeout for large batches

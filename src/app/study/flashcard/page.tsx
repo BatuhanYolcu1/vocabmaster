@@ -23,6 +23,7 @@ function FlashcardContent() {
         stats,
     } = useStudyStore();
     const [loading, setLoading] = useState(true);
+    const [sessionStarted, setSessionStarted] = useState(false);
 
     useEffect(() => {
         // Redirect if no listId
@@ -32,13 +33,15 @@ function FlashcardContent() {
         }
 
         async function initSession() {
-            if (!isSessionActive) {
+            // Always start a fresh session when page loads
+            if (!sessionStarted) {
                 try {
                     const res = await fetch(`/api/words?listId=${listId}&limit=20`);
                     if (res.ok) {
                         const words = await res.json();
                         if (words.length > 0) {
                             startSession(words);
+                            setSessionStarted(true);
                         }
                     }
                 } catch (error) {
@@ -51,7 +54,7 @@ function FlashcardContent() {
             }
         }
         initSession();
-    }, [isSessionActive, startSession, listId, router]);
+    }, [sessionStarted, startSession, listId, router]);
 
 
     useEffect(() => {

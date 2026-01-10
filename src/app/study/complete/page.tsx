@@ -3,22 +3,28 @@
 import Link from 'next/link';
 import { useStudyStore } from '@/lib/store';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function StudyCompletePage() {
-    const { stats, lastCompletedStats, resetSession } = useStudyStore();
+    const { stats, lastCompletedStats, resetSession, _hasHydrated } = useStudyStore();
     const { update } = useSession();
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Wait for hydration
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
 
     // Use lastCompletedStats if available, otherwise use stats
     const sessionStats = lastCompletedStats || stats;
 
     useEffect(() => {
         // Refresh session to update XP display in navbar
-        if (sessionStats) {
+        if (sessionStats && isHydrated) {
             update();
             window.dispatchEvent(new Event('xp-updated'));
         }
-    }, [sessionStats, update]);
+    }, [sessionStats, update, isHydrated]);
 
     const getDuration = () => {
         if (!sessionStats?.startTime || !sessionStats?.endTime) return '0 dk';
@@ -31,6 +37,15 @@ export default function StudyCompletePage() {
     const handleStartAgain = () => {
         resetSession();
     };
+
+    // Show loading while hydrating
+    if (!isHydrated) {
+        return (
+            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
+            </div>
+        );
+    }
 
     if (!sessionStats) {
         return (

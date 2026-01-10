@@ -1,7 +1,17 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Rating, SessionStats, SRSCard, Word } from '@/types';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { Rating, SRSCard, Word } from '@/types';
 import { calculateNextReview, createSRSCard } from './srs';
+
+// Session stats with ISO string dates for serialization
+interface SessionStats {
+    totalWords: number;
+    hardCount: number;
+    goodCount: number;
+    easyCount: number;
+    startTime: string; // ISO string
+    endTime?: string;  // ISO string
+}
 
 interface StudyStore {
     // Session state
@@ -12,7 +22,11 @@ interface StudyStore {
 
     // Statistics
     stats: SessionStats | null;
-    lastCompletedStats: SessionStats | null; // Store completed stats separately
+    lastCompletedStats: SessionStats | null;
+
+    // Hydration
+    _hasHydrated: boolean;
+    setHasHydrated: (state: boolean) => void;
 
     // Actions
     startSession: (words: Word[]) => void;
@@ -21,7 +35,6 @@ interface StudyStore {
     nextCard: () => void;
     endSession: () => void;
     resetSession: () => void;
-    getCompletedStats: () => SessionStats | null;
 }
 
 export const useStudyStore = create<StudyStore>()(
@@ -33,6 +46,11 @@ export const useStudyStore = create<StudyStore>()(
             isFlipped: false,
             stats: null,
             lastCompletedStats: null,
+            _hasHydrated: false,
+
+            setHasHydrated: (state) => {
+                set({ _hasHydrated: state });
+            },
 
             startSession: (words: Word[]) => {
                 const cards = words.map(createSRSCard);
@@ -46,7 +64,7 @@ export const useStudyStore = create<StudyStore>()(
                         hardCount: 0,
                         goodCount: 0,
                         easyCount: 0,
-                        startTime: new Date(),
+                        startTime: new Date().toISOString(),
                     },
                     lastCompletedStats: null,
                 });
@@ -112,7 +130,7 @@ export const useStudyStore = create<StudyStore>()(
                 if (stats) {
                     const completedStats: SessionStats = {
                         ...stats,
-                        endTime: new Date(),
+                        endTime: new Date().toISOString(),
                     };
 
                     // Send XP immediately when session ends
@@ -143,14 +161,13 @@ export const useStudyStore = create<StudyStore>()(
                     // Keep lastCompletedStats for display
                 });
             },
-
-            getCompletedStats: () => {
-                const { lastCompletedStats, stats } = get();
-                return lastCompletedStats || stats;
-            },
         }),
         {
             name: 'vocab-study-storage',
+            storage: createJSONStorage(() => localStorage),
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true);
+            },
         }
     )
 );

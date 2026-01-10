@@ -18,6 +18,8 @@ interface WordList {
     name: string;
     description?: string;
     words: Word[];
+    wordCount?: number;
+    updatedAt?: string;
 }
 
 export default function WordListDetailPage() {
@@ -137,7 +139,7 @@ export default function WordListDetailPage() {
                     </Link>
                 </div>
 
-                {/* Word Count */}
+                {/* Word Count & Last Update */}
                 <div className="glass-panel rounded-2xl p-4 mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
@@ -148,6 +150,20 @@ export default function WordListDetailPage() {
                             <p className="text-[#92a4c9] text-sm">Bu listede</p>
                         </div>
                     </div>
+                    {wordList.updatedAt && (
+                        <div className="text-right">
+                            <p className="text-[#92a4c9] text-sm">Son güncelleme</p>
+                            <p className="text-white text-sm font-medium">
+                                {new Date(wordList.updatedAt).toLocaleDateString('tr-TR', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Words List */}

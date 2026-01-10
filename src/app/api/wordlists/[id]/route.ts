@@ -29,6 +29,8 @@ export async function GET(
             id: wordList.id,
             name: wordList.name,
             description: wordList.description,
+            wordCount: wordList.items.length,
+            updatedAt: wordList.updatedAt,
             words: wordList.items.map(item => ({
                 id: item.word.id,
                 word: item.word.word,

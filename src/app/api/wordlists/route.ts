@@ -26,8 +26,10 @@ export async function GET() {
                 id: list.id,
                 name: list.name,
                 description: list.description,
+                _count: { items: list._count.items },
                 wordCount: list._count.items,
                 createdAt: list.createdAt.toISOString(),
+                updatedAt: list.updatedAt.toISOString(),
             }))
         );
     } catch (error) {

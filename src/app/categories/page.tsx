@@ -10,6 +10,7 @@ interface WordList {
     description: string;
     _count: { items: number };
     createdAt: string;
+    updatedAt: string;
 }
 
 export default function CategoriesPage() {
@@ -130,7 +131,12 @@ export default function CategoriesPage() {
                                     <div className="flex items-center justify-between pt-4 border-t border-white/5">
                                         <div className="flex items-center gap-2 text-xs text-[#8b9bb4]">
                                             <span className="material-symbols-outlined text-sm">schedule</span>
-                                            <span>Son güncelleme</span>
+                                            <span>
+                                                {new Date(list.updatedAt).toLocaleDateString('tr-TR', {
+                                                    day: 'numeric',
+                                                    month: 'short'
+                                                })}
+                                            </span>
                                         </div>
                                         <span className="material-symbols-outlined text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all">
                                             arrow_forward

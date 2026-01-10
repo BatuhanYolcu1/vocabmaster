@@ -76,42 +76,53 @@ export async function POST(
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
 
-        // Add words to the list in a transaction
-        const addedWords = await prisma.$transaction(async (tx) => {
-            const createdWords = [];
+        // Prepare word data for batch insert
+        const wordDataList = words.map((wordData: {
+            word: string;
+            definitionTr?: string;
+            exampleSentence?: string;
+            exampleSentenceTr?: string;
+            turkishTranslation: string;
+            type?: string;
+        }) => ({
+            word: wordData.word,
+            definitionTr: wordData.definitionTr || '',
+            exampleSentence: wordData.exampleSentence || '',
+            exampleSentenceTr: wordData.exampleSentenceTr || '',
+            turkishTranslation: wordData.turkishTranslation,
+            type: wordData.type || 'noun',
+            level: 'B1',
+            category: 'Kişisel',
+            isSystem: false,
+            createdByUserId: session.user.id,
+        }));
 
-            for (const wordData of words) {
-                const word = await tx.word.create({
-                    data: {
-                        word: wordData.word,
-                        definitionTr: wordData.definitionTr || '',
-                        exampleSentence: wordData.exampleSentence || '',
-                        exampleSentenceTr: wordData.exampleSentenceTr || '',
-                        turkishTranslation: wordData.turkishTranslation,
-                        type: wordData.type || 'noun',
-                        level: 'B1',
-                        category: 'Kişisel',
-                        isSystem: false,
-                        createdByUserId: session.user.id,
-                    }
-                });
+        // Create all words at once
+        const createdWords = await prisma.$transaction(async (tx) => {
+            // Create words one by one to get their IDs
+            const wordIds: string[] = [];
 
-                await tx.wordListItem.create({
-                    data: {
-                        wordListId: id,
-                        wordId: word.id,
-                    }
-                });
-
-                createdWords.push(word);
+            for (const data of wordDataList) {
+                const word = await tx.word.create({ data });
+                wordIds.push(word.id);
             }
 
-            return createdWords;
+            // Create all word list items at once
+            await tx.wordListItem.createMany({
+                data: wordIds.map(wordId => ({
+                    wordListId: id,
+                    wordId,
+                }))
+            });
+
+            return wordIds;
+        }, {
+            timeout: 30000, // 30 second timeout for large batches
         });
 
         return NextResponse.json({
             success: true,
-            addedCount: addedWords.length
+            addedCount: createdWords.length
         });
     } catch (error) {
         console.error('Error adding words to list:', error);

@@ -3,40 +3,27 @@
 import Link from 'next/link';
 import { useStudyStore } from '@/lib/store';
 import { useSession } from 'next-auth/react';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function StudyCompletePage() {
-    const { stats, resetSession } = useStudyStore();
+    const { stats, lastCompletedStats, resetSession } = useStudyStore();
     const { update } = useSession();
-    const xpProcessed = useRef(false);
+
+    // Use lastCompletedStats if available, otherwise use stats
+    const sessionStats = lastCompletedStats || stats;
 
     useEffect(() => {
-        if (stats && !xpProcessed.current) {
-            const xpEarned = (stats.goodCount * 5) + (stats.easyCount * 10);
-
-            if (xpEarned > 0) {
-                fetch('/api/xp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ amount: xpEarned, source: 'flashcard' })
-                })
-                    .then(res => {
-                        if (res.ok) {
-                            update();
-                            window.dispatchEvent(new Event('xp-updated'));
-                        }
-                    })
-                    .catch(err => console.error('XP Error:', err));
-            }
-
-            xpProcessed.current = true;
+        // Refresh session to update XP display in navbar
+        if (sessionStats) {
+            update();
+            window.dispatchEvent(new Event('xp-updated'));
         }
-    }, [stats, update]);
+    }, [sessionStats, update]);
 
     const getDuration = () => {
-        if (!stats?.startTime || !stats?.endTime) return '0 dk';
-        const start = new Date(stats.startTime);
-        const end = new Date(stats.endTime);
+        if (!sessionStats?.startTime || !sessionStats?.endTime) return '0 dk';
+        const start = new Date(sessionStats.startTime);
+        const end = new Date(sessionStats.endTime);
         const duration = Math.round((end.getTime() - start.getTime()) / 60000);
         return duration < 1 ? '1 dk\'dan az' : `${duration} dk`;
     };
@@ -45,7 +32,7 @@ export default function StudyCompletePage() {
         resetSession();
     };
 
-    if (!stats) {
+    if (!sessionStats) {
         return (
             <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
                 <div className="glass-panel rounded-3xl p-8 text-center">
@@ -62,7 +49,7 @@ export default function StudyCompletePage() {
         );
     }
 
-    const totalXpEarned = (stats.goodCount * 5) + (stats.easyCount * 10);
+    const totalXpEarned = (sessionStats.goodCount * 5) + (sessionStats.easyCount * 10);
 
     return (
         <div className="min-h-screen bg-[#0b0f17] text-white relative">
@@ -97,7 +84,7 @@ export default function StudyCompletePage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
                         {/* Total Words */}
                         <div className="glass-card rounded-2xl p-5 text-center col-span-2 sm:col-span-1">
-                            <p className="text-3xl font-bold text-white">{stats.totalWords}</p>
+                            <p className="text-3xl font-bold text-white">{sessionStats.totalWords}</p>
                             <p className="text-sm text-[#92a4c9] mt-1">Tekrar Edilen</p>
                         </div>
 
@@ -109,19 +96,19 @@ export default function StudyCompletePage() {
 
                         {/* Hard Count */}
                         <div className="rounded-2xl p-5 text-center bg-red-500/10 border border-red-500/20">
-                            <p className="text-3xl font-bold text-red-400">{stats.hardCount}</p>
+                            <p className="text-3xl font-bold text-red-400">{sessionStats.hardCount}</p>
                             <p className="text-sm text-red-300 mt-1">Zor Kelimeler</p>
                         </div>
 
                         {/* Good Count */}
                         <div className="rounded-2xl p-5 text-center bg-amber-500/10 border border-amber-500/20">
-                            <p className="text-3xl font-bold text-amber-400">{stats.goodCount}</p>
+                            <p className="text-3xl font-bold text-amber-400">{sessionStats.goodCount}</p>
                             <p className="text-sm text-amber-300 mt-1">İyi Kelimeler</p>
                         </div>
 
                         {/* Easy Count */}
                         <div className="rounded-2xl p-5 text-center bg-green-500/10 border border-green-500/20">
-                            <p className="text-3xl font-bold text-green-400">{stats.easyCount}</p>
+                            <p className="text-3xl font-bold text-green-400">{sessionStats.easyCount}</p>
                             <p className="text-sm text-green-300 mt-1">Kolay Kelimeler</p>
                         </div>
                     </div>
@@ -130,22 +117,22 @@ export default function StudyCompletePage() {
                     <div>
                         <p className="text-sm font-medium text-[#92a4c9] mb-3">Performans Dağılımı</p>
                         <div className="flex h-3 rounded-full overflow-hidden bg-white/5">
-                            {stats.hardCount > 0 && (
+                            {sessionStats.hardCount > 0 && (
                                 <div
                                     className="bg-red-500"
-                                    style={{ width: `${(stats.hardCount / stats.totalWords) * 100}%` }}
+                                    style={{ width: `${(sessionStats.hardCount / sessionStats.totalWords) * 100}%` }}
                                 />
                             )}
-                            {stats.goodCount > 0 && (
+                            {sessionStats.goodCount > 0 && (
                                 <div
                                     className="bg-amber-400"
-                                    style={{ width: `${(stats.goodCount / stats.totalWords) * 100}%` }}
+                                    style={{ width: `${(sessionStats.goodCount / sessionStats.totalWords) * 100}%` }}
                                 />
                             )}
-                            {stats.easyCount > 0 && (
+                            {sessionStats.easyCount > 0 && (
                                 <div
                                     className="bg-green-500"
-                                    style={{ width: `${(stats.easyCount / stats.totalWords) * 100}%` }}
+                                    style={{ width: `${(sessionStats.easyCount / sessionStats.totalWords) * 100}%` }}
                                 />
                             )}
                         </div>

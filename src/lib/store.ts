@@ -12,6 +12,7 @@ interface StudyStore {
 
     // Statistics
     stats: SessionStats | null;
+    lastCompletedStats: SessionStats | null; // Store completed stats separately
 
     // Actions
     startSession: (words: Word[]) => void;
@@ -20,6 +21,7 @@ interface StudyStore {
     nextCard: () => void;
     endSession: () => void;
     resetSession: () => void;
+    getCompletedStats: () => SessionStats | null;
 }
 
 export const useStudyStore = create<StudyStore>()(
@@ -30,6 +32,7 @@ export const useStudyStore = create<StudyStore>()(
             currentIndex: 0,
             isFlipped: false,
             stats: null,
+            lastCompletedStats: null,
 
             startSession: (words: Word[]) => {
                 const cards = words.map(createSRSCard);
@@ -45,6 +48,7 @@ export const useStudyStore = create<StudyStore>()(
                         easyCount: 0,
                         startTime: new Date(),
                     },
+                    lastCompletedStats: null,
                 });
             },
 
@@ -106,12 +110,25 @@ export const useStudyStore = create<StudyStore>()(
             endSession: () => {
                 const { stats } = get();
                 if (stats) {
+                    const completedStats: SessionStats = {
+                        ...stats,
+                        endTime: new Date(),
+                    };
+
+                    // Send XP immediately when session ends
+                    const xpEarned = (stats.goodCount * 5) + (stats.easyCount * 10);
+                    if (xpEarned > 0) {
+                        fetch('/api/xp', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ amount: xpEarned, source: 'flashcard' })
+                        }).catch(err => console.error('XP Error:', err));
+                    }
+
                     set({
                         isSessionActive: false,
-                        stats: {
-                            ...stats,
-                            endTime: new Date(),
-                        },
+                        stats: completedStats,
+                        lastCompletedStats: completedStats,
                     });
                 }
             },
@@ -123,12 +140,17 @@ export const useStudyStore = create<StudyStore>()(
                     currentIndex: 0,
                     isFlipped: false,
                     stats: null,
+                    // Keep lastCompletedStats for display
                 });
+            },
+
+            getCompletedStats: () => {
+                const { lastCompletedStats, stats } = get();
+                return lastCompletedStats || stats;
             },
         }),
         {
             name: 'vocab-study-storage',
-            skipHydration: true, // Hydration issues fix for Next.js
         }
     )
 );

@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Providers } from "@/components/Providers";
+
+// Optimize font loading with next/font
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "VocabMaster - İngilizce Kelime Öğrenme Platformu",
@@ -42,13 +50,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className="dark">
+    <html lang="tr" className={`dark ${inter.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className="antialiased min-h-screen bg-[#0b0f17] text-white font-['Inter']">
+      <body className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`}>
         <Providers>
           <Navbar />
           <main className="pt-24 pb-12">
@@ -59,4 +67,3 @@ export default function RootLayout({
     </html>
   );
 }
-

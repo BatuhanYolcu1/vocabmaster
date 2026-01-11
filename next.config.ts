@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Enable React Strict Mode for better debugging
+  reactStrictMode: true,
+
   // Image optimization for external sources
   images: {
     remotePatterns: [
@@ -21,6 +24,7 @@ const nextConfig: NextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 7, // Cache images for 7 days
   },
 
   // Performance optimizations
@@ -30,6 +34,13 @@ const nextConfig: NextConfig = {
   // Bundle optimization
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts'],
+  },
+
+  // Logging configuration for production
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
   },
 
   // Security headers

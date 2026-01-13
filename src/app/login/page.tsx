@@ -9,6 +9,7 @@ export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -27,6 +28,12 @@ export default function LoginPage() {
             if (result?.error) {
                 setError('E-posta veya şifre hatalı');
             } else {
+                // Store remember me preference
+                if (rememberMe) {
+                    localStorage.setItem('vocabmaster-remember', 'true');
+                } else {
+                    localStorage.removeItem('vocabmaster-remember');
+                }
                 router.push('/');
                 router.refresh();
             }
@@ -96,7 +103,12 @@ export default function LoginPage() {
 
                         <div className="flex items-center justify-between text-sm">
                             <label className="flex items-center gap-2 text-[#92a4c9] cursor-pointer">
-                                <input type="checkbox" className="w-4 h-4 rounded bg-white/5 border-white/10 text-[#135bec] focus:ring-[#135bec]/20" />
+                                <input
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    className="w-4 h-4 rounded bg-white/5 border-white/10 text-[#135bec] focus:ring-[#135bec]/20"
+                                />
                                 Beni hatırla
                             </label>
                             <Link href="/forgot-password" className="text-[#135bec] hover:text-blue-400 transition-colors">

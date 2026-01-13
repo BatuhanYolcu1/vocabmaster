@@ -4,6 +4,12 @@
 /* Enable class-based dark mode selector */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Anti-flicker: Set base background before React hydration */
+html {
+  background-color: #0b0f17;
+  color-scheme: dark;
+}
+
 :root {
   /* Dark Theme - Stitch Design (Default) */
   --background: #0b0f17;

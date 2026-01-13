@@ -50,13 +50,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className={`dark ${inter.variable}`}>
+    <html lang="tr" className={`dark ${inter.variable}`} suppressHydrationWarning>
       <head>
+        {/* Blocking script to prevent theme flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('vocabmaster-theme');
+                  if (theme) {
+                    document.documentElement.classList.remove('light', 'dark');
+                    document.documentElement.classList.add(theme);
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`}>
+      <body className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`} suppressHydrationWarning>
         <Providers>
           <Navbar />
           <main className="pt-24 pb-12">

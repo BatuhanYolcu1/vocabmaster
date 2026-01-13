@@ -13,7 +13,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-    const [theme, setThemeState] = useState<Theme>('light');
+    const [theme, setThemeState] = useState<Theme>('dark');
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -46,9 +46,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         setThemeState(newTheme);
     };
 
-    // Prevent flash of unstyled content
+    // Prevent flash - show dark background while mounting
     if (!mounted) {
-        return <div style={{ visibility: 'hidden' }}>{children}</div>;
+        return (
+            <div style={{
+                backgroundColor: '#0b0f17',
+                minHeight: '100vh',
+                color: '#f1f5f9'
+            }}>
+                {children}
+            </div>
+        );
     }
 
     return (
@@ -63,7 +71,7 @@ export function useTheme() {
     // Return default values if used outside ThemeProvider (e.g., not-found page)
     if (!context) {
         return {
-            theme: 'light' as Theme,
+            theme: 'dark' as Theme,
             toggleTheme: () => { },
             setTheme: () => { },
         };

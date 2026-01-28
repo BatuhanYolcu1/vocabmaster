@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Upload, FileSpreadsheet, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Upload, FileSpreadsheet, Check, AlertCircle, Loader2, Camera, Image as ImageIcon, Wand2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 interface ParsedWord {
@@ -14,19 +14,65 @@ interface ParsedWord {
 
 export default function ImportPage() {
     const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [file, setFile] = useState<File | null>(null);
     const [parsedWords, setParsedWords] = useState<ParsedWord[]>([]);
     const [listName, setListName] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [extracting, setExtracting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    const processImage = async (imageFile: File) => {
+        setExtracting(true);
+        setError('');
+
+        try {
+            // Convert to base64
+            const reader = new FileReader();
+            const base64Promise = new Promise<string>((resolve) => {
+                reader.onload = () => resolve(reader.result as string);
+                reader.readAsDataURL(imageFile);
+            });
+            const base64Image = await base64Promise;
+
+            const res = await fetch('/api/ai/extract-words', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: base64Image })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setParsedWords(data);
+                setListName(`AI List - ${new Date().toLocaleDateString('tr-TR')}`);
+            } else {
+                setError('Resimdeki kelimeler ayıklanamadı. Lütfen resmin net olduğundan emin olun.');
+            }
+        } catch (err) {
+            console.error(err);
+            setError('AI servisine bağlanırken bir hata oluştu.');
+        } finally {
+            setExtracting(false);
+        }
+    };
 
     const parseFile = useCallback(async (file: File) => {
         setError('');
         setParsedWords([]);
+        setPreviewUrl(null);
 
         const extension = file.name.split('.').pop()?.toLowerCase();
+
+        // Handle Images
+        if (['jpg', 'jpeg', 'png', 'webp'].includes(extension || '')) {
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+            await processImage(file);
+            return;
+        }
 
         try {
             if (extension === 'xlsx' || extension === 'xls') {
@@ -66,12 +112,12 @@ export default function ImportPage() {
                 setParsedWords(words);
                 setListName(file.name.replace(/\.(csv|txt)$/i, ''));
             } else {
-                setError('Desteklenmeyen dosya formatı. Lütfen .xlsx, .csv veya .txt dosyası yükleyin.');
+                setError('Desteklenmeyen dosya formatı. Lütfen .xlsx, .csv, .txt veya resim dosyası yükleyin.');
             }
         } catch {
             setError('Dosya okunamadı. Lütfen dosya formatını kontrol edin.');
         }
-    }, []);
+    }, [processImage]);
 
     const handleDrag = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -182,96 +228,152 @@ export default function ImportPage() {
                 <>
                     {/* File Upload */}
                     <div
-                        className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all ${dragActive
-                                ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                                : 'border-gray-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500'
+                        className={`relative border-2 border-dashed rounded-3xl p-10 text-center transition-all ${dragActive
+                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 shadow-2xl scale-[1.01]'
+                            : 'border-slate-300 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 bg-white/5'
                             }`}
                         onDragEnter={handleDrag}
                         onDragLeave={handleDrag}
                         onDragOver={handleDrag}
                         onDrop={handleDrop}
                     >
+                        {previewUrl ? (
+                            <div className="relative w-full max-w-sm mx-auto overflow-hidden rounded-2xl border-4 border-white/10 shadow-2xl mb-6 group">
+                                <img src={previewUrl} alt="Preview" className="w-full h-auto object-cover max-h-64" />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="bg-white text-black px-4 py-2 rounded-xl font-bold text-sm shadow-xl"
+                                    >
+                                        Değiştir
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <Upload className="w-16 h-16 text-slate-400 dark:text-slate-600 mx-auto mb-6 animate-bounce" />
+                        )}
+
                         <input
+                            ref={fileInputRef}
                             type="file"
-                            accept=".xlsx,.xls,.csv,.txt"
+                            accept=".xlsx,.xls,.csv,.txt,image/*"
                             onChange={handleFileChange}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         />
-                        <Upload className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-                        <p className="text-gray-600 dark:text-gray-400 mb-2">
-                            Dosyayı buraya sürükleyin veya tıklayın
-                        </p>
-                        <p className="text-sm text-gray-400 dark:text-gray-500">
-                            .xlsx, .csv veya .txt desteklenir
-                        </p>
-                        {file && (
-                            <p className="mt-4 text-indigo-600 dark:text-indigo-400 font-medium">
-                                📄 {file.name}
+
+                        <div className="space-y-2">
+                            <p className="text-xl font-bold text-slate-900 dark:text-white">
+                                {file ? file.name : 'Dosyayı buraya bırakın veya tıklayın'}
                             </p>
-                        )}
+                            <p className="text-sm text-slate-500 dark:text-slate-400">
+                                Excel, CSV or <span className="text-indigo-500 font-bold">Resim (Kitap Sayfası)</span>
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Error */}
-                    {error && (
-                        <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl flex items-center gap-3 text-red-600 dark:text-red-400">
-                            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                            {error}
+                    {/* AI Processing State */}
+                    {extracting && (
+                        <div className="mt-6 p-10 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 text-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 h-1 bg-indigo-500 animate-[loading_2s_infinite]" />
+                            <Wand2 className="w-12 h-12 text-indigo-500 mx-auto mb-4 animate-pulse" />
+                            <h3 className="text-lg font-bold text-indigo-400 mb-2">Magic AI Metin Ayıklıyor...</h3>
+                            <p className="text-sm text-indigo-300/80">Gemini sayfadaki kelimleri ve anlamları senin için analiz ediyor, lütfen bekle.</p>
                         </div>
                     )}
 
-                    {/* Preview */}
-                    {parsedWords.length > 0 && (
-                        <div className="mt-6">
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {/* Error */}
+                    {error && (
+                        <div className="mt-4 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-500">
+                            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                            <span className="text-sm font-medium">{error}</span>
+                        </div>
+                    )}
+
+                    {/* Preview Table */}
+                    {parsedWords.length > 0 && !extracting && (
+                        <div className="mt-8 space-y-6 animate-fadeIn">
+                            <div className="relative group">
+                                <label className="absolute -top-3 left-4 px-2 bg-[#0a0d14] text-xs font-bold text-indigo-400 tracking-widest uppercase z-10 transition-colors group-focus-within:text-cyan-400">
                                     Liste Adı
                                 </label>
                                 <input
                                     type="text"
                                     value={listName}
                                     onChange={(e) => setListName(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                    placeholder="Yeni Liste"
+                                    className="w-full px-6 py-4 rounded-2xl border border-white/10 bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all text-lg font-medium"
+                                    placeholder="Yeni Koleksiyon İsmi"
                                 />
                             </div>
 
-                            <div className="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 mb-4">
-                                <h3 className="font-medium text-gray-900 dark:text-white mb-3">
-                                    Önizleme ({parsedWords.length} kelime)
-                                </h3>
-                                <div className="max-h-64 overflow-y-auto space-y-2">
-                                    {parsedWords.slice(0, 20).map((word, i) => (
-                                        <div key={i} className="flex items-center gap-4 p-2 bg-white dark:bg-slate-700 rounded-lg text-sm">
-                                            <span className="font-medium text-gray-900 dark:text-white">{word.word}</span>
-                                            <span className="text-gray-400">→</span>
-                                            <span className="text-gray-600 dark:text-gray-300">{word.translation}</span>
-                                        </div>
-                                    ))}
-                                    {parsedWords.length > 20 && (
-                                        <p className="text-center text-gray-400 text-sm py-2">
-                                            +{parsedWords.length - 20} kelime daha...
-                                        </p>
-                                    )}
+                            <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-sm overflow-hidden shadow-2xl">
+                                <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                                    <h3 className="font-bold text-white flex items-center gap-2">
+                                        <Wand2 className="w-4 h-4 text-indigo-400" />
+                                        Önizleme ({parsedWords.length} kelime)
+                                    </h3>
+                                    <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">AI Tarafından Ayıklandı</span>
+                                </div>
+                                <div className="max-h-96 overflow-y-auto custom-scrollbar">
+                                    <table className="w-full border-collapse">
+                                        <thead className="sticky top-0 bg-[#0a0d14] text-left text-[10px] uppercase tracking-wider text-slate-500">
+                                            <tr>
+                                                <th className="px-6 py-3 font-bold">İngilizce</th>
+                                                <th className="px-6 py-3 font-bold">Türkçe</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            {parsedWords.map((word, i) => (
+                                                <tr key={i} className="hover:bg-white/5 transition-colors group">
+                                                    <td className="px-6 py-4">
+                                                        <span className="text-white font-medium">{word.word}</span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="text-slate-400 group-hover:text-cyan-400 transition-colors">{word.translation}</span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
 
                             <button
                                 onClick={handleImport}
                                 disabled={loading}
-                                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="w-full py-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] text-white font-black text-lg rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 active:scale-[0.98]"
                             >
                                 {loading ? (
                                     <>
-                                        <Loader2 className="w-5 h-5 animate-spin" />
-                                        İçe Aktarılıyor...
+                                        <Loader2 className="w-6 h-6 animate-spin" />
+                                        İçeriye Aktarılıyor...
                                     </>
                                 ) : (
                                     <>
-                                        <Check className="w-5 h-5" />
-                                        {parsedWords.length} Kelimeyi İçe Aktar
+                                        <Check className="w-6 h-6" />
+                                        Koleksiyonu Kaydet
                                     </>
                                 )}
                             </button>
+                        </div>
+                    )}
+
+                    {/* Format Guide */}
+                    {!parsedWords.length && !extracting && (
+                        <div className="mt-12 p-6 rounded-3xl bg-indigo-500/5 border border-indigo-500/10 backdrop-blur-xl">
+                            <h4 className="font-black text-indigo-400 text-sm tracking-widest uppercase mb-4 flex items-center gap-2">
+                                <Camera className="w-4 h-4" />
+                                AI Resim Rehberi
+                            </h4>
+                            <div className="grid grid-cols-2 gap-4 text-xs">
+                                <div className="p-3 bg-white/5 rounded-2xl">
+                                    <p className="text-white font-bold mb-1">📸 Net Fotoğraf</p>
+                                    <p className="text-slate-500 leading-relaxed">Kelime ve anlamların net okunduğundan emin olun.</p>
+                                </div>
+                                <div className="p-3 bg-white/5 rounded-2xl">
+                                    <p className="text-white font-bold mb-1">↔️ Sütun Düzeni</p>
+                                    <p className="text-slate-500 leading-relaxed">Liste formatındaki kitap sayfaları en iyi sonucu verir.</p>
+                                </div>
+                            </div>
                         </div>
                     )}
 

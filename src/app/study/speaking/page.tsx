@@ -62,6 +62,8 @@ export default function SpeakingPage() {
     const [score, setScore] = useState(0);
     const [attempts, setAttempts] = useState(0);
     const [isSupported, setIsSupported] = useState(true);
+    const [evaluationFeedback, setEvaluationFeedback] = useState<string | null>(null);
+    const [isEvaluating, setIsEvaluating] = useState(false);
 
     const recognitionRef = useRef<SpeechRecognition | null>(null);
     const currentWord = words[currentIndex];
@@ -101,18 +103,41 @@ export default function SpeakingPage() {
         speechSynthesis.speak(utterance);
     }, [currentWord]);
 
-    const calculateSimilarity = (spoken: string, target: string): number => {
-        const s1 = spoken.toLowerCase().trim();
-        const s2 = target.toLowerCase().trim();
-        if (s1 === s2) return 100;
-        if (s1.includes(s2) || s2.includes(s1)) return 85;
-        const minLen = Math.min(s1.length, s2.length);
-        let matchCount = 0;
-        for (let i = 0; i < minLen; i++) {
-            if (s1[i] === s2[i]) matchCount++;
+    const evaluateWithAI = async (text: string) => {
+        if (!currentWord) return;
+        setIsEvaluating(true);
+        try {
+            const res = await fetch('/api/ai/evaluate-voice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ word: currentWord.word, transcript: text })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setEvaluationFeedback(data.feedback);
+                if (data.isCorrect) {
+                    setResult('correct');
+                    setScore(prev => prev + 1);
+                } else {
+                    setResult('incorrect');
+                }
+            } else {
+                // Fallback to basic match if API fails
+                if (text.toLowerCase().trim() === currentWord.word.toLowerCase().trim()) {
+                    setResult('correct');
+                    setScore(prev => prev + 1);
+                } else {
+                    setResult('incorrect');
+                }
+            }
+        } catch (error) {
+            console.error("Evaluation error:", error);
+            setResult('incorrect');
+        } finally {
+            setIsEvaluating(false);
+            setAttempts(prev => prev + 1);
         }
-        const longer = s1.length > s2.length ? s1 : s2;
-        return Math.round((matchCount / longer.length) * 100);
     };
 
     const startListening = useCallback(() => {
@@ -131,14 +156,7 @@ export default function SpeakingPage() {
             setTranscript(text);
 
             if (event.results[last].isFinal && currentWord) {
-                const similarity = calculateSimilarity(text, currentWord.word);
-                if (similarity >= 70) {
-                    setResult('correct');
-                    setScore(prev => prev + 1);
-                } else {
-                    setResult('incorrect');
-                }
-                setAttempts(prev => prev + 1);
+                evaluateWithAI(text);
                 setIsListening(false);
             }
         };
@@ -151,6 +169,7 @@ export default function SpeakingPage() {
         setIsListening(true);
         setTranscript('');
         setResult(null);
+        setEvaluationFeedback(null);
     }, [isSupported, currentWord]);
 
     const stopListening = useCallback(() => {
@@ -288,17 +307,24 @@ export default function SpeakingPage() {
                             <p className="text-[#8b9bb4]">{currentWord?.turkishTranslation}</p>
                         </div>
 
-                        {/* Listening State */}
+                        {/* Listening/Evaluating State */}
                         <div className="flex flex-col items-center gap-4">
                             {result === null ? (
                                 <button
                                     onClick={isListening ? stopListening : startListening}
+                                    disabled={isEvaluating}
                                     className={`p-8 rounded-full transition-all ${isListening
                                         ? 'bg-rose-500 text-white animate-pulse scale-110 shadow-[0_0_40px_rgba(244,63,94,0.5)]'
-                                        : 'bg-rose-500/20 text-rose-400 hover:bg-rose-500/30'
+                                        : isEvaluating
+                                            ? 'bg-rose-500/20 text-rose-400 opacity-50 cursor-wait'
+                                            : 'bg-rose-500/20 text-rose-400 hover:bg-rose-500/30'
                                         }`}
                                 >
-                                    <span className="material-symbols-outlined text-5xl">{isListening ? 'mic_off' : 'mic'}</span>
+                                    {isEvaluating ? (
+                                        <div className="w-12 h-12 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin" />
+                                    ) : (
+                                        <span className="material-symbols-outlined text-5xl">{isListening ? 'mic_off' : 'mic'}</span>
+                                    )}
                                 </button>
                             ) : result === 'correct' ? (
                                 <div className="p-8 rounded-full bg-green-500/20 text-green-400">
@@ -311,13 +337,20 @@ export default function SpeakingPage() {
                             )}
 
                             <p className="text-[#8b9bb4]">
-                                {isListening ? 'Dinleniyor...' : result === null ? 'Mikrofona bas ve söyle' : ''}
+                                {isListening ? 'Dinleniyor...' : isEvaluating ? 'AI Değerlendiriyor...' : result === null ? 'Mikrofona bas ve söyle' : ''}
                             </p>
 
                             {transcript && (
                                 <div className="w-full p-4 bg-white/5 rounded-xl text-center">
                                     <p className="text-sm text-[#8b9bb4] mb-1">Duyduğum:</p>
-                                    <p className="text-lg font-medium text-white">{transcript}</p>
+                                    <p className="text-lg font-medium text-white italic">"{transcript}"</p>
+                                </div>
+                            )}
+
+                            {evaluationFeedback && (
+                                <div className="w-full p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl">
+                                    <p className="text-xs text-rose-400 uppercase tracking-widest font-bold mb-1">AI Geri Bildirim</p>
+                                    <p className="text-white text-sm leading-relaxed">{evaluationFeedback}</p>
                                 </div>
                             )}
 

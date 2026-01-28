@@ -8,8 +8,8 @@ if (!apiKey) {
 
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-// Try gemini-1.5-flash-latest which should be available
-export const model = genAI?.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+// Use gemini-1.5-flash for broader compatibility
+export const model = genAI?.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export interface AIResponse {
     definitionTr: string;

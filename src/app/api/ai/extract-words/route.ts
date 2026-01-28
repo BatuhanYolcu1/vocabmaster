@@ -15,25 +15,25 @@ export async function POST(req: Request) {
             return new NextResponse("Missing image data", { status: 400 });
         }
 
-        // Extract base64 content
-        const base64Data = image.split(",")[1] || image;
+        // Extract base64 content and mime type
+        const mimeTypeMatch = image.match(/^data:(image\/[a-zA-Z]+);base64,/);
+        const mimeType = mimeTypeMatch ? mimeTypeMatch[1] : "image/jpeg";
+        const base64Data = image.replace(/^data:image\/[a-z]+;base64,/, "");
 
         const prompt = `
-        Look at this image of a word list or book page. 
-        Extract the English words and their Turkish translations.
+        SYSTEM: You are a professional translator and OCR specialist.
+        TASK: Extract English-Turkish word pairs from the provided image.
+        FORMAT: Return ONLY a valid JSON array. Do not include any text before or after the JSON.
         
-        Rules:
-        1. Identify the English word (word) and its Turkish translation (translation).
-        2. If there is an example sentence, include it (example).
-        3. Return ONLY a structured JSON array of objects.
+        Fields:
+        - "word": The English word or phrase.
+        - "translation": The Turkish translation.
+        - "example": Short example sentence if visible, otherwise omit.
         
-        Expected Format:
+        REQUIRED JSON FORMAT:
         [
-            { "word": "apple", "translation": "elma", "example": "I ate an apple." },
-            ...
+            { "word": "example", "translation": "örnek", "example": "This is an example." }
         ]
-        
-        Return ONLY the JSON. No markdown formatting.
         `;
 
         // Using Gemini 1.5 Flash for vision
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
             {
                 inlineData: {
                     data: base64Data,
-                    mimeType: "image/jpeg",
+                    mimeType: mimeType,
                 },
             },
         ]);
@@ -51,11 +51,38 @@ export async function POST(req: Request) {
         const text = response?.text();
 
         if (!text) {
-            throw new Error("Gemini returned empty response");
+            console.error("Gemini returned empty response");
+            return new NextResponse("Gemini response was empty", { status: 502 });
         }
 
-        const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        const extractedWords = JSON.parse(cleanText);
+        console.log("Gemini Raw Response:", text);
+
+        // More robust JSON extraction
+        let extractedWords: any[] = [];
+        try {
+            // Find the first [ and last ] to extract the JSON array
+            const startIndex = text.indexOf('[');
+            const endIndex = text.lastIndexOf(']');
+
+            if (startIndex === -1 || endIndex === -1) {
+                // Try object format if array fails (though we asked for array)
+                const objStart = text.indexOf('{');
+                const objEnd = text.lastIndexOf('}');
+                if (objStart !== -1 && objEnd !== -1) {
+                    const objText = text.substring(objStart, objEnd + 1);
+                    const obj = JSON.parse(objText);
+                    extractedWords = Array.isArray(obj) ? obj : [obj];
+                } else {
+                    throw new Error("No JSON found in response");
+                }
+            } else {
+                const jsonText = text.substring(startIndex, endIndex + 1);
+                extractedWords = JSON.parse(jsonText);
+            }
+        } catch (parseError) {
+            console.error("JSON Parsing failed:", parseError, "Raw text:", text);
+            return new NextResponse("AI format error: Could not parse word list", { status: 502 });
+        }
 
         return NextResponse.json(extractedWords);
 

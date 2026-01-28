@@ -49,7 +49,9 @@ export default function ImportPage() {
                 setParsedWords(data);
                 setListName(`AI List - ${new Date().toLocaleDateString('tr-TR')}`);
             } else {
-                setError('Resimdeki kelimeler ayıklanamadı. Lütfen resmin net olduğundan emin olun.');
+                const errorText = await res.text();
+                console.error("Extraction failed:", errorText);
+                setError(`Gelişmiş ayıklama başarısız oldu: ${errorText || 'Lütfen resmin net olduğundan emin olun.'}`);
             }
         } catch (err) {
             console.error(err);

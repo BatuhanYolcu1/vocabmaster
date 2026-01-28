@@ -150,10 +150,17 @@ export default function NewWordListPage() {
                     >
                         <span className="material-symbols-outlined">arrow_back</span>
                     </Link>
-                    <div>
+                    <div className="flex-1">
                         <h1 className="text-2xl font-bold text-white">Yeni Kelime Listesi</h1>
                         <p className="text-[#92a4c9]">Kendi kelimelerini ekle ve çalış</p>
                     </div>
+                    <Link
+                        href="/wordlists/import"
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl text-sm font-bold hover:bg-indigo-500/20 transition-all group"
+                    >
+                        <span className="material-symbols-outlined text-lg group-hover:rotate-12 transition-transform">auto_fix</span>
+                        AI ile Fotoğraftan Yükle
+                    </Link>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">

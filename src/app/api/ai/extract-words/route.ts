@@ -36,8 +36,15 @@ export async function POST(req: Request) {
         ]
         `;
 
+        // Check if model is available
+        if (!model) {
+            console.error("Gemini model not initialized - check GEMINI_API_KEY");
+            return new NextResponse("AI Model not initialized. Please check your GEMINI_API_KEY in Vercel settings.", { status: 503 });
+        }
+
         // Using Gemini 1.5 Flash for vision
-        const result = await model?.generateContent([
+        console.log("Calling Gemini Vision with mimeType:", mimeType);
+        const result = await model.generateContent([
             prompt,
             {
                 inlineData: {
@@ -55,17 +62,15 @@ export async function POST(req: Request) {
             return new NextResponse("Gemini response was empty", { status: 502 });
         }
 
-        console.log("Gemini Raw Response:", text);
+        console.log("Gemini Raw Response Length:", text.length);
 
         // More robust JSON extraction
         let extractedWords: any[] = [];
         try {
-            // Find the first [ and last ] to extract the JSON array
             const startIndex = text.indexOf('[');
             const endIndex = text.lastIndexOf(']');
 
             if (startIndex === -1 || endIndex === -1) {
-                // Try object format if array fails (though we asked for array)
                 const objStart = text.indexOf('{');
                 const objEnd = text.lastIndexOf('}');
                 if (objStart !== -1 && objEnd !== -1) {
@@ -73,21 +78,21 @@ export async function POST(req: Request) {
                     const obj = JSON.parse(objText);
                     extractedWords = Array.isArray(obj) ? obj : [obj];
                 } else {
-                    throw new Error("No JSON found in response");
+                    throw new Error("No JSON found in AI response.");
                 }
             } else {
                 const jsonText = text.substring(startIndex, endIndex + 1);
                 extractedWords = JSON.parse(jsonText);
             }
-        } catch (parseError) {
-            console.error("JSON Parsing failed:", parseError, "Raw text:", text);
-            return new NextResponse("AI format error: Could not parse word list", { status: 502 });
+        } catch (parseError: any) {
+            console.error("JSON Parsing failed:", parseError);
+            return new NextResponse(`AI format error: ${parseError.message}`, { status: 502 });
         }
 
         return NextResponse.json(extractedWords);
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Image extraction error:", error);
-        return new NextResponse("Internal Server Error", { status: 500 });
+        return new NextResponse(`Internal Server Error: ${error.message || 'Unknown error'}`, { status: 500 });
     }
 }

@@ -209,83 +209,120 @@ export default function DashboardHome() {
                 </div>
 
                 {/* Bento Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Main Chart Section */}
-                    <div className="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col h-full min-h-[280px]">
-                        <div className="flex justify-between items-center mb-4">
-                            <div>
-                                <h3 className="text-lg font-bold text-white">Haftalık Aktivite</h3>
-                                <p className="text-sm text-[#92a4c9]">Son 7 günlük performansın</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    {/* Left Column Stack */}
+                    <div className="lg:col-span-2 flex flex-col gap-6 w-full">
+                        {/* Main Chart Section */}
+                        <div className="glass-panel rounded-3xl p-6 flex flex-col w-full h-[320px]">
+                            <div className="flex justify-between items-center mb-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-white">Haftalık Aktivite</h3>
+                                    <p className="text-sm text-[#92a4c9]">Son 7 günlük performansın</p>
+                                </div>
+                            </div>
+                            <div className="flex-1 w-full" style={{ minHeight: 180 }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart
+                                        data={stats.weeklyProgress.length > 0
+                                            ? stats.weeklyProgress
+                                            : ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => ({ name: d, xp: 0 }))
+                                        }
+                                        margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+                                    >
+                                        <defs>
+                                            <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#135bec" stopOpacity={0.4} />
+                                                <stop offset="95%" stopColor="#135bec" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <XAxis
+                                            dataKey="name"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#92a4c9', fontSize: 12 }}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: '#6b7a94', fontSize: 11 }}
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: '#1a2235',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                borderRadius: '12px',
+                                                color: '#fff',
+                                                fontSize: '13px',
+                                                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                                                padding: '10px 14px',
+                                            }}
+                                            labelStyle={{ color: '#92a4c9', marginBottom: 6, fontWeight: 600 }}
+                                            content={({ active, payload, label }) => {
+                                                if (!active || !payload?.length) return null;
+                                                const d = payload[0]?.payload;
+                                                return (
+                                                    <div className="bg-[#1a2235] border border-white/10 rounded-xl px-4 py-3 shadow-xl">
+                                                        <p className="text-[#92a4c9] text-xs font-semibold mb-2">{label}</p>
+                                                        <div className="space-y-1">
+                                                            <p className="text-white text-sm">🏆 <span className="font-bold">{d?.xp || 0}</span> XP</p>
+                                                            <p className="text-white text-sm">📚 <span className="font-bold">{d?.words || 0}</span> Kelime</p>
+                                                            <p className="text-white text-sm">🎯 <span className="font-bold">{d?.sessions || 0}</span> Oturum</p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="xp"
+                                            stroke="#135bec"
+                                            strokeWidth={2.5}
+                                            fill="url(#xpGradient)"
+                                            dot={{ r: 4, fill: '#135bec', strokeWidth: 2, stroke: '#0b0f17' }}
+                                            activeDot={{ r: 6, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="flex-1 w-full" style={{ minHeight: 180 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart
-                                    data={stats.weeklyProgress.length > 0
-                                        ? stats.weeklyProgress
-                                        : ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => ({ name: d, xp: 0 }))
-                                    }
-                                    margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
-                                >
-                                    <defs>
-                                        <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#135bec" stopOpacity={0.4} />
-                                            <stop offset="95%" stopColor="#135bec" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <XAxis
-                                        dataKey="name"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#92a4c9', fontSize: 12 }}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#6b7a94', fontSize: 11 }}
-                                    />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: '#1a2235',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            borderRadius: '12px',
-                                            color: '#fff',
-                                            fontSize: '13px',
-                                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-                                            padding: '10px 14px',
-                                        }}
-                                        labelStyle={{ color: '#92a4c9', marginBottom: 6, fontWeight: 600 }}
-                                        content={({ active, payload, label }) => {
-                                            if (!active || !payload?.length) return null;
-                                            const d = payload[0]?.payload;
-                                            return (
-                                                <div className="bg-[#1a2235] border border-white/10 rounded-xl px-4 py-3 shadow-xl">
-                                                    <p className="text-[#92a4c9] text-xs font-semibold mb-2">{label}</p>
-                                                    <div className="space-y-1">
-                                                        <p className="text-white text-sm">🏆 <span className="font-bold">{d?.xp || 0}</span> XP</p>
-                                                        <p className="text-white text-sm">📚 <span className="font-bold">{d?.words || 0}</span> Kelime</p>
-                                                        <p className="text-white text-sm">🎯 <span className="font-bold">{d?.sessions || 0}</span> Oturum</p>
-                                                    </div>
-                                                </div>
-                                            );
-                                        }}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="xp"
-                                        stroke="#135bec"
-                                        strokeWidth={2.5}
-                                        fill="url(#xpGradient)"
-                                        dot={{ r: 4, fill: '#135bec', strokeWidth: 2, stroke: '#0b0f17' }}
-                                        activeDot={{ r: 6, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }}
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
+
+                        {/* Motivation Quote */}
+                        {(() => {
+                            const quotes = [
+                                "Her gün bir kelime öğrenmek, bir yılda 365 yeni kelime demek. Küçük adımlar büyük başarılar getirir.",
+                                "Dil öğrenmenin en iyi zamanı dün idi, ikinci en iyi zaman şimdi.",
+                                "Bilgi güçtür, her yeni kelime sana yeni bir kapı açar.",
+                                "Düzenli çalışma, yetenekten daha önemlidir.",
+                                "Her usta bir zamanlar çıraktı. Öğrenmeye devam et!",
+                                "Bir dili konuşmak, o kültürün ruhunu anlamaktır.",
+                                "Bugün öğrendiğin kelime, yarın kuracağın cümlenin temelidir.",
+                                "Hata yapmak öğrenmenin en doğal parçasıdır. Cesur ol!",
+                                "Öğrenmek bir maraton, sprint değil. Sabırlı ol.",
+                                "Her gün biraz daha ilerlemek, ayda dağları aşmak demektir.",
+                                "Kelimeler dünyaya açılan pencerelerdir.",
+                                "Öğrenme yolculuğunda en önemli adım, bir sonraki adımdır.",
+                                "Zekâ, bildiklerinle değil; öğrenme isteğinle ölçülür.",
+                                "Bugünün çabası, yarının özgüvenidir.",
+                                "Başarı, her gün tekrarlanan küçük çabaların toplamıdır."
+                            ];
+                            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+                            return (
+                                <div className="glass-panel rounded-3xl p-6 relative bg-gradient-to-br from-[#232f48]/40 to-purple-900/20 border-purple-500/20 mt-6 lg:mt-0">
+                                    <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl" />
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="material-symbols-outlined text-purple-400">format_quote</span>
+                                        <h3 className="text-base font-bold text-white">Günün Motivasyon Sözü</h3>
+                                    </div>
+                                    <p className="text-sm text-gray-300 leading-relaxed italic">
+                                        &quot;{quote}&quot;
+                                    </p>
+                                </div>
+                            );
+                        })()}
                     </div>
 
                     {/* Right Column Stack */}
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-6 w-full">
                         {/* Goal Progress Detail */}
                         <div className="glass-panel rounded-3xl p-6 relative overflow-hidden">
                             <div className="flex justify-between items-center mb-4">
@@ -384,40 +421,6 @@ export default function DashboardHome() {
                                             );
                                         })}
                                     </div>
-                                </div>
-                            );
-                        })()}
-
-                        {/* Motivation Quote */}
-                        {(() => {
-                            const quotes = [
-                                "Her gün bir kelime öğrenmek, bir yılda 365 yeni kelime demek. Küçük adımlar büyük başarılar getirir.",
-                                "Dil öğrenmenin en iyi zamanı dün idi, ikinci en iyi zaman şimdi.",
-                                "Bilgi güçtür, her yeni kelime sana yeni bir kapı açar.",
-                                "Düzenli çalışma, yetenekten daha önemlidir.",
-                                "Her usta bir zamanlar çıraktı. Öğrenmeye devam et!",
-                                "Bir dili konuşmak, o kültürün ruhunu anlamaktır.",
-                                "Bugün öğrendiğin kelime, yarın kuracağın cümlenin temelidir.",
-                                "Hata yapmak öğrenmenin en doğal parçasıdır. Cesur ol!",
-                                "Öğrenmek bir maraton, sprint değil. Sabırlı ol.",
-                                "Her gün biraz daha ilerlemek, ayda dağları aşmak demektir.",
-                                "Kelimeler dünyaya açılan pencerelerdir.",
-                                "Öğrenme yolculuğunda en önemli adım, bir sonraki adımdır.",
-                                "Zekâ, bildiklerinle değil; öğrenme isteğinle ölçülür.",
-                                "Bugünün çabası, yarının özgüvenidir.",
-                                "Başarı, her gün tekrarlanan küçük çabaların toplamıdır."
-                            ];
-                            const quote = quotes[Math.floor(Math.random() * quotes.length)];
-                            return (
-                                <div className="glass-panel rounded-3xl p-6 relative bg-gradient-to-br from-[#232f48]/40 to-purple-900/20 border-purple-500/20">
-                                    <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl" />
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <span className="material-symbols-outlined text-purple-400">format_quote</span>
-                                        <h3 className="text-base font-bold text-white">Günün Motivasyon Sözü</h3>
-                                    </div>
-                                    <p className="text-sm text-gray-300 leading-relaxed italic">
-                                        &quot;{quote}&quot;
-                                    </p>
                                 </div>
                             );
                         })()}
@@ -529,6 +532,6 @@ export default function DashboardHome() {
                     <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
             </div>
-        </div>
+        </div >
     );
 }

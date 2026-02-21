@@ -16,21 +16,44 @@ export async function GET() {
             include: {
                 _count: {
                     select: { items: true }
+                },
+                items: {
+                    include: {
+                        word: {
+                            include: {
+                                progress: {
+                                    where: { userId: session.user.id }
+                                }
+                            }
+                        }
+                    }
                 }
             },
             orderBy: { createdAt: 'desc' }
         });
 
         return NextResponse.json(
-            wordLists.map(list => ({
-                id: list.id,
-                name: list.name,
-                description: list.description,
-                _count: { items: list._count.items },
-                wordCount: list._count.items,
-                createdAt: list.createdAt.toISOString(),
-                updatedAt: list.updatedAt.toISOString(),
-            }))
+            wordLists.map(list => {
+                const totalItems = list._count.items;
+                const studiedItems = list.items.filter(
+                    item => item.word.progress && item.word.progress.length > 0
+                ).length;
+                const masteredItems = list.items.filter(
+                    item => item.word.progress && item.word.progress.length > 0 &&
+                        item.word.progress[0].interval >= 21 && item.word.progress[0].easeFactor >= 2.0
+                ).length;
+                return {
+                    id: list.id,
+                    name: list.name,
+                    description: list.description,
+                    _count: { items: totalItems },
+                    wordCount: totalItems,
+                    studiedCount: studiedItems,
+                    masteredCount: masteredItems,
+                    createdAt: list.createdAt.toISOString(),
+                    updatedAt: list.updatedAt.toISOString(),
+                };
+            })
         );
     } catch (error) {
         console.error('Error fetching word lists:', error);

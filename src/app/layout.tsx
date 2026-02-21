@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageTransition from "@/components/PageTransition";
 import { Providers } from "@/components/Providers";
 
 // Optimize font loading with next/font
@@ -77,7 +78,9 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <main className="pt-24 pb-12">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </main>
           <Footer />
         </Providers>

@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface DashboardStats {
     wordsToReview: number;
@@ -176,53 +177,61 @@ export default function DashboardHome() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Main Chart Section */}
                     <div className="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col h-full min-h-[280px]">
-                        <div className="flex justify-between items-center mb-6">
+                        <div className="flex justify-between items-center mb-4">
                             <div>
                                 <h3 className="text-lg font-bold text-white">Haftalık Aktivite</h3>
                                 <p className="text-sm text-[#92a4c9]">Son 7 günlük performansın</p>
                             </div>
                         </div>
-                        <div className="flex-1 w-full relative">
-                            {/* Chart Bars */}
-                            <div className="absolute inset-0 flex items-end justify-between px-2 pb-6 gap-2">
-                                {stats.weeklyProgress.length > 0 ? (
-                                    stats.weeklyProgress.map((day, index) => {
-                                        // Calculate height based on XP, max 100%
-                                        const maxXp = Math.max(...stats.weeklyProgress.map(d => d.xp), 1);
-                                        const heightPercent = (day.xp / maxXp) * 100;
-                                        return (
-                                            <div key={index} className="flex flex-col items-center justify-end h-full gap-2 group w-full">
-                                                <div className="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-[#232f48] px-2 py-1 rounded text-xs text-white whitespace-nowrap z-10">
-                                                    {day.xp} XP
-                                                </div>
-                                                <div
-                                                    className="w-full max-w-[40px] bg-[#135bec]/20 rounded-t-lg relative group-hover:bg-[#135bec]/40 transition-all duration-500"
-                                                    style={{ height: `${Math.max(heightPercent, 5)}%` }}
-                                                >
-                                                    <div className="absolute bottom-0 w-full bg-[#135bec] h-1 rounded-full shadow-[0_0_10px_rgba(19,91,236,0.8)]" />
-                                                </div>
-                                                <span className="text-xs text-[#92a4c9] font-medium">{day.name}</span>
-                                            </div>
-                                        );
-                                    })
-                                ) : (
-                                    ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((day) => (
-                                        <div key={day} className="flex flex-col items-center justify-end h-full gap-2 w-full">
-                                            <div
-                                                className="w-full max-w-[40px] bg-white/5 rounded-t-lg"
-                                                style={{ height: '5%' }}
-                                            />
-                                            <span className="text-xs text-[#92a4c9] font-medium">{day}</span>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                            {/* Grid Lines */}
-                            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
-                                {[1, 2, 3, 4, 5].map(i => (
-                                    <div key={i} className="w-full h-[1px] bg-white/5 border-t border-dashed border-white/10" />
-                                ))}
-                            </div>
+                        <div className="flex-1 w-full" style={{ minHeight: 180 }}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart
+                                    data={stats.weeklyProgress.length > 0
+                                        ? stats.weeklyProgress
+                                        : ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map(d => ({ name: d, xp: 0 }))
+                                    }
+                                    margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+                                >
+                                    <defs>
+                                        <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#135bec" stopOpacity={0.4} />
+                                            <stop offset="95%" stopColor="#135bec" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis
+                                        dataKey="name"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: '#92a4c9', fontSize: 12 }}
+                                    />
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: '#6b7a94', fontSize: 11 }}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: '#1a2235',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '12px',
+                                            color: '#fff',
+                                            fontSize: '13px',
+                                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+                                        }}
+                                        labelStyle={{ color: '#92a4c9', marginBottom: 4 }}
+                                        formatter={(value: number | undefined) => [`${value ?? 0} XP`, 'Kazanılan']}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="xp"
+                                        stroke="#135bec"
+                                        strokeWidth={2.5}
+                                        fill="url(#xpGradient)"
+                                        dot={{ r: 4, fill: '#135bec', strokeWidth: 2, stroke: '#0b0f17' }}
+                                        activeDot={{ r: 6, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }}
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 

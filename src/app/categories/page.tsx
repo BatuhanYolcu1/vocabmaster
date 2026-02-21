@@ -9,6 +9,8 @@ interface WordList {
     name: string;
     description: string;
     _count: { items: number };
+    studiedCount?: number;
+    masteredCount?: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -138,14 +140,26 @@ export default function CategoriesPage() {
                                         {list.description || 'Özel kelime listem'}
                                     </p>
                                     <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                        <div className="flex items-center gap-2 text-xs text-[#8b9bb4]">
-                                            <span className="material-symbols-outlined text-sm">schedule</span>
-                                            <span>
-                                                {new Date(list.updatedAt).toLocaleDateString('tr-TR', {
-                                                    day: 'numeric',
-                                                    month: 'short'
-                                                })}
-                                            </span>
+                                        <div className="flex-1 mr-4">
+                                            {(() => {
+                                                const total = list._count?.items || 0;
+                                                const studied = (list as WordList).studiedCount || 0;
+                                                const pct = total > 0 ? Math.round((studied / total) * 100) : 0;
+                                                return (
+                                                    <div className="space-y-1.5">
+                                                        <div className="flex items-center justify-between text-[10px]">
+                                                            <span className="text-[#8b9bb4]">{studied}/{total} öğrenildi</span>
+                                                            <span className="text-[#135bec] font-bold">%{pct}</span>
+                                                        </div>
+                                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                                            <div
+                                                                className="h-full bg-gradient-to-r from-[#135bec] to-blue-400 rounded-full transition-all duration-500"
+                                                                style={{ width: `${pct}%` }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })()}
                                         </div>
                                         <span className="material-symbols-outlined text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all">
                                             arrow_forward

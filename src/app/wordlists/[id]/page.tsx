@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import WordDetailModal from '@/components/WordDetailModal';
 
 interface Word {
     id: string;
@@ -31,6 +32,7 @@ export default function WordListDetailPage() {
     const [wordList, setWordList] = useState<WordList | null>(null);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState(false);
+    const [selectedWordId, setSelectedWordId] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchList() {
@@ -185,7 +187,11 @@ export default function WordListDetailPage() {
                 ) : (
                     <div className="glass-panel rounded-2xl divide-y divide-white/5">
                         {wordList.words.map((word, index) => (
-                            <div key={word.id} className="flex items-center justify-between p-4 hover:bg-white/5 transition-colors group">
+                            <div
+                                key={word.id}
+                                onClick={() => setSelectedWordId(word.id)}
+                                className="flex items-center justify-between p-4 hover:bg-white/5 transition-colors group cursor-pointer active:scale-[0.99]"
+                            >
                                 <div className="flex items-center gap-4 flex-1 min-w-0">
                                     <span className="text-xs font-medium text-slate-500 w-6">{index + 1}.</span>
                                     <div className="flex-1 min-w-0">
@@ -210,6 +216,9 @@ export default function WordListDetailPage() {
                     </div>
                 )}
             </div>
+
+            {/* Word Detail Modal */}
+            <WordDetailModal wordId={selectedWordId} onClose={() => setSelectedWordId(null)} />
         </div>
     );
 }

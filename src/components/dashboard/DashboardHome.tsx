@@ -34,7 +34,8 @@ interface DashboardStats {
     todayWordsStudied: number;
     dailyGoal: number;
     streak: number;
-    weeklyProgress: { name: string; xp: number }[];
+    weeklyProgress: { name: string; xp: number; words: number; sessions: number }[];
+    totalXp?: number;
 }
 
 export default function DashboardHome() {
@@ -45,7 +46,8 @@ export default function DashboardHome() {
         todayWordsStudied: 0,
         dailyGoal: 20,
         streak: 0,
-        weeklyProgress: []
+        weeklyProgress: [],
+        totalXp: 0
     });
     const [loading, setLoading] = useState(true);
 
@@ -61,7 +63,8 @@ export default function DashboardHome() {
                         todayWordsStudied: data.todayWordsStudied || 0,
                         dailyGoal: data.dailyGoal || 20,
                         streak: data.streak || 0,
-                        weeklyProgress: data.weeklyProgress || []
+                        weeklyProgress: data.weeklyProgress || [],
+                        totalXp: data.totalXp || 0
                     });
                 }
             } catch (error) {
@@ -301,6 +304,89 @@ export default function DashboardHome() {
                             </div>
                             <p className="text-xs text-[#92a4c9]">İstikrarını koruyorsun! Böyle devam et.</p>
                         </div>
+
+                        {/* Daily Quests (Oyunlaştırma) */}
+                        {(() => {
+                            const todayName = new Intl.DateTimeFormat('tr-TR', { weekday: 'short' }).format(new Date());
+                            // `name` eşleşmesi ile bugünün istatistiklerini bul (örn. "Pzt", "Sal")
+                            const todayProgress = stats.weeklyProgress.find(d => {
+                                // weeklyProgress.name returns "Pzt", but Intl returns "Pzt" or "Pzt." depending on node/browser version.
+                                // We can also just take the last element of weeklyProgress (which is today in the API)
+                                return true;
+                            });
+
+                            // API'den dönen weeklyProgress'in son elemanı her zaman bugündür:
+                            const actualTodayProgress = stats.weeklyProgress[stats.weeklyProgress.length - 1] || { xp: 0, words: 0, sessions: 0 };
+
+                            const quests = [
+                                { id: 1, title: '10 Kelime Çalış', target: 10, current: stats.todayWordsStudied, xpReward: 10, icon: 'menu_book', color: 'blue' },
+                                { id: 2, title: '50 XP Kazan', target: 50, current: actualTodayProgress.xp, xpReward: 20, icon: 'local_fire_department', color: 'orange' },
+                                { id: 3, title: '2 Oturum Tamamla', target: 2, current: actualTodayProgress.sessions || 0, xpReward: 15, icon: 'task_alt', color: 'emerald' },
+                            ];
+
+                            return (
+                                <div className="glass-panel rounded-3xl p-6 relative overflow-hidden">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+                                            <h3 className="text-base font-bold text-white flex items-center gap-2">
+                                                <span className="material-symbols-outlined text-yellow-400">workspace_premium</span>
+                                                Günlük Görevler
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {quests.map(quest => {
+                                            const progressPercentage = Math.min(100, (quest.current / quest.target) * 100);
+                                            const isCompleted = quest.current >= quest.target;
+
+                                            // Dynamic classes for color configuration since tailwind cannot extract arbitrary concatenated classes easily.
+                                            let iconBgClass = 'bg-[#1a2235]';
+                                            let iconTextClass = 'text-white';
+
+                                            if (isCompleted) {
+                                                iconBgClass = 'bg-emerald-500/20';
+                                                iconTextClass = 'text-emerald-400';
+                                            } else if (quest.color === 'blue') {
+                                                iconBgClass = 'bg-blue-500/20';
+                                                iconTextClass = 'text-blue-400';
+                                            } else if (quest.color === 'orange') {
+                                                iconBgClass = 'bg-orange-500/20';
+                                                iconTextClass = 'text-orange-400';
+                                            } else if (quest.color === 'emerald') {
+                                                iconBgClass = 'bg-emerald-500/20';
+                                                iconTextClass = 'text-emerald-400';
+                                            }
+
+                                            return (
+                                                <div key={quest.id} className={`p-3 rounded-2xl border ${isCompleted ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-white/5 border-white/5'}`}>
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${iconBgClass} ${iconTextClass}`}>
+                                                                <span className="material-symbols-outlined text-sm">{isCompleted ? 'check' : quest.icon}</span>
+                                                            </div>
+                                                            <div>
+                                                                <p className={`text-sm font-bold ${isCompleted ? 'text-emerald-400' : 'text-white'}`}>{quest.title}</p>
+                                                                <p className="text-xs text-[#92a4c9]">{quest.current} / {quest.target}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-1 bg-[#1a2235] px-2 py-1 rounded-lg">
+                                                            <span className="material-symbols-outlined text-[12px] text-yellow-400">stars</span>
+                                                            <span className="text-xs font-bold text-yellow-400">+{quest.xpReward}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-[#111722] rounded-full overflow-hidden">
+                                                        <div
+                                                            className={`h-full rounded-full transition-all duration-1000 ${isCompleted ? 'bg-emerald-500' : 'bg-gradient-to-r from-blue-500 to-purple-500'}`}
+                                                            style={{ width: `${progressPercentage}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            );
+                        })()}
 
                         {/* Motivation Quote */}
                         {(() => {

@@ -423,6 +423,14 @@ export default function Navbar() {
                                                 <span className="material-symbols-outlined text-[#135bec]">person</span>
                                                 <span className="text-sm font-medium">Profilim</span>
                                             </Link>
+                                            <Link
+                                                href="/statistics"
+                                                onClick={() => setIsMenuOpen(false)}
+                                                className="flex items-center gap-3 px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-purple-400">monitoring</span>
+                                                <span className="text-sm font-medium">İstatistikler</span>
+                                            </Link>
                                             <div className="h-[1px] bg-white/10 mx-3 my-1" />
                                             <button
                                                 onClick={() => {
@@ -533,6 +541,14 @@ export default function Navbar() {
                             >
                                 <span className="material-symbols-outlined text-[20px]">person</span>
                                 <span className="font-medium">Profilim</span>
+                            </Link>
+                            <Link
+                                href="/statistics"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-[#8b9bb4] hover:bg-white/5 hover:text-white transition-all"
+                            >
+                                <span className="material-symbols-outlined text-[20px] text-purple-400">monitoring</span>
+                                <span className="font-medium">İstatistikler</span>
                             </Link>
                             <button
                                 onClick={() => {

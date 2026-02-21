@@ -59,6 +59,12 @@ const CustomIcons = {
             <path d="M19 10v.5a7 7 0 01-14 0V10M12 17.5V22M8 22h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             <path d="M15.5 6l2.5-1M15.5 8.5l2 .5M15.5 11l2.5 1" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity="0.5" />
         </svg>
+    ),
+    'fill-blank': (
+        <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8">
+            <path d="M4 19H20M5 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M9 11h6M9 7h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
     )
 };
 
@@ -116,6 +122,15 @@ const studyModes = [
         gradient: 'from-pink-400 via-rose-500 to-red-600',
         glow: 'rgba(244, 114, 182, 0.4)',
         tag: '🎤 Konuşma'
+    },
+    {
+        id: 'fill-blank',
+        name: 'Cümle Tamamlama',
+        icon: 'fill-blank',
+        description: 'Cümledeki eksik kelimeyi bul',
+        gradient: 'from-[#135bec] via-blue-600 to-indigo-700',
+        glow: 'rgba(19, 91, 236, 0.4)',
+        tag: '📝 Tamamla'
     },
 ];
 

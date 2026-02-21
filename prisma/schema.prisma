@@ -89,6 +89,10 @@ model Word {
   
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+
+  @@index([level])
+  @@index([category])
+  @@index([isSystem])
 }
 
 // User's custom word lists
@@ -102,6 +106,8 @@ model WordList {
   
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+
+  @@index([userId])
 }
 
 
@@ -116,6 +122,8 @@ model WordListItem {
   createdAt  DateTime @default(now())
   
   @@unique([wordListId, wordId])
+  @@index([wordListId])
+  @@index([wordId])
 }
 
 // SRS Progress tracking per user per word
@@ -142,6 +150,9 @@ model Progress {
   updatedAt   DateTime @updatedAt
   
   @@unique([userId, wordId])
+  @@index([userId])
+  @@index([wordId])
+  @@index([nextReview]) // Fast SRS querying
 }
 
 // Achievement definitions

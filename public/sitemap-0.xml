@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://vocabmaster-mu.vercel.app/achievements</loc><lastmod>2026-02-21T23:07:12.328Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/categories</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/leaderboard</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/login</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/profile</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/register</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/statistics</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/complete</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/fill-blank</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/flashcard</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/listening</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/matching</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/multiple-choice</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/select</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/speaking</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/story</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/study/typing</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/wordlists/import</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://vocabmaster-mu.vercel.app/wordlists/new</loc><lastmod>2026-02-21T23:07:12.329Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>

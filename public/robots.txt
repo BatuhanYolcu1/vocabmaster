@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://vocabmaster-mu.vercel.app
+
+# Sitemaps
+Sitemap: https://vocabmaster-mu.vercel.app/sitemap.xml

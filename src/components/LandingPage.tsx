@@ -52,28 +52,64 @@ export default function LandingPage() {
                         </main>
                     </div>
                 </div>
-                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                    {/* Abstract Decorative Element */}
-                    <div className="grid grid-cols-2 gap-4 p-8 opacity-90 transform -rotate-6 scale-90">
-                        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow border border-gray-100" style={{ animation: 'float 3s ease-in-out infinite' }}>
-                            <Brain className="w-12 h-12 text-[#135bec] mb-2" />
-                            <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                            <div className="h-3 bg-gray-100 rounded w-16"></div>
+                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-8 lg:p-12">
+                    {/* App Interface Mockup */}
+                    <div className="w-full max-w-md">
+                        {/* Main Word Card */}
+                        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden">
+                            {/* Card Header */}
+                            <div className="bg-gradient-to-r from-[#135bec] to-blue-600 px-6 py-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-white/60" />
+                                        <span className="text-white/80 text-xs font-medium">Flashcard Modu</span>
+                                    </div>
+                                    <span className="text-white/60 text-xs">3 / 12</span>
+                                </div>
+                            </div>
+
+                            {/* Word Content */}
+                            <div className="px-6 py-8 text-center">
+                                <p className="text-3xl font-bold text-gray-900 mb-2">Accomplish</p>
+                                <p className="text-sm text-gray-400 mb-4">/əˈkɒm.plɪʃ/</p>
+                                <div className="w-12 h-[1px] bg-gray-200 mx-auto mb-4" />
+                                <p className="text-lg text-[#135bec] font-semibold">Başarmak</p>
+                            </div>
+
+                            {/* Example */}
+                            <div className="px-6 pb-6">
+                                <div className="bg-gray-50 rounded-xl px-4 py-3">
+                                    <p className="text-sm text-gray-500 italic">&quot;She accomplished all her goals this year.&quot;</p>
+                                    <p className="text-xs text-gray-400 mt-1">Bu yıl tüm hedeflerini başardı.</p>
+                                </div>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="px-6 pb-5">
+                                <div className="flex items-center justify-between text-xs text-gray-400 mb-1.5">
+                                    <span>İlerleme</span>
+                                    <span className="font-medium text-[#135bec]">%75</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="h-full w-3/4 bg-gradient-to-r from-[#135bec] to-blue-400 rounded-full" />
+                                </div>
+                            </div>
                         </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow border border-gray-100" style={{ animation: 'float 3s ease-in-out infinite', animationDelay: '0.5s' }}>
-                            <Zap className="w-12 h-12 text-amber-500 mb-2" />
-                            <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                            <div className="h-3 bg-gray-100 rounded w-16"></div>
-                        </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow border border-gray-100" style={{ animation: 'float 3s ease-in-out infinite', animationDelay: '1s' }}>
-                            <Trophy className="w-12 h-12 text-emerald-500 mb-2" />
-                            <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                            <div className="h-3 bg-gray-100 rounded w-16"></div>
-                        </div>
-                        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow border border-gray-100" style={{ animation: 'float 3s ease-in-out infinite', animationDelay: '1.5s' }}>
-                            <Globe className="w-12 h-12 text-cyan-500 mb-2" />
-                            <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
-                            <div className="h-3 bg-gray-100 rounded w-16"></div>
+
+                        {/* Mini Stats Row */}
+                        <div className="flex gap-3 mt-4">
+                            <div className="flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 px-4 py-3 text-center">
+                                <p className="text-lg font-bold text-gray-900">128</p>
+                                <p className="text-[11px] text-gray-400">Kelime</p>
+                            </div>
+                            <div className="flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 px-4 py-3 text-center">
+                                <p className="text-lg font-bold text-emerald-500">7 🔥</p>
+                                <p className="text-[11px] text-gray-400">Gün Serisi</p>
+                            </div>
+                            <div className="flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 px-4 py-3 text-center">
+                                <p className="text-lg font-bold text-[#135bec]">2,450</p>
+                                <p className="text-[11px] text-gray-400">XP</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,14 +210,6 @@ export default function LandingPage() {
                     </div>
                 </div>
             </footer>
-
-            {/* Float animation */}
-            <style jsx>{`
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px); }
-                    50% { transform: translateY(-10px); }
-                }
-            `}</style>
         </div>
     );
 }

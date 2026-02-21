@@ -1,9 +1,32 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+// Animated number hook for counting effect
+function useAnimatedNumber(target: number, duration = 800) {
+    const [current, setCurrent] = useState(0);
+    const prevTarget = useRef(0);
+    useEffect(() => {
+        if (target === prevTarget.current) return;
+        const start = prevTarget.current;
+        prevTarget.current = target;
+        const diff = target - start;
+        if (diff === 0) return;
+        const startTime = performance.now();
+        function animate(now: number) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCurrent(Math.round(start + diff * eased));
+            if (progress < 1) requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+    }, [target, duration]);
+    return current;
+}
 
 interface DashboardStats {
     wordsToReview: number;
@@ -52,6 +75,12 @@ export default function DashboardHome() {
 
     const firstName = session?.user?.name?.split(' ')[0] || 'Öğrenci';
     const dailyProgress = Math.min((stats.todayWordsStudied / stats.dailyGoal) * 100, 100);
+
+    // Animated numbers
+    const animReview = useAnimatedNumber(stats.wordsToReview);
+    const animLearned = useAnimatedNumber(stats.wordsLearned);
+    const animToday = useAnimatedNumber(stats.todayWordsStudied);
+    const animStreak = useAnimatedNumber(stats.streak);
 
     if (loading) {
         return (
@@ -109,9 +138,9 @@ export default function DashboardHome() {
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     {/* Stat 1: To Review */}
-                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden">
+                    <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 group hover:bg-[#232f48]/60 active:scale-95 transition-all cursor-default relative overflow-hidden">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-all" />
                         <div className="flex justify-between items-start mb-4 relative z-10">
                             <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400">
@@ -123,12 +152,12 @@ export default function DashboardHome() {
                         </div>
                         <div className="relative z-10">
                             <p className="text-[#92a4c9] text-sm font-medium mb-1">Tekrar Edilecek</p>
-                            <p className="text-3xl font-bold text-white">{stats.wordsToReview}</p>
+                            <p className="text-3xl font-bold text-white">{animReview}</p>
                         </div>
                     </div>
 
                     {/* Stat 2: Learned */}
-                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden">
+                    <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 group hover:bg-[#232f48]/60 active:scale-95 transition-all cursor-default relative overflow-hidden">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all" />
                         <div className="flex justify-between items-start mb-4 relative z-10">
                             <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
@@ -137,12 +166,12 @@ export default function DashboardHome() {
                         </div>
                         <div className="relative z-10">
                             <p className="text-[#92a4c9] text-sm font-medium mb-1">Öğrenilen Kelime</p>
-                            <p className="text-3xl font-bold text-white">{stats.wordsLearned}</p>
+                            <p className="text-3xl font-bold text-white">{animLearned}</p>
                         </div>
                     </div>
 
                     {/* Stat 3: Daily Goal */}
-                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden">
+                    <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 group hover:bg-[#232f48]/60 active:scale-95 transition-all cursor-default relative overflow-hidden">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
                         <div className="flex justify-between items-start mb-4 relative z-10">
                             <div className="w-10 h-10 rounded-full bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
@@ -155,14 +184,14 @@ export default function DashboardHome() {
                         <div className="relative z-10">
                             <p className="text-[#92a4c9] text-sm font-medium mb-1">Günlük Hedef</p>
                             <div className="flex items-baseline gap-1">
-                                <p className="text-3xl font-bold text-white">{stats.todayWordsStudied}</p>
+                                <p className="text-3xl font-bold text-white">{animToday}</p>
                                 <p className="text-xl font-medium text-[#92a4c9]">/{stats.dailyGoal}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Stat 4: Streak */}
-                    <div className="glass-panel rounded-3xl p-6 group hover:bg-[#232f48]/60 transition-colors cursor-default relative overflow-hidden border-orange-500/30">
+                    <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 group hover:bg-[#232f48]/60 active:scale-95 transition-all cursor-default relative overflow-hidden border-orange-500/30">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition-all" />
                         <div className="flex justify-between items-start mb-4 relative z-10">
                             <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 animate-pulse">
@@ -171,7 +200,7 @@ export default function DashboardHome() {
                         </div>
                         <div className="relative z-10">
                             <p className="text-[#92a4c9] text-sm font-medium mb-1">Gün Serisi</p>
-                            <p className="text-3xl font-bold text-white">{stats.streak} Gün</p>
+                            <p className="text-3xl font-bold text-white">{animStreak} Gün</p>
                         </div>
                     </div>
                 </div>
@@ -219,10 +248,24 @@ export default function DashboardHome() {
                                             borderRadius: '12px',
                                             color: '#fff',
                                             fontSize: '13px',
-                                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+                                            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                                            padding: '10px 14px',
                                         }}
-                                        labelStyle={{ color: '#92a4c9', marginBottom: 4 }}
-                                        formatter={(value: number | undefined) => [`${value ?? 0} XP`, 'Kazanılan']}
+                                        labelStyle={{ color: '#92a4c9', marginBottom: 6, fontWeight: 600 }}
+                                        content={({ active, payload, label }) => {
+                                            if (!active || !payload?.length) return null;
+                                            const d = payload[0]?.payload;
+                                            return (
+                                                <div className="bg-[#1a2235] border border-white/10 rounded-xl px-4 py-3 shadow-xl">
+                                                    <p className="text-[#92a4c9] text-xs font-semibold mb-2">{label}</p>
+                                                    <div className="space-y-1">
+                                                        <p className="text-white text-sm">🏆 <span className="font-bold">{d?.xp || 0}</span> XP</p>
+                                                        <p className="text-white text-sm">📚 <span className="font-bold">{d?.words || 0}</span> Kelime</p>
+                                                        <p className="text-white text-sm">🎯 <span className="font-bold">{d?.sessions || 0}</span> Oturum</p>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }}
                                     />
                                     <Area
                                         type="monotone"
@@ -245,7 +288,7 @@ export default function DashboardHome() {
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-base font-bold text-white">Günlük İlerleme</h3>
                                 <span className="text-xs font-mono text-[#135bec] bg-[#135bec]/10 px-2 py-1 rounded">
-                                    {stats.dailyGoal - stats.wordsLearned > 0 ? `${stats.dailyGoal - stats.wordsLearned} kelime kaldı` : 'Tamamlandı!'}
+                                    {stats.dailyGoal - stats.todayWordsStudied > 0 ? `${stats.dailyGoal - stats.todayWordsStudied} kelime kaldı` : '✨ Tamamlandı!'}
                                 </span>
                             </div>
                             <div className="relative h-4 w-full bg-[#111722] rounded-full overflow-hidden mb-2 shadow-inner">

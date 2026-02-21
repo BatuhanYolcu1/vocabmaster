@@ -2,9 +2,14 @@
 
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
     const { data: session } = useSession();
+    const pathname = usePathname();
+
+    // Landing page has its own footer, hide global one
+    if (!session && pathname === '/') return null;
 
     return (
         <footer className="relative z-10 border-t border-white/5 py-6 mt-8">

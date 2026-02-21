@@ -80,68 +80,60 @@ export default function LandingPage() {
             </div>
 
             {/* Feature Section */}
-            <div className="bg-white py-16">
+            <div className="bg-white py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="lg:text-center">
-                        <h2 className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Özellikler</h2>
+                    <div className="lg:text-center mb-16">
+                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Özellikler</p>
                         <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                             Dil öğrenmenin yeni yolu
                         </p>
-                        <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                        <p className="mt-4 max-w-2xl text-lg text-gray-500 lg:mx-auto">
                             Sıkıcı kelime listelerini unutun. VocabMaster ile öğrenme süreciniz tamamen değişecek.
                         </p>
                     </div>
 
-                    <div className="mt-12">
-                        <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-                            <div className="relative bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl border border-blue-100">
-                                <dt>
-                                    <div className="absolute flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-[#135bec] to-blue-600 text-white shadow-lg">
-                                        <Brain className="h-6 w-6" aria-hidden="true" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {[
+                            {
+                                Icon: Brain,
+                                title: 'Akıllı Öğrenme',
+                                desc: 'Akıllı tekrar sistemi ile kelimeleri sadece çevirmiyoruz; örnek cümleler, açıklamalar ve telaffuz ipuçları üretiyoruz.',
+                                gradient: 'from-[#135bec] to-blue-600'
+                            },
+                            {
+                                Icon: Zap,
+                                title: 'Akıllı Tekrar Sistemi',
+                                desc: 'Unutmaya başladığınız kelimeleri tam zamanında hatırlatan SRS algoritması ile kalıcı öğrenme sağlayın.',
+                                gradient: 'from-amber-500 to-orange-500'
+                            },
+                            {
+                                Icon: Trophy,
+                                title: 'Oyunlaştırma',
+                                desc: 'XP kazanın, seviye atlayın, rozetler toplayın ve liderlik tablosunda arkadaşlarınızla yarışın.',
+                                gradient: 'from-emerald-500 to-green-600'
+                            },
+                            {
+                                Icon: Globe,
+                                title: 'Çoklu Çalışma Modları',
+                                desc: 'Sadece kartlar değil; Çoktan seçmeli, Yazma, Dinleme ve Eşleştirme modları ile her yönden gelişin.',
+                                gradient: 'from-cyan-500 to-blue-500'
+                            }
+                        ].map((feature) => (
+                            <div
+                                key={feature.title}
+                                className="bg-white rounded-2xl p-7 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300"
+                            >
+                                <div className="flex items-start gap-5">
+                                    <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg`}>
+                                        <feature.Icon className="w-6 h-6 text-white" />
                                     </div>
-                                    <p className="ml-16 text-lg leading-6 font-bold text-gray-900">Akıllı Öğrenme</p>
-                                </dt>
-                                <dd className="mt-2 ml-16 text-base text-gray-600">
-                                    Akıllı tekrar sistemi ile kelimeleri sadece çevirmiyoruz; örnek cümleler, açıklamalar ve telaffuz ipuçları üretiyoruz.
-                                </dd>
-                            </div>
-
-                            <div className="relative bg-gradient-to-br from-amber-50 to-white p-6 rounded-2xl border border-amber-100">
-                                <dt>
-                                    <div className="absolute flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg">
-                                        <Zap className="h-6 w-6" aria-hidden="true" />
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-1.5">{feature.title}</h3>
+                                        <p className="text-gray-500 text-[15px] leading-relaxed">{feature.desc}</p>
                                     </div>
-                                    <p className="ml-16 text-lg leading-6 font-bold text-gray-900">Akıllı Tekrar Sistemi</p>
-                                </dt>
-                                <dd className="mt-2 ml-16 text-base text-gray-600">
-                                    Unutmaya başladığınız kelimeleri tam zamanında hatırlatan SRS algoritması ile kalıcı öğrenme sağlayın.
-                                </dd>
+                                </div>
                             </div>
-
-                            <div className="relative bg-gradient-to-br from-emerald-50 to-white p-6 rounded-2xl border border-emerald-100">
-                                <dt>
-                                    <div className="absolute flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg">
-                                        <Trophy className="h-6 w-6" aria-hidden="true" />
-                                    </div>
-                                    <p className="ml-16 text-lg leading-6 font-bold text-gray-900">Oyunlaştırma</p>
-                                </dt>
-                                <dd className="mt-2 ml-16 text-base text-gray-600">
-                                    XP kazanın, seviye atlayın, rozetler toplayın ve liderlik tablosunda arkadaşlarınızla yarışın.
-                                </dd>
-                            </div>
-
-                            <div className="relative bg-gradient-to-br from-cyan-50 to-white p-6 rounded-2xl border border-cyan-100">
-                                <dt>
-                                    <div className="absolute flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white shadow-lg">
-                                        <Globe className="h-6 w-6" aria-hidden="true" />
-                                    </div>
-                                    <p className="ml-16 text-lg leading-6 font-bold text-gray-900">Çoklu Çalışma Modları</p>
-                                </dt>
-                                <dd className="mt-2 ml-16 text-base text-gray-600">
-                                    Sadece kartlar değil; Çoktan seçmeli, Yazma, Dinleme ve Eşleştirme modları ile her yönden gelişin.
-                                </dd>
-                            </div>
-                        </dl>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -176,14 +168,9 @@ export default function LandingPage() {
                             </div>
                             <span className="text-gray-900 font-bold">VocabMaster</span>
                         </div>
-                        <div className="text-center md:text-right">
-                            <p className="text-gray-600 text-sm">
-                                Geliştirici: <span className="font-medium text-gray-900">Batuhan YOLCU</span>
-                            </p>
-                            <p className="text-gray-500 text-sm mt-1">
-                                © {new Date().getFullYear()} <span className="font-medium text-[#135bec]">BAY Technology</span> - Tüm hakları saklıdır.
-                            </p>
-                        </div>
+                        <p className="text-gray-500 text-sm">
+                            © {new Date().getFullYear()} <span className="font-medium text-[#135bec]">BAY Technology</span> — Tüm hakları saklıdır.
+                        </p>
                     </div>
                 </div>
             </footer>

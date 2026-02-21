@@ -102,9 +102,17 @@ export async function GET() {
             });
         }
 
+        // Get today's activity for daily goal tracking
+        const todayActivity = dailyActivities.find(a => {
+            const actDate = new Date(a.date);
+            actDate.setHours(0, 0, 0, 0);
+            return actDate.getTime() === today.getTime();
+        });
+
         return NextResponse.json({
             wordsToReview,
             wordsLearned: totalWords,
+            todayWordsStudied: todayActivity?.wordsStudied || 0,
             dailyGoal: 20,
             streak: user?.streak || 0,
             weeklyProgress,

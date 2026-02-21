@@ -8,6 +8,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 interface DashboardStats {
     wordsToReview: number;
     wordsLearned: number;
+    todayWordsStudied: number;
     dailyGoal: number;
     streak: number;
     weeklyProgress: { name: string; xp: number }[];
@@ -18,6 +19,7 @@ export default function DashboardHome() {
     const [stats, setStats] = useState<DashboardStats>({
         wordsToReview: 0,
         wordsLearned: 0,
+        todayWordsStudied: 0,
         dailyGoal: 20,
         streak: 0,
         weeklyProgress: []
@@ -33,6 +35,7 @@ export default function DashboardHome() {
                     setStats({
                         wordsToReview: data.wordsToReview || 0,
                         wordsLearned: data.wordsLearned || 0,
+                        todayWordsStudied: data.todayWordsStudied || 0,
                         dailyGoal: data.dailyGoal || 20,
                         streak: data.streak || 0,
                         weeklyProgress: data.weeklyProgress || []
@@ -48,7 +51,7 @@ export default function DashboardHome() {
     }, []);
 
     const firstName = session?.user?.name?.split(' ')[0] || 'Öğrenci';
-    const dailyProgress = Math.min((stats.wordsLearned / stats.dailyGoal) * 100, 100);
+    const dailyProgress = Math.min((stats.todayWordsStudied / stats.dailyGoal) * 100, 100);
 
     if (loading) {
         return (
@@ -152,7 +155,7 @@ export default function DashboardHome() {
                         <div className="relative z-10">
                             <p className="text-[#92a4c9] text-sm font-medium mb-1">Günlük Hedef</p>
                             <div className="flex items-baseline gap-1">
-                                <p className="text-3xl font-bold text-white">{stats.wordsLearned}</p>
+                                <p className="text-3xl font-bold text-white">{stats.todayWordsStudied}</p>
                                 <p className="text-xl font-medium text-[#92a4c9]">/{stats.dailyGoal}</p>
                             </div>
                         </div>

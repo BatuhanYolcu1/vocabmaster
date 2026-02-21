@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Brain, Zap, Trophy, Globe } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function LandingPage() {
     return (
@@ -52,65 +52,24 @@ export default function LandingPage() {
                         </main>
                     </div>
                 </div>
-                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-8 lg:p-12">
-                    {/* App Interface Mockup */}
-                    <div className="w-full max-w-md">
-                        {/* Main Word Card */}
-                        <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-gray-100 overflow-hidden">
-                            {/* Card Header */}
-                            <div className="bg-gradient-to-r from-[#135bec] to-blue-600 px-6 py-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-white/60" />
-                                        <span className="text-white/80 text-xs font-medium">Flashcard Modu</span>
-                                    </div>
-                                    <span className="text-white/60 text-xs">3 / 12</span>
-                                </div>
+                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                    <div className="grid grid-cols-2 gap-4 p-8 opacity-90 transform -rotate-6 scale-90">
+                        {[
+                            { icon: 'psychology', color: '#135bec', delay: '0s' },
+                            { icon: 'bolt', color: '#f59e0b', delay: '0.5s' },
+                            { icon: 'emoji_events', color: '#10b981', delay: '1s' },
+                            { icon: 'language', color: '#06b6d4', delay: '1.5s' }
+                        ].map((item, i) => (
+                            <div
+                                key={i}
+                                className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow border border-gray-100"
+                                style={{ animation: 'float 3s ease-in-out infinite', animationDelay: item.delay }}
+                            >
+                                <span className="material-symbols-outlined text-[48px] mb-2" style={{ color: item.color }}>{item.icon}</span>
+                                <div className="h-4 bg-gray-200 rounded w-20 mb-2" />
+                                <div className="h-3 bg-gray-100 rounded w-16" />
                             </div>
-
-                            {/* Word Content */}
-                            <div className="px-6 py-8 text-center">
-                                <p className="text-3xl font-bold text-gray-900 mb-2">Accomplish</p>
-                                <p className="text-sm text-gray-400 mb-4">/əˈkɒm.plɪʃ/</p>
-                                <div className="w-12 h-[1px] bg-gray-200 mx-auto mb-4" />
-                                <p className="text-lg text-[#135bec] font-semibold">Başarmak</p>
-                            </div>
-
-                            {/* Example */}
-                            <div className="px-6 pb-6">
-                                <div className="bg-gray-50 rounded-xl px-4 py-3">
-                                    <p className="text-sm text-gray-500 italic">&quot;She accomplished all her goals this year.&quot;</p>
-                                    <p className="text-xs text-gray-400 mt-1">Bu yıl tüm hedeflerini başardı.</p>
-                                </div>
-                            </div>
-
-                            {/* Progress Bar */}
-                            <div className="px-6 pb-5">
-                                <div className="flex items-center justify-between text-xs text-gray-400 mb-1.5">
-                                    <span>İlerleme</span>
-                                    <span className="font-medium text-[#135bec]">%75</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div className="h-full w-3/4 bg-gradient-to-r from-[#135bec] to-blue-400 rounded-full" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Mini Stats Row */}
-                        <div className="flex gap-3 mt-4">
-                            <div className="flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 px-4 py-3 text-center">
-                                <p className="text-lg font-bold text-gray-900">128</p>
-                                <p className="text-[11px] text-gray-400">Kelime</p>
-                            </div>
-                            <div className="flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 px-4 py-3 text-center">
-                                <p className="text-lg font-bold text-emerald-500">7 🔥</p>
-                                <p className="text-[11px] text-gray-400">Gün Serisi</p>
-                            </div>
-                            <div className="flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100 px-4 py-3 text-center">
-                                <p className="text-lg font-bold text-[#135bec]">2,450</p>
-                                <p className="text-[11px] text-gray-400">XP</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -131,25 +90,25 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {[
                             {
-                                Icon: Brain,
+                                icon: 'psychology',
                                 title: 'Akıllı Öğrenme',
                                 desc: 'Akıllı tekrar sistemi ile kelimeleri sadece çevirmiyoruz; örnek cümleler, açıklamalar ve telaffuz ipuçları üretiyoruz.',
                                 gradient: 'from-[#135bec] to-blue-600'
                             },
                             {
-                                Icon: Zap,
+                                icon: 'bolt',
                                 title: 'Akıllı Tekrar Sistemi',
                                 desc: 'Unutmaya başladığınız kelimeleri tam zamanında hatırlatan SRS algoritması ile kalıcı öğrenme sağlayın.',
                                 gradient: 'from-amber-500 to-orange-500'
                             },
                             {
-                                Icon: Trophy,
+                                icon: 'emoji_events',
                                 title: 'Oyunlaştırma',
                                 desc: 'XP kazanın, seviye atlayın, rozetler toplayın ve liderlik tablosunda arkadaşlarınızla yarışın.',
                                 gradient: 'from-emerald-500 to-green-600'
                             },
                             {
-                                Icon: Globe,
+                                icon: 'language',
                                 title: 'Çoklu Çalışma Modları',
                                 desc: 'Sadece kartlar değil; Çoktan seçmeli, Yazma, Dinleme ve Eşleştirme modları ile her yönden gelişin.',
                                 gradient: 'from-cyan-500 to-blue-500'
@@ -161,7 +120,7 @@ export default function LandingPage() {
                             >
                                 <div className="flex items-start gap-5">
                                     <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg`}>
-                                        <feature.Icon className="w-6 h-6 text-white" />
+                                        <span className="material-symbols-outlined text-white text-[24px]">{feature.icon}</span>
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-gray-900 mb-1.5">{feature.title}</h3>
@@ -210,6 +169,13 @@ export default function LandingPage() {
                     </div>
                 </div>
             </footer>
+
+            <style jsx>{`
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+            `}</style>
         </div>
     );
 }

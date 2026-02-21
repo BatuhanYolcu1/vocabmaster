@@ -248,16 +248,38 @@ export default function DashboardHome() {
                         </div>
 
                         {/* Motivation Quote */}
-                        <div className="glass-panel rounded-3xl p-6 relative bg-gradient-to-br from-[#232f48]/40 to-purple-900/20 border-purple-500/20">
-                            <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl" />
-                            <div className="flex items-center gap-3 mb-3">
-                                <span className="material-symbols-outlined text-purple-400">format_quote</span>
-                                <h3 className="text-base font-bold text-white">Günün Motivasyon Sözü</h3>
-                            </div>
-                            <p className="text-sm text-gray-300 leading-relaxed italic">
-                                &quot;Her gün bir kelime öğrenmek, bir yılda 365 yeni kelime demek. Küçük adımlar büyük başarılar getirir.&quot;
-                            </p>
-                        </div>
+                        {(() => {
+                            const quotes = [
+                                "Her gün bir kelime öğrenmek, bir yılda 365 yeni kelime demek. Küçük adımlar büyük başarılar getirir.",
+                                "Dil öğrenmenin en iyi zamanı dün idi, ikinci en iyi zaman şimdi.",
+                                "Bilgi güçtür, her yeni kelime sana yeni bir kapı açar.",
+                                "Düzenli çalışma, yetenekten daha önemlidir.",
+                                "Her usta bir zamanlar çıraktı. Öğrenmeye devam et!",
+                                "Bir dili konuşmak, o kültürün ruhunu anlamaktır.",
+                                "Bugün öğrendiğin kelime, yarın kuracağın cümlenin temelidir.",
+                                "Hata yapmak öğrenmenin en doğal parçasıdır. Cesur ol!",
+                                "Öğrenmek bir maraton, sprint değil. Sabırlı ol.",
+                                "Her gün biraz daha ilerlemek, ayda dağları aşmak demektir.",
+                                "Kelimeler dünyaya açılan pencerelerdir.",
+                                "Öğrenme yolculuğunda en önemli adım, bir sonraki adımdır.",
+                                "Zekâ, bildiklerinle değil; öğrenme isteğinle ölçülür.",
+                                "Bugünün çabası, yarının özgüvenidir.",
+                                "Başarı, her gün tekrarlanan küçük çabaların toplamıdır."
+                            ];
+                            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+                            return (
+                                <div className="glass-panel rounded-3xl p-6 relative bg-gradient-to-br from-[#232f48]/40 to-purple-900/20 border-purple-500/20">
+                                    <div className="absolute -right-6 -top-6 w-20 h-20 bg-purple-500/20 rounded-full blur-xl" />
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="material-symbols-outlined text-purple-400">format_quote</span>
+                                        <h3 className="text-base font-bold text-white">Günün Motivasyon Sözü</h3>
+                                    </div>
+                                    <p className="text-sm text-gray-300 leading-relaxed italic">
+                                        &quot;{quote}&quot;
+                                    </p>
+                                </div>
+                            );
+                        })()}
                     </div>
                 </div>
 

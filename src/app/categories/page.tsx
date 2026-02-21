@@ -64,7 +64,7 @@ export default function CategoriesPage() {
                             className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-bold hover:bg-white/10 transition-all group"
                         >
                             <span className="material-symbols-outlined text-[#135bec] group-hover:scale-110 transition-transform">auto_fix</span>
-                            Magic Import
+                            Sihirli İçe Aktarma
                         </Link>
                         <Link
                             href="/wordlists/new"

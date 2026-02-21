@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Providers } from "@/components/Providers";
 
 // Optimize font loading with next/font
@@ -78,6 +79,7 @@ export default function RootLayout({
           <main className="pt-24 pb-12">
             {children}
           </main>
+          <Footer />
         </Providers>
       </body>
     </html>

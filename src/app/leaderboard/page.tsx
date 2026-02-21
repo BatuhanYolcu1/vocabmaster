@@ -40,44 +40,15 @@ export default function LeaderboardPage() {
     const currentUserData = users.find(u => u.id === (session?.user as { id?: string })?.id);
 
     return (
-        <div className="min-h-screen bg-mesh text-white relative overflow-x-hidden">
-            {/* Navbar */}
-            <header className="sticky top-0 z-50 w-full glass-panel border-b-0">
-                <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16 sm:h-20">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#135bec] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(19,91,236,0.5)]">
-                                <span className="material-symbols-outlined text-white text-xl sm:text-2xl">school</span>
-                            </div>
-                            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">VocabMaster</h1>
-                        </div>
-
-                        <nav className="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
-                            <a className="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors" href="/">Öğren</a>
-                            <a className="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors" href="/study/select">Pratik</a>
-                            <a className="px-5 py-2 text-sm font-medium text-white bg-[#135bec] shadow-lg shadow-[#135bec]/30 rounded-full" href="/leaderboard">Liderlik</a>
-                        </nav>
-
-                        <div className="flex items-center gap-4">
-                            <div className="hidden sm:flex flex-col items-end mr-2">
-                                <span className="text-sm font-semibold text-white">{session?.user?.name || 'Kullanıcı'}</span>
-                                <span className="text-xs text-[#3b82f6] font-medium">Lvl 12 • {currentUserData?.xp || 0} XP</span>
-                            </div>
-                            <div
-                                className="w-10 h-10 rounded-full bg-cover bg-center border-2 border-[#135bec]/50"
-                                style={{
-                                    backgroundImage: session?.user?.image
-                                        ? `url("${session.user.image}")`
-                                        : 'linear-gradient(135deg, #135bec, #8b5cf6)'
-                                }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </header>
+        <div className="min-h-screen bg-[#0b0f17] text-white relative overflow-x-hidden">
+            {/* Ambient Background */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px]" />
+            </div>
 
             {/* Main Content */}
-            <main className="flex-grow container mx-auto px-4 py-8 max-w-[960px] flex flex-col gap-8 pb-32">
+            <main className="relative z-10 container mx-auto px-4 py-8 max-w-[960px] flex flex-col gap-8 pb-16">
                 {/* Page Heading & Toggle */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div className="flex flex-col gap-2">

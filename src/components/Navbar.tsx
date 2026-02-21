@@ -30,6 +30,7 @@ export default function Navbar() {
     const router = useRouter();
     const [xp, setXp] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Search state
     const [searchQuery, setSearchQuery] = useState('');
@@ -159,24 +160,39 @@ export default function Navbar() {
         router.push(`/lists/${result.listId}`);
     };
 
+    // Close mobile menu on route change
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
+
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMobileMenuOpen]);
+
     // Landing Page Navbar (Unauthenticated) - Light theme to match landing page
     if (!session && status !== 'loading') {
         return (
             <header className="fixed top-4 left-0 right-0 z-50 mx-4 md:mx-10">
-                <nav className="bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 max-w-[1200px] mx-auto border border-gray-200/50 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+                <nav className="bg-[#0d1321]/80 backdrop-blur-xl rounded-full px-6 py-3 max-w-[1200px] mx-auto border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                     <div className="flex items-center justify-between whitespace-nowrap">
                         <div className="flex items-center gap-8">
                             <Link href="/" className="flex items-center gap-3">
-                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_2px_8px_rgba(19,91,236,0.3)]">
+                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_0_20px_rgba(19,91,236,0.5)]">
                                     <span className="material-symbols-outlined text-white text-[20px]">school</span>
                                 </div>
-                                <h2 className="text-gray-900 text-xl font-bold leading-tight tracking-tight">VocabMaster</h2>
+                                <h2 className="text-white text-xl font-bold leading-tight tracking-tight">VocabMaster</h2>
                             </Link>
                         </div>
                         <div className="flex items-center gap-3">
                             <Link
                                 href="/login"
-                                className="px-5 py-2.5 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 font-medium transition-all"
+                                className="px-5 py-2.5 rounded-full text-[#8b9bb4] hover:text-white hover:bg-white/5 font-medium transition-all"
                             >
                                 Giriş Yap
                             </Link>
@@ -423,9 +439,115 @@ export default function Navbar() {
                                 )}
                             </div>
                         )}
+                        {/* Mobile Hamburger Button */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                            aria-label="Menüyü aç"
+                        >
+                            <span className="material-symbols-outlined text-white text-[22px]">
+                                {isMobileMenuOpen ? 'close' : 'menu'}
+                            </span>
+                        </button>
                     </div>
                 </div>
             </nav>
+
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+                <>
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                    />
+                    <div className="fixed top-20 left-4 right-4 z-50 lg:hidden animate-fadeIn">
+                        <div className="bg-[#0d1321]/95 backdrop-blur-xl rounded-3xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] p-6 space-y-2">
+                            {/* Nav Links */}
+                            <Link
+                                href="/"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${pathname === '/' ? 'bg-[#135bec] text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'text-[#8b9bb4] hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="material-symbols-outlined text-[20px]">home</span>
+                                <span className="font-medium">Ana Sayfa</span>
+                            </Link>
+                            <Link
+                                href="/categories"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${pathname === '/categories' ? 'bg-[#135bec] text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'text-[#8b9bb4] hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="material-symbols-outlined text-[20px]">menu_book</span>
+                                <span className="font-medium">Kelimeler</span>
+                            </Link>
+                            <Link
+                                href="/study/select"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${pathname.startsWith('/study') ? 'bg-[#135bec] text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'text-[#8b9bb4] hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="material-symbols-outlined text-[20px]">play_circle</span>
+                                <span className="font-medium">Pratik</span>
+                            </Link>
+                            <Link
+                                href="/leaderboard"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${pathname === '/leaderboard' ? 'bg-[#135bec] text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'text-[#8b9bb4] hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="material-symbols-outlined text-[20px]">leaderboard</span>
+                                <span className="font-medium">Liderlik</span>
+                            </Link>
+                            <Link
+                                href="/achievements"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${pathname === '/achievements' ? 'bg-[#135bec] text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'text-[#8b9bb4] hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="material-symbols-outlined text-[20px]">emoji_events</span>
+                                <span className="font-medium">Başarımlar</span>
+                            </Link>
+
+                            {/* Divider */}
+                            <div className="h-px bg-white/10 my-2" />
+
+                            {/* User Info */}
+                            <div className="flex items-center gap-3 px-4 py-3">
+                                <div
+                                    className="w-10 h-10 rounded-full bg-cover bg-center border-2 border-white/20"
+                                    style={{
+                                        backgroundImage: session?.user?.image
+                                            ? `url("${session.user.image}")`
+                                            : 'linear-gradient(135deg, #135bec, #8b5cf6)'
+                                    }}
+                                />
+                                <div className="flex-1">
+                                    <p className="text-white font-medium text-sm">{session?.user?.name || 'Kullanıcı'}</p>
+                                    <p className="text-orange-400 text-xs font-medium flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-[14px]">local_fire_department</span>
+                                        {xp} XP
+                                    </p>
+                                </div>
+                            </div>
+
+                            <Link
+                                href="/profile"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-3 px-4 py-3 rounded-2xl text-[#8b9bb4] hover:bg-white/5 hover:text-white transition-all"
+                            >
+                                <span className="material-symbols-outlined text-[20px]">person</span>
+                                <span className="font-medium">Profilim</span>
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    signOut();
+                                }}
+                                className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all"
+                            >
+                                <span className="material-symbols-outlined text-[20px]">logout</span>
+                                <span className="font-medium">Çıkış Yap</span>
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
         </header>
     );
 }

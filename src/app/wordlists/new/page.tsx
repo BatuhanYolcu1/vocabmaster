@@ -159,7 +159,7 @@ export default function NewWordListPage() {
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl text-sm font-bold hover:bg-indigo-500/20 transition-all group"
                     >
                         <span className="material-symbols-outlined text-lg group-hover:rotate-12 transition-transform">auto_fix</span>
-                        AI ile Fotoğraftan Yükle
+                        Magic Paste (AI)
                     </Link>
                 </div>
 

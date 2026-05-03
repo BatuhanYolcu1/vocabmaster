@@ -179,20 +179,20 @@ export default function Navbar() {
     if (!session && status !== 'loading') {
         return (
             <header className="fixed top-4 left-0 right-0 z-50 mx-4 md:mx-10">
-                <nav className="bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 max-w-[1200px] mx-auto border border-gray-200/50 shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
+                <nav className="bg-[#0d1321]/80 backdrop-blur-xl rounded-full px-6 py-3 max-w-[1200px] mx-auto border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                     <div className="flex items-center justify-between whitespace-nowrap">
                         <div className="flex items-center gap-8">
                             <Link href="/" className="flex items-center gap-3">
-                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_2px_8px_rgba(19,91,236,0.3)]">
+                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_0_20px_rgba(19,91,236,0.5)]">
                                     <span className="material-symbols-outlined text-white text-[20px]">school</span>
                                 </div>
-                                <h2 className="text-gray-900 text-xl font-bold leading-tight tracking-tight">VocabMaster</h2>
+                                <h2 className="text-white text-xl font-bold leading-tight tracking-tight">VocabMaster</h2>
                             </Link>
                         </div>
                         <div className="flex items-center gap-3">
                             <Link
                                 href="/login"
-                                className="px-5 py-2.5 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 font-medium transition-all"
+                                className="px-5 py-2.5 rounded-full text-[#8b9bb4] hover:text-white hover:bg-white/5 font-medium transition-all"
                             >
                                 Giriş Yap
                             </Link>

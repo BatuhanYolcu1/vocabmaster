@@ -25,6 +25,12 @@ model User {
   streak        Int       @default(0)
   lastStudyDate DateTime?
   
+  // Subscription & Limits
+  subscriptionType SubscriptionType @default(FREE)
+  subscriptionEndsAt DateTime?
+  aiUsageCount      Int      @default(0) // Monthly or daily based on logic
+  lastUsageReset    DateTime @default(now())
+  
   // Relations
   accounts      Account[]
   sessions      Session[]
@@ -36,6 +42,12 @@ model User {
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+enum SubscriptionType {
+  FREE
+  LITE
+  PRO
 }
 
 // NextAuth Account model

@@ -66,6 +66,14 @@ export default function RootLayout({
                     document.documentElement.classList.add(theme);
                   }
                 } catch (e) {}
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js');
+                  });
+                }
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                  document.body.classList.add('pwa-mode');
+                }
               })();
             `,
           }}

@@ -302,3 +302,73 @@ a {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+
+/* ═══ MOBILE-FIRST IMPROVEMENTS ═══ */
+
+/* Safe area support for notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Touch feedback for interactive elements */
+@media (hover: none) {
+  button:active,
+  a:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+
+  .glass-card:hover {
+    transform: none;
+  }
+
+  .glass-card:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Disable pull-to-refresh on PWA */
+body.pwa-mode {
+  overscroll-behavior-y: contain;
+}
+
+/* Better mobile font rendering */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* PWA standalone mode adjustments */
+@media all and (display-mode: standalone) {
+  body {
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* Focus visible for keyboard nav only */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid #135bec;
+  outline-offset: 2px;
+  border-radius: 4px;
+}

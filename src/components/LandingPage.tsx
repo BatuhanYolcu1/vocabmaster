@@ -97,7 +97,7 @@ export default function LandingPage() {
         { icon: 'bolt', title: 'Akıllı Tekrar (SRS)', desc: 'Unutmaya başladığın kelimeleri tam zamanında hatırlatan bilimsel algoritma.', gradient: 'from-amber-500 to-orange-500' },
         { icon: 'emoji_events', title: 'Oyunlaştırma', desc: 'XP kazan, seviye atla, rozetler topla ve liderlik tablosunda yarış.', gradient: 'from-emerald-500 to-green-600' },
         { icon: 'school', title: '7 Çalışma Modu', desc: 'Flashcard, Quiz, Yazma, Dinleme, Konuşma, Eşleştirme ve Cümle Tamamlama.', gradient: 'from-purple-500 to-fuchsia-600' },
-        { icon: 'auto_fix_high', title: 'Sihirli İçe Aktarma', desc: 'Excel dosyandan veya yapıştırdığın listeden tek tıkla kelime ekle.', gradient: 'from-cyan-500 to-teal-600' },
+        { icon: 'translate', title: 'Türkçe-İngilizce', desc: 'Türk öğrenciler için özel tasarlanmış, ana dilinde açıklamalar ve çeviriler.', gradient: 'from-cyan-500 to-teal-600' },
         { icon: 'bar_chart', title: 'Detaylı İstatistikler', desc: 'Haftalık aktivite, doğruluk oranları ve öğrenme trendlerini takip et.', gradient: 'from-rose-500 to-pink-600' },
     ];
 

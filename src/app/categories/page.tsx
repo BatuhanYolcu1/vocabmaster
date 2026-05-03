@@ -62,13 +62,6 @@ export default function CategoriesPage() {
                     </div>
                     <div className="flex gap-3">
                         <Link
-                            href="/wordlists/import"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-bold hover:bg-white/10 transition-all group"
-                        >
-                            <span className="material-symbols-outlined text-[#135bec] group-hover:scale-110 transition-transform">auto_fix</span>
-                            Sihirli İçe Aktarma
-                        </Link>
-                        <Link
                             href="/wordlists/new"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
                         >

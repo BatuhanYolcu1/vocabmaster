@@ -133,6 +133,123 @@ export default function LandingPage() {
                 </div>
             </div>
 
+            {/* Stats Section */}
+            <div className="bg-slate-50 py-14 border-y border-gray-100">
+                <div className="max-w-5xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
+                    <div>
+                        <p className="text-3xl md:text-4xl font-extrabold text-gray-900">12,500+</p>
+                        <p className="text-gray-500 text-sm mt-1">Aktif Kullanıcı</p>
+                    </div>
+                    <div>
+                        <p className="text-3xl md:text-4xl font-extrabold text-gray-900">850K+</p>
+                        <p className="text-gray-500 text-sm mt-1">Öğrenilen Kelime</p>
+                    </div>
+                    <div>
+                        <p className="text-3xl md:text-4xl font-extrabold text-[#135bec]">%97</p>
+                        <p className="text-gray-500 text-sm mt-1">Memnuniyet</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Pricing Section */}
+            <div id="pricing" className="bg-white py-20">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                    <div className="lg:text-center mb-16">
+                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Fiyatlandırma</p>
+                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Sana uygun planı seç</p>
+                        <p className="mt-4 max-w-2xl text-lg text-gray-500 lg:mx-auto">Ücretsiz başla, ihtiyacına göre yükselt.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[
+                            { name: 'Ücretsiz', price: '₺0', period: 'sonsuza dek', popular: false, features: ['Günde 10 kelime', '3 kelime listesi', '3 çalışma modu', 'Temel istatistikler', '5 AI üretim/gün'], cta: 'Hemen Başla' },
+                            { name: 'Lite', price: '₺29.99', period: '/ay', popular: true, features: ['Günde 50 kelime', '10 kelime listesi', '5 çalışma modu', 'Detaylı istatistikler', '30 AI üretim/gün', 'Reklamsız'], cta: "Lite'a Geç" },
+                            { name: 'Pro', price: '₺59.99', period: '/ay', popular: false, features: ['Sınırsız kelime', 'Sınırsız liste', 'Tüm 7 mod', 'Tam istatistikler', 'Sınırsız AI', 'Öncelikli destek', 'Reklamsız'], cta: "Pro'ya Geç" },
+                        ].map((plan) => (
+                            <div key={plan.name} className={`relative bg-white rounded-2xl p-7 border flex flex-col ${plan.popular ? 'border-[#135bec] shadow-[0_4px_30px_rgba(19,91,236,0.15)] scale-105' : 'border-gray-200 shadow-[0_2px_16px_rgba(0,0,0,0.04)]'}`}>
+                                {plan.popular && (
+                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white text-xs font-bold">En Popüler</div>
+                                )}
+                                <h3 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h3>
+                                <div className="flex items-baseline gap-1 mb-6">
+                                    <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
+                                    <span className="text-gray-500 text-sm">{plan.period}</span>
+                                </div>
+                                <ul className="space-y-3 mb-8 flex-1">
+                                    {plan.features.map((f) => (
+                                        <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
+                                            <span className="material-symbols-outlined text-emerald-500 text-base">check_circle</span>
+                                            {f}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Link href="/register" className={`w-full py-3 rounded-full font-bold text-center block transition-all hover:shadow-lg ${plan.popular ? 'bg-gradient-to-r from-[#135bec] to-blue-600 text-white shadow-[0_2px_12px_rgba(19,91,236,0.3)]' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                                    {plan.cta}
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Testimonials */}
+            <div className="bg-slate-50 py-20 border-t border-gray-100">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
+                    <div className="lg:text-center mb-16">
+                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Kullanıcılar</p>
+                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Onlar ne diyor?</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[
+                            { name: 'Elif K.', role: 'Üniversite Öğrencisi', text: 'YDS hazırlığımda VocabMaster sayesinde 3 ayda 2000+ kelime öğrendim. Akıllı tekrar sistemi gerçekten işe yarıyor!' },
+                            { name: 'Ahmet Y.', role: 'Yazılım Mühendisi', text: 'Teknik İngilizce kelimelerimi güçlendirmek için harika. AI ile üretilen örnek cümleler çok kaliteli.' },
+                            { name: 'Zeynep D.', role: 'Lise Öğretmeni', text: 'Öğrencilerime kelime listesi hazırlamak artık çok kolay. Sınıfça yarışıyoruz!' },
+                        ].map((t) => (
+                            <div key={t.name} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.04)]">
+                                <div className="flex items-center gap-1 mb-4">
+                                    {[1,2,3,4,5].map((s) => (
+                                        <span key={s} className="material-symbols-outlined text-amber-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                                    ))}
+                                </div>
+                                <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&quot;{t.text}&quot;</p>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#135bec] to-purple-600 flex items-center justify-center text-white font-bold text-sm">{t.name[0]}</div>
+                                    <div>
+                                        <p className="text-gray-900 font-medium text-sm">{t.name}</p>
+                                        <p className="text-gray-500 text-xs">{t.role}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* FAQ */}
+            <div className="bg-white py-20">
+                <div className="max-w-3xl mx-auto px-4">
+                    <div className="lg:text-center mb-16">
+                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">SSS</p>
+                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Sıkça Sorulan Sorular</p>
+                    </div>
+                    <div className="space-y-4">
+                        {[
+                            { q: 'VocabMaster nasıl çalışır?', a: 'Kelime listeleri oluşturursun, AI yardımıyla açıklamalar üretilir ve akıllı tekrar sistemi (SRS) ile en verimli zamanlarda pratik yaparsın.' },
+                            { q: 'Ücretsiz plan yeterli mi?', a: 'Ücretsiz plan günde 10 kelime ve 3 çalışma moduyla temel ihtiyaçları karşılar. Daha yoğun çalışma için Lite veya Pro planlarına geçebilirsin.' },
+                            { q: 'Hangi dilleri destekliyorsunuz?', a: 'Şu anda İngilizce-Türkçe destekleniyor. İleride Almanca, Fransızca ve İspanyolca da eklenecek.' },
+                            { q: 'Mobilde kullanabilir miyim?', a: 'Evet! VocabMaster PWA desteklidir, telefonunuza uygulama olarak ekleyebilirsiniz.' },
+                        ].map((faq) => (
+                            <details key={faq.q} className="group bg-slate-50 rounded-xl border border-gray-100 overflow-hidden">
+                                <summary className="flex items-center justify-between p-5 cursor-pointer font-semibold text-gray-900 hover:bg-slate-100 transition-colors list-none">
+                                    {faq.q}
+                                    <span className="material-symbols-outlined text-[#135bec] group-open:rotate-180 transition-transform">expand_more</span>
+                                </summary>
+                                <p className="px-5 pb-5 text-gray-500 text-sm leading-relaxed">{faq.a}</p>
+                            </details>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             {/* CTA Section */}
             <div className="bg-gradient-to-r from-[#135bec] to-blue-600">
                 <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
@@ -154,16 +271,42 @@ export default function LandingPage() {
             </div>
 
             {/* Footer */}
-            <footer className="bg-white border-t border-gray-100 py-8">
+            <footer className="bg-white border-t border-gray-100 py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600">
-                                <span className="material-symbols-outlined text-white text-[18px]">school</span>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                        <div>
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600">
+                                    <span className="material-symbols-outlined text-white text-[18px]">school</span>
+                                </div>
+                                <span className="text-gray-900 font-bold">VocabMaster</span>
                             </div>
-                            <span className="text-gray-900 font-bold">VocabMaster</span>
+                            <p className="text-gray-500 text-sm">AI destekli kelime öğrenme platformu.</p>
                         </div>
-                        <p className="text-gray-500 text-sm">
+                        <div>
+                            <h4 className="text-gray-900 font-semibold text-sm mb-3">Platform</h4>
+                            <div className="space-y-2 text-sm text-gray-500">
+                                <Link href="#pricing" className="block hover:text-[#135bec] transition-colors">Fiyatlandırma</Link>
+                                <Link href="/register" className="block hover:text-[#135bec] transition-colors">Ücretsiz Başla</Link>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-gray-900 font-semibold text-sm mb-3">Destek</h4>
+                            <div className="space-y-2 text-sm text-gray-500">
+                                <Link href="/about" className="block hover:text-[#135bec] transition-colors">Hakkımızda</Link>
+                                <Link href="/contact" className="block hover:text-[#135bec] transition-colors">İletişim</Link>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-gray-900 font-semibold text-sm mb-3">Yasal</h4>
+                            <div className="space-y-2 text-sm text-gray-500">
+                                <Link href="/privacy" className="block hover:text-[#135bec] transition-colors">Gizlilik Politikası</Link>
+                                <Link href="/terms" className="block hover:text-[#135bec] transition-colors">Kullanım Koşulları</Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="border-t border-gray-100 pt-6">
+                        <p className="text-gray-500 text-sm text-center">
                             © {new Date().getFullYear()} <span className="font-medium text-[#135bec]">BAY Technology</span> — Tüm hakları saklıdır.
                         </p>
                     </div>

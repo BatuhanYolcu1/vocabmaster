@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateWordDetails } from '@/lib/gemini';
 import { auth } from '@/lib/auth';
+import { getUserPlanInfo, incrementAIUsage } from '@/lib/subscription-server';
 
 export async function POST(request: NextRequest) {
     try {
         const session = await auth();
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        // 🔒 Check AI usage limit
+        const planInfo = await getUserPlanInfo(session.user.id);
+        if (planInfo?.aiLimitReached) {
+            return NextResponse.json({
+                error: `Günlük AI kullanım limitine ulaştınız (${planInfo.aiUsageCount}/${planInfo.limits.dailyAILimit}). Planınızı yükseltin.`,
+                code: 'AI_LIMIT_REACHED',
+                plan: planInfo.plan,
+            }, { status: 403 });
         }
 
         const { word } = await request.json();
@@ -22,6 +33,10 @@ export async function POST(request: NextRequest) {
         }
 
         const details = await generateWordDetails(word);
+        
+        // Track AI usage
+        await incrementAIUsage(session.user.id);
+        
         return NextResponse.json(details);
     } catch (error) {
         console.error('AI API Error:', error);

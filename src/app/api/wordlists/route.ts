@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { canCreateWordList, getDailyWordCount } from '@/lib/subscription-server';
 
 // GET /api/wordlists - Get user's word lists
 export async function GET() {
@@ -70,11 +71,37 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        // 🔒 Check word list limit
+        const listCheck = await canCreateWordList(session.user.id);
+        if (!listCheck.allowed) {
+            return NextResponse.json({
+                error: `Kelime listesi limitine ulaştınız (${listCheck.current}/${listCheck.max}). Daha fazla liste oluşturmak için planınızı yükseltin.`,
+                code: 'LIST_LIMIT_REACHED',
+                current: listCheck.current,
+                max: listCheck.max,
+                plan: listCheck.plan,
+            }, { status: 403 });
+        }
+
         const body = await request.json();
         const { name, description, words } = body;
 
         if (!name || !words || words.length === 0) {
             return NextResponse.json({ error: 'Name and at least one word required' }, { status: 400 });
+        }
+
+        // 🔒 Check daily word limit
+        const wordCheck = await getDailyWordCount(session.user.id);
+        if (wordCheck.limit !== -1 && (wordCheck.count + words.length) > wordCheck.limit) {
+            const remaining = Math.max(0, wordCheck.limit - wordCheck.count);
+            return NextResponse.json({
+                error: `Günlük kelime ekleme limitine ulaştınız (${wordCheck.count}/${wordCheck.limit}). Kalan: ${remaining} kelime. Planınızı yükseltin.`,
+                code: 'DAILY_WORD_LIMIT_REACHED',
+                current: wordCheck.count,
+                limit: wordCheck.limit,
+                remaining,
+                plan: wordCheck.plan,
+            }, { status: 403 });
         }
 
         // Create word list and words in a transaction

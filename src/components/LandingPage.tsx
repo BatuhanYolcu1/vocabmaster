@@ -174,8 +174,8 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
                             { name: 'Ücretsiz', price: '₺0', period: 'sonsuza dek', popular: false, features: ['Günde 10 kelime', '3 kelime listesi', '3 çalışma modu', 'Temel istatistikler', '5 AI üretim/gün'], cta: 'Hemen Başla' },
-                            { name: 'Lite', price: '₺29.99', period: '/ay', popular: true, features: ['Günde 50 kelime', '10 kelime listesi', '5 çalışma modu', 'Detaylı istatistikler', '30 AI üretim/gün', 'Reklamsız'], cta: "Lite'a Geç" },
-                            { name: 'Pro', price: '₺59.99', period: '/ay', popular: false, features: ['Sınırsız kelime', 'Sınırsız liste', 'Tüm 7 mod', 'Tam istatistikler', 'Sınırsız AI', 'Öncelikli destek', 'Reklamsız'], cta: "Pro'ya Geç" },
+                            { name: 'Lite', price: '₺29.99', period: '/ay', popular: true, features: ['Günde 50 kelime', '10 kelime listesi', '5 çalışma modu', 'Detaylı istatistikler', '30 AI üretim/gün', 'Excel içe aktarma', 'Reklamsız'], cta: "Lite'a Geç" },
+                            { name: 'Pro', price: '₺59.99', period: '/ay', popular: false, features: ['Sınırsız kelime', 'Sınırsız liste', 'Tüm 7 mod', 'Tam istatistikler', 'Sınırsız AI', 'Story modu', 'Öncelikli destek', 'Reklamsız'], cta: "Pro'ya Geç" },
                         ].map((plan) => (
                             <div key={plan.name} className={`relative bg-white rounded-2xl p-7 border flex flex-col ${plan.popular ? 'border-[#135bec] shadow-[0_4px_30px_rgba(19,91,236,0.15)] scale-105' : 'border-gray-200 shadow-[0_2px_16px_rgba(0,0,0,0.04)]'}`}>
                                 {plan.popular && (

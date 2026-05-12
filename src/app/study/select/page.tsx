@@ -142,26 +142,30 @@ export default function StudySelectPage() {
     const [selectedList, setSelectedList] = useState<string | null>(null);
     const [step, setStep] = useState<'list' | 'mode'>('list');
     const [hoveredMode, setHoveredMode] = useState<string | null>(null);
+    const [allowedModes, setAllowedModes] = useState<string[]>(['flashcard', 'multiple-choice', 'typing']);
+    const [userPlan, setUserPlan] = useState<string>('FREE');
 
     useEffect(() => {
-        async function fetchLists() {
-            if (!session) {
-                setLoading(false);
-                return;
-            }
+        async function fetchData() {
+            if (!session) { setLoading(false); return; }
             try {
-                const res = await fetch('/api/wordlists');
-                if (res.ok) {
-                    const data = await res.json();
-                    setWordLists(data);
+                const [listsRes, subRes] = await Promise.all([
+                    fetch('/api/wordlists'),
+                    fetch('/api/subscription'),
+                ]);
+                if (listsRes.ok) setWordLists(await listsRes.json());
+                if (subRes.ok) {
+                    const subData = await subRes.json();
+                    setAllowedModes(subData.limits.studyModes || ['flashcard', 'multiple-choice', 'typing']);
+                    setUserPlan(subData.plan || 'FREE');
                 }
             } catch (error) {
-                console.error('Failed to fetch lists:', error);
+                console.error('Failed to fetch:', error);
             } finally {
                 setLoading(false);
             }
         }
-        fetchLists();
+        fetchData();
     }, [session]);
 
     const handleListSelect = (listId: string) => {
@@ -171,6 +175,10 @@ export default function StudySelectPage() {
 
     const handleModeSelect = (modeId: string) => {
         if (!selectedList) return;
+        if (!allowedModes.includes(modeId)) {
+            // Don't navigate — locked mode
+            return;
+        }
         router.push(`/study/${modeId}?listId=${selectedList}`);
     };
 
@@ -330,46 +338,63 @@ export default function StudySelectPage() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto">
-                            {studyModes.map((mode, idx) => (
+                            {studyModes.map((mode, idx) => {
+                                const isLocked = !allowedModes.includes(mode.id);
+                                const requiredPlan = ['listening', 'matching'].includes(mode.id) ? 'Lite' : 'Pro';
+                                return (
                                 <button
                                     key={mode.id}
                                     onClick={() => handleModeSelect(mode.id)}
                                     onMouseEnter={() => setHoveredMode(mode.id)}
                                     onMouseLeave={() => setHoveredMode(null)}
-                                    className="group relative p-6 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm text-left transition-all duration-500 hover:border-white/20"
+                                    className={`group relative p-6 rounded-3xl border text-left transition-all duration-500 ${isLocked ? 'border-white/5 bg-white/[0.02] opacity-60 cursor-not-allowed' : 'border-white/10 bg-white/5 backdrop-blur-sm hover:border-white/20'}`}
                                     style={{
                                         animationDelay: `${idx * 100}ms`,
-                                        boxShadow: hoveredMode === mode.id ? `0 0 60px ${mode.glow}` : 'none'
+                                        boxShadow: !isLocked && hoveredMode === mode.id ? `0 0 60px ${mode.glow}` : 'none'
                                     }}
                                 >
                                     {/* Gradient overlay on hover */}
-                                    <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${mode.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                                    {!isLocked && <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${mode.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />}
+
+                                    {/* Lock overlay */}
+                                    {isLocked && (
+                                        <div className="absolute inset-0 rounded-3xl flex items-center justify-center z-10">
+                                            <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-400 text-[10px] font-bold uppercase tracking-wider">
+                                                🔒 {requiredPlan}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="relative">
                                         <div className="flex items-start justify-between mb-5">
-                                            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${mode.gradient} p-0.5 group-hover:scale-110 transition-transform duration-300`}>
+                                            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${mode.gradient} p-0.5 ${isLocked ? 'grayscale' : 'group-hover:scale-110'} transition-transform duration-300`}>
                                                 <div className="w-full h-full rounded-2xl bg-[#0a0d14] flex items-center justify-center text-white">
                                                     {CustomIcons[mode.icon as keyof typeof CustomIcons]}
                                                 </div>
                                             </div>
-                                            <span className="text-[10px] uppercase tracking-wider text-white/60 bg-white/10 px-3 py-1.5 rounded-full font-semibold">
-                                                {mode.tag}
-                                            </span>
+                                            {!isLocked && (
+                                                <span className="text-[10px] uppercase tracking-wider text-white/60 bg-white/10 px-3 py-1.5 rounded-full font-semibold">
+                                                    {mode.tag}
+                                                </span>
+                                            )}
                                         </div>
-                                        <h3 className="text-xl font-bold text-white mb-2 group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/80 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                                        <h3 className={`text-xl font-bold mb-2 ${isLocked ? 'text-white/40' : 'text-white group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/80 group-hover:bg-clip-text group-hover:text-transparent'} transition-all`}>
                                             {mode.name}
                                         </h3>
-                                        <p className="text-sm text-[#6b7a94] group-hover:text-[#8b9bb4] transition-colors">
+                                        <p className={`text-sm ${isLocked ? 'text-[#6b7a94]/50' : 'text-[#6b7a94] group-hover:text-[#8b9bb4]'} transition-colors`}>
                                             {mode.description}
                                         </p>
 
                                         {/* Arrow indicator */}
-                                        <div className="absolute bottom-6 right-6 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all">
-                                            <span className="text-sm">→</span>
-                                        </div>
+                                        {!isLocked && (
+                                            <div className="absolute bottom-6 right-6 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all">
+                                                <span className="text-sm">→</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </button>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 )}

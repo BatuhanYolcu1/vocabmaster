@@ -25,10 +25,16 @@ model User {
   streak        Int       @default(0)
   lastStudyDate DateTime?
   
+  // Onboarding & Preferences
+  dailyGoal         Int      @default(10)
+  languageLevel     String   @default("B1") // A1, A2, B1, B2, C1, C2
+  interests         String   @default("Genel") // Comma-separated: "Genel,İş,Akademik"
+  onboardingComplete Boolean @default(false)
+  
   // Subscription & Limits
   subscriptionType SubscriptionType @default(FREE)
   subscriptionEndsAt DateTime?
-  aiUsageCount      Int      @default(0) // Monthly or daily based on logic
+  aiUsageCount      Int      @default(0) // Daily AI usage counter
   lastUsageReset    DateTime @default(now())
   
   // Relations

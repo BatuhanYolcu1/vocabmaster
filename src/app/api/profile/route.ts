@@ -46,7 +46,7 @@ export async function PUT(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { name, image } = body;
+        const { name, image, level, dailyGoal, interests, onboardingComplete } = body;
 
         // Validate name
         if (name !== undefined) {
@@ -70,9 +70,17 @@ export async function PUT(req: NextRequest) {
         }
 
         // Build update data
-        const updateData: { name?: string; image?: string | null } = {};
+        const updateData: Record<string, unknown> = {};
         if (name !== undefined) updateData.name = name.trim();
         if (image !== undefined) updateData.image = image || null;
+        
+        // Onboarding fields
+        if (level !== undefined) updateData.languageLevel = level;
+        if (dailyGoal !== undefined) updateData.dailyGoal = Number(dailyGoal);
+        if (interests !== undefined) {
+            updateData.interests = Array.isArray(interests) ? interests.join(',') : interests;
+        }
+        if (onboardingComplete !== undefined) updateData.onboardingComplete = Boolean(onboardingComplete);
 
         const updatedUser = await prisma.user.update({
             where: { id: session.user.id },
@@ -85,6 +93,9 @@ export async function PUT(req: NextRequest) {
                 xp: true,
                 level: true,
                 streak: true,
+                dailyGoal: true,
+                languageLevel: true,
+                onboardingComplete: true,
             }
         });
 

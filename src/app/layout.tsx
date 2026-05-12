@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import { Providers } from "@/components/Providers";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Optimize font loading with next/font
 const inter = Inter({
@@ -91,6 +93,8 @@ export default function RootLayout({
             </PageTransition>
           </main>
           <Footer />
+          <Analytics />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>

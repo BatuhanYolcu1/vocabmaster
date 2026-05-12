@@ -10,6 +10,10 @@ export default function Footer() {
 
     // Landing page has its own footer
     if (!session && pathname === '/') return null;
+    
+    // Hide footer on study modes, login/register, onboarding
+    const hideFooterRoutes = ['/study/', '/login', '/register', '/onboarding'];
+    if (hideFooterRoutes.some(route => pathname.startsWith(route))) return null;
 
     return (
         <footer className="relative z-10 border-t border-white/5 py-8 mt-8">

@@ -52,8 +52,8 @@ export default function LandingPage() {
                         </main>
                     </div>
                 </div>
-                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                    <div className="grid grid-cols-2 gap-4 p-8 opacity-90 transform -rotate-6 scale-90">
+                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center min-h-[300px] lg:min-h-0">
+                    <div className="grid grid-cols-2 gap-4 p-8 opacity-90 transform -rotate-6 scale-75 sm:scale-90">
                         {[
                             { icon: 'psychology', color: '#135bec', delay: '0s' },
                             { icon: 'bolt', color: '#f59e0b', delay: '0.5s' },
@@ -112,6 +112,18 @@ export default function LandingPage() {
                                 title: 'Çoklu Çalışma Modları',
                                 desc: 'Sadece kartlar değil; Çoktan seçmeli, Yazma, Dinleme ve Eşleştirme modları ile her yönden gelişin.',
                                 gradient: 'from-cyan-500 to-blue-500'
+                            },
+                            {
+                                icon: 'auto_awesome',
+                                title: 'AI Destekli Öğrenme',
+                                desc: 'Gemini AI ile her kelime için örnek cümleler, telaffuz, hafıza teknikleri ve eş anlamlılar otomatik üretilir.',
+                                gradient: 'from-rose-500 to-pink-600'
+                            },
+                            {
+                                icon: 'explore',
+                                title: 'Kelime Kütüphanesi',
+                                desc: 'Yüzlerce hazır kelime arasından keşfet, filtreyle ve tek tıkla listene ekle.',
+                                gradient: 'from-indigo-500 to-violet-600'
                             }
                         ].map((feature) => (
                             <div

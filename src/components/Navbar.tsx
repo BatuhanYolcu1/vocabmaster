@@ -253,6 +253,15 @@ export default function Navbar() {
                                 Pratik
                             </Link>
                             <Link
+                                href="/explore"
+                                className={`text-sm font-medium px-4 py-2 rounded-full transition-all ${pathname === '/explore'
+                                    ? 'text-white bg-[#135bec] shadow-[0_0_20px_rgba(19,91,236,0.5)]'
+                                    : 'text-[#8b9bb4] hover:text-white hover:bg-white/5'
+                                    }`}
+                            >
+                                Keşfet
+                            </Link>
+                            <Link
                                 href="/leaderboard"
                                 className={`text-sm font-medium px-4 py-2 rounded-full transition-all ${pathname === '/leaderboard'
                                     ? 'text-white bg-[#135bec] shadow-[0_0_20px_rgba(19,91,236,0.5)]'
@@ -494,6 +503,14 @@ export default function Navbar() {
                             >
                                 <span className="material-symbols-outlined text-[20px]">play_circle</span>
                                 <span className="font-medium">Pratik</span>
+                            </Link>
+                            <Link
+                                href="/explore"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${pathname === '/explore' ? 'bg-[#135bec] text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'text-[#8b9bb4] hover:bg-white/5 hover:text-white'}`}
+                            >
+                                <span className="material-symbols-outlined text-[20px]">explore</span>
+                                <span className="font-medium">Keşfet</span>
                             </Link>
                             <Link
                                 href="/leaderboard"

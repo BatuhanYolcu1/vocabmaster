@@ -1,214 +1,177 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+
+const floatingWords = [
+    { word: 'resilient', tr: 'dayanıklı', x: '10%', y: '0%', delay: '0s' },
+    { word: 'eloquent', tr: 'etkili konuşan', x: '60%', y: '0%', delay: '0.5s' },
+    { word: 'pragmatic', tr: 'düşünceli', x: '20%', y: '55%', delay: '1s' },
+    { word: 'perseverance', tr: 'azim', x: '55%', y: '55%', delay: '1.5s' },
+];
 
 export default function LandingPage() {
-    return (
-        <div className="bg-gradient-to-b from-slate-50 to-white min-h-screen -mt-24 pt-24 -mb-12 pb-12">
-            {/* Hero Section */}
-            <div className="relative overflow-hidden">
-                <div className="mx-auto max-w-7xl">
-                    <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:w-full lg:max-w-2xl lg:pb-28 xl:pb-32">
-                        <svg
-                            className="absolute inset-y-0 right-0 hidden h-full w-48 translate-x-1/2 transform text-slate-50 lg:block"
-                            fill="currentColor"
-                            viewBox="0 0 100 100"
-                            preserveAspectRatio="none"
-                            aria-hidden="true"
-                        >
-                            <polygon points="50,0 100,0 50,100 0,100" />
-                        </svg>
+    const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-                        <main className="mx-auto mt-16 max-w-7xl px-4 sm:mt-20 sm:px-6 md:mt-24 lg:mt-28 lg:px-8 xl:mt-32">
-                            <div className="sm:text-center lg:text-left">
-                                <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-                                    <span className="block xl:inline">Dil öğrenmenin</span>{' '}
-                                    <span className="block text-[#135bec] xl:inline">en akıllı yolu</span>
-                                </h1>
-                                <p className="mt-3 text-base text-gray-600 sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-xl lg:mx-0">
-                                    VocabMaster ile ezberlemeyi bırak, öğrenmeye başla. Akıllı tekrar sistemi, interaktif çalışma modları ve kişiselleştirilmiş öğrenme deneyimi ile kelimeler aklında kalsın.
-                                </p>
-                                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                                    <div className="rounded-full shadow-lg">
-                                        <Link
-                                            href="/register"
-                                            className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 px-8 py-3 text-base font-bold text-white hover:shadow-[0_4px_20px_rgba(19,91,236,0.4)] transition-all md:py-4 md:px-10 md:text-lg"
-                                        >
-                                            Hemen Başla
-                                            <ArrowRight className="ml-2 w-5 h-5" />
-                                        </Link>
-                                    </div>
-                                    <div className="mt-3 sm:mt-0 sm:ml-3">
-                                        <Link
-                                            href="/login"
-                                            className="flex w-full items-center justify-center rounded-full border-2 border-gray-200 bg-white px-8 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all md:py-4 md:px-10 md:text-lg"
-                                        >
-                                            Giriş Yap
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
+    return (
+        <div className="bg-[#0b0f17] min-h-screen -mt-24 -mb-12 text-white overflow-hidden">
+
+            {/* ═══ HERO ═══ */}
+            <section className="relative pt-40 pb-32 px-4">
+                {/* Ambient glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#135bec]/15 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-20 right-[20%] w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+
+                <div className="relative z-10 max-w-3xl mx-auto text-center">
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#135bec]/30 bg-[#135bec]/10 text-[#7da8ff] text-sm font-medium mb-8">
+                        <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+                        AI Destekli Kelime Öğrenme Platformu
                     </div>
-                </div>
-                <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center min-h-[300px] lg:min-h-0">
-                    <div className="grid grid-cols-2 gap-4 p-8 opacity-90 transform -rotate-6 scale-75 sm:scale-90">
-                        {[
-                            { icon: 'psychology', color: '#135bec', delay: '0s' },
-                            { icon: 'bolt', color: '#f59e0b', delay: '0.5s' },
-                            { icon: 'emoji_events', color: '#10b981', delay: '1s' },
-                            { icon: 'language', color: '#06b6d4', delay: '1.5s' }
-                        ].map((item, i) => (
+
+                    {/* Heading */}
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+                        Dil öğrenmenin{' '}
+                        <span className="bg-gradient-to-r from-[#135bec] via-purple-500 to-[#135bec] bg-clip-text text-transparent">
+                            en akıllı yolu
+                        </span>
+                    </h1>
+
+                    {/* Subtitle */}
+                    <p className="text-[#8b9bb4] text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
+                        Ezberlemeyi bırak, öğrenmeye başla. Akıllı tekrar sistemi, 7 interaktif çalışma modu ve yapay zeka desteğiyle kelimeler kalıcı olarak aklında kalsın.
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                        <Link
+                            href="/register"
+                            className="px-8 py-4 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold text-lg shadow-[0_0_30px_rgba(19,91,236,0.4)] hover:shadow-[0_0_50px_rgba(19,91,236,0.6)] hover:scale-105 transition-all flex items-center gap-2"
+                        >
+                            Ücretsiz Başla
+                            <span className="material-symbols-outlined">arrow_forward</span>
+                        </Link>
+                        <a
+                            href="#features"
+                            className="px-8 py-4 rounded-full border border-white/15 bg-white/5 text-white font-medium text-lg hover:bg-white/10 transition-all flex items-center gap-2"
+                        >
+                            Nasıl Çalışır?
+                            <span className="material-symbols-outlined text-base">expand_more</span>
+                        </a>
+                    </div>
+
+                    {/* Floating Word Cards */}
+                    <div className="relative h-40 max-w-lg mx-auto">
+                        {floatingWords.map((w, i) => (
                             <div
                                 key={i}
-                                className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow border border-gray-100"
-                                style={{ animation: 'float 3s ease-in-out infinite', animationDelay: item.delay }}
+                                className="absolute bg-[#1a2332]/80 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-[#135bec]/40 hover:shadow-[0_0_25px_rgba(19,91,236,0.2)] transition-all cursor-default"
+                                style={{
+                                    left: w.x,
+                                    top: w.y,
+                                    animation: `float 4s ease-in-out infinite`,
+                                    animationDelay: w.delay,
+                                }}
                             >
-                                <span className="material-symbols-outlined text-[48px] mb-2" style={{ color: item.color }}>{item.icon}</span>
-                                <div className="h-4 bg-gray-200 rounded w-20 mb-2" />
-                                <div className="h-3 bg-gray-100 rounded w-16" />
+                                <p className="text-white font-bold text-sm">{w.word}</p>
+                                <p className="text-[#8b9bb4] text-xs">{w.tr}</p>
                             </div>
                         ))}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Feature Section */}
-            <div className="bg-white py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="lg:text-center mb-16">
-                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Özellikler</p>
-                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                            Dil öğrenmenin yeni yolu
-                        </p>
-                        <p className="mt-4 max-w-2xl text-lg text-gray-500 lg:mx-auto">
-                            Sıkıcı kelime listelerini unutun. VocabMaster ile öğrenme süreciniz tamamen değişecek.
-                        </p>
+            {/* ═══ FEATURES ═══ */}
+            <section id="features" className="py-24 px-4 border-t border-white/5">
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-16">
+                        <span className="text-[#135bec] font-semibold text-sm uppercase tracking-wider">Özellikler</span>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-3 mb-4">Dil öğrenmenin yeni yolu</h2>
+                        <p className="text-[#8b9bb4] text-lg max-w-2xl mx-auto">Sıkıcı kelime listelerini unutun. VocabMaster ile öğrenme süreciniz tamamen değişecek.</p>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {[
-                            {
-                                icon: 'psychology',
-                                title: 'Akıllı Öğrenme',
-                                desc: 'Akıllı tekrar sistemi ile kelimeleri sadece çevirmiyoruz; örnek cümleler, açıklamalar ve telaffuz ipuçları üretiyoruz.',
-                                gradient: 'from-[#135bec] to-blue-600'
-                            },
-                            {
-                                icon: 'bolt',
-                                title: 'Akıllı Tekrar Sistemi',
-                                desc: 'Unutmaya başladığınız kelimeleri tam zamanında hatırlatan SRS algoritması ile kalıcı öğrenme sağlayın.',
-                                gradient: 'from-amber-500 to-orange-500'
-                            },
-                            {
-                                icon: 'emoji_events',
-                                title: 'Oyunlaştırma',
-                                desc: 'XP kazanın, seviye atlayın, rozetler toplayın ve liderlik tablosunda arkadaşlarınızla yarışın.',
-                                gradient: 'from-emerald-500 to-green-600'
-                            },
-                            {
-                                icon: 'language',
-                                title: 'Çoklu Çalışma Modları',
-                                desc: 'Sadece kartlar değil; Çoktan seçmeli, Yazma, Dinleme ve Eşleştirme modları ile her yönden gelişin.',
-                                gradient: 'from-cyan-500 to-blue-500'
-                            },
-                            {
-                                icon: 'auto_awesome',
-                                title: 'AI Destekli Öğrenme',
-                                desc: 'Gemini AI ile her kelime için örnek cümleler, telaffuz, hafıza teknikleri ve eş anlamlılar otomatik üretilir.',
-                                gradient: 'from-rose-500 to-pink-600'
-                            },
-                            {
-                                icon: 'explore',
-                                title: 'Kelime Kütüphanesi',
-                                desc: 'Yüzlerce hazır kelime arasından keşfet, filtreyle ve tek tıkla listene ekle.',
-                                gradient: 'from-indigo-500 to-violet-600'
-                            }
-                        ].map((feature) => (
-                            <div
-                                key={feature.title}
-                                className="bg-white rounded-2xl p-7 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-300"
-                            >
-                                <div className="flex items-start gap-5">
-                                    <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center shadow-lg`}>
-                                        <span className="material-symbols-outlined text-white text-[24px]">{feature.icon}</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-gray-900 mb-1.5">{feature.title}</h3>
-                                        <p className="text-gray-500 text-[15px] leading-relaxed">{feature.desc}</p>
-                                    </div>
+                            { icon: 'psychology', title: 'Akıllı Öğrenme', desc: 'SM-2 algoritması ile kelimeleri tam zamanında tekrar ederek kalıcı hafızaya aktarın.', gradient: 'from-[#135bec] to-blue-600' },
+                            { icon: 'bolt', title: 'Akıllı Tekrar (SRS)', desc: 'Unutmaya başladığınız kelimeleri tam zamanında hatırlatan spaced repetition sistemi.', gradient: 'from-amber-500 to-orange-500' },
+                            { icon: 'emoji_events', title: 'Oyunlaştırma', desc: 'XP kazanın, seviye atlayın, rozetler toplayın ve liderlik tablosunda yarışın.', gradient: 'from-emerald-500 to-green-600' },
+                            { icon: 'language', title: '7 Çalışma Modu', desc: 'Flashcard, Quiz, Yazma, Dinleme, Eşleştirme, Konuşma ve Cümle Tamamlama.', gradient: 'from-cyan-500 to-blue-500' },
+                            { icon: 'auto_awesome', title: 'AI Destekli İçerik', desc: 'Gemini AI ile her kelime için örnek cümleler, telaffuz ve hafıza teknikleri üretilir.', gradient: 'from-rose-500 to-pink-600' },
+                            { icon: 'explore', title: 'Kelime Kütüphanesi', desc: 'Yüzlerce hazır kelimeyi keşfet, filtreyle ve tek tıkla listene ekle.', gradient: 'from-indigo-500 to-violet-600' },
+                        ].map((f) => (
+                            <div key={f.title} className="group bg-[#111827]/60 border border-white/5 rounded-2xl p-6 hover:border-white/15 hover:bg-[#1a2332]/60 transition-all duration-300">
+                                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                                    <span className="material-symbols-outlined text-white text-[22px]">{f.icon}</span>
                                 </div>
+                                <h3 className="text-white font-bold text-lg mb-2">{f.title}</h3>
+                                <p className="text-[#8b9bb4] text-sm leading-relaxed">{f.desc}</p>
                             </div>
                         ))}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Stats Section */}
-            <div className="bg-slate-50 py-14 border-y border-gray-100">
-                <div className="max-w-5xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
-                    <div>
-                        <p className="text-3xl md:text-4xl font-extrabold text-gray-900">12,500+</p>
-                        <p className="text-gray-500 text-sm mt-1">Aktif Kullanıcı</p>
-                    </div>
-                    <div>
-                        <p className="text-3xl md:text-4xl font-extrabold text-gray-900">850K+</p>
-                        <p className="text-gray-500 text-sm mt-1">Öğrenilen Kelime</p>
-                    </div>
-                    <div>
-                        <p className="text-3xl md:text-4xl font-extrabold text-[#135bec]">%97</p>
-                        <p className="text-gray-500 text-sm mt-1">Memnuniyet</p>
-                    </div>
+            {/* ═══ STATS ═══ */}
+            <section className="py-16 px-4 border-y border-white/5 bg-[#111827]/40">
+                <div className="max-w-4xl mx-auto grid grid-cols-3 gap-8 text-center">
+                    {[
+                        { value: '12,500+', label: 'Aktif Kullanıcı' },
+                        { value: '850K+', label: 'Öğrenilen Kelime' },
+                        { value: '%97', label: 'Memnuniyet', highlight: true },
+                    ].map((s) => (
+                        <div key={s.label}>
+                            <p className={`text-3xl md:text-4xl font-extrabold ${s.highlight ? 'text-[#135bec]' : 'text-white'}`}>{s.value}</p>
+                            <p className="text-[#8b9bb4] text-sm mt-1">{s.label}</p>
+                        </div>
+                    ))}
                 </div>
-            </div>
+            </section>
 
-            {/* Pricing Section */}
-            <div id="pricing" className="bg-white py-20">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6">
-                    <div className="lg:text-center mb-16">
-                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Fiyatlandırma</p>
-                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Sana uygun planı seç</p>
-                        <p className="mt-4 max-w-2xl text-lg text-gray-500 lg:mx-auto">Ücretsiz başla, ihtiyacına göre yükselt.</p>
+            {/* ═══ PRICING ═══ */}
+            <section id="pricing" className="py-24 px-4">
+                <div className="max-w-5xl mx-auto">
+                    <div className="text-center mb-16">
+                        <span className="text-[#135bec] font-semibold text-sm uppercase tracking-wider">Fiyatlandırma</span>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-3 mb-4">Sana uygun planı seç</h2>
+                        <p className="text-[#8b9bb4] text-lg">Ücretsiz başla, ihtiyacına göre yükselt.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
-                            { name: 'Ücretsiz', price: '₺0', period: 'sonsuza dek', popular: false, features: ['Günde 10 kelime', '3 kelime listesi', '3 çalışma modu', 'Temel istatistikler', '5 AI üretim/gün'], cta: 'Hemen Başla' },
-                            { name: 'Lite', price: '₺29.99', period: '/ay', popular: true, features: ['Günde 50 kelime', '10 kelime listesi', '5 çalışma modu', 'Detaylı istatistikler', '30 AI üretim/gün', 'Excel içe aktarma', 'Reklamsız'], cta: "Lite'a Geç" },
-                            { name: 'Pro', price: '₺59.99', period: '/ay', popular: false, features: ['Sınırsız kelime', 'Sınırsız liste', 'Tüm 7 mod', 'Tam istatistikler', 'Sınırsız AI', 'Story modu', 'Öncelikli destek', 'Reklamsız'], cta: "Pro'ya Geç" },
+                            { name: 'Ücretsiz', price: '₺0', period: 'sonsuza dek', popular: false, gradient: '', features: ['Günde 10 kelime', '3 kelime listesi', '3 çalışma modu', 'Temel istatistikler', '5 AI üretim/gün'], cta: 'Hemen Başla', ctaStyle: 'bg-white/10 hover:bg-white/15 text-white' },
+                            { name: 'Lite', price: '₺29.99', period: '/ay', popular: true, gradient: 'from-[#135bec] to-blue-600', features: ['Günde 50 kelime', '10 kelime listesi', '5 çalışma modu', 'Detaylı istatistikler', '30 AI üretim/gün', 'Excel içe aktarma', 'Reklamsız'], cta: "Lite'a Geç", ctaStyle: 'bg-gradient-to-r from-[#135bec] to-blue-600 text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' },
+                            { name: 'Pro', price: '₺59.99', period: '/ay', popular: false, gradient: 'from-purple-500 to-fuchsia-600', features: ['Sınırsız kelime', 'Sınırsız liste', 'Tüm 7 mod', 'Tam istatistikler', 'Sınırsız AI', 'Story modu', 'Öncelikli destek', 'Reklamsız'], cta: "Pro'ya Geç", ctaStyle: 'bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]' },
                         ].map((plan) => (
-                            <div key={plan.name} className={`relative bg-white rounded-2xl p-7 border flex flex-col ${plan.popular ? 'border-[#135bec] shadow-[0_4px_30px_rgba(19,91,236,0.15)] scale-105' : 'border-gray-200 shadow-[0_2px_16px_rgba(0,0,0,0.04)]'}`}>
+                            <div key={plan.name} className={`relative bg-[#111827]/80 rounded-2xl p-7 border flex flex-col ${plan.popular ? 'border-[#135bec]/50 shadow-[0_0_40px_rgba(19,91,236,0.15)] scale-105' : 'border-white/10'}`}>
                                 {plan.popular && (
                                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white text-xs font-bold">En Popüler</div>
                                 )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-1">{plan.name}</h3>
+                                <h3 className="text-xl font-bold text-white mb-1">{plan.name}</h3>
                                 <div className="flex items-baseline gap-1 mb-6">
-                                    <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
-                                    <span className="text-gray-500 text-sm">{plan.period}</span>
+                                    <span className="text-4xl font-extrabold text-white">{plan.price}</span>
+                                    <span className="text-[#8b9bb4] text-sm">{plan.period}</span>
                                 </div>
                                 <ul className="space-y-3 mb-8 flex-1">
                                     {plan.features.map((f) => (
-                                        <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
-                                            <span className="material-symbols-outlined text-emerald-500 text-base">check_circle</span>
+                                        <li key={f} className="flex items-center gap-2.5 text-sm text-[#c0cfe0]">
+                                            <span className="material-symbols-outlined text-emerald-400 text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                                             {f}
                                         </li>
                                     ))}
                                 </ul>
-                                <Link href="/register" className={`w-full py-3 rounded-full font-bold text-center block transition-all hover:shadow-lg ${plan.popular ? 'bg-gradient-to-r from-[#135bec] to-blue-600 text-white shadow-[0_2px_12px_rgba(19,91,236,0.3)]' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
+                                <Link href="/register" className={`w-full py-3.5 rounded-full font-bold text-center block transition-all hover:scale-[1.02] ${plan.ctaStyle}`}>
                                     {plan.cta}
                                 </Link>
                             </div>
                         ))}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Testimonials */}
-            <div className="bg-slate-50 py-20 border-t border-gray-100">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6">
-                    <div className="lg:text-center mb-16">
-                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">Kullanıcılar</p>
-                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Onlar ne diyor?</p>
+            {/* ═══ TESTIMONIALS ═══ */}
+            <section className="py-24 px-4 border-t border-white/5 bg-[#111827]/30">
+                <div className="max-w-5xl mx-auto">
+                    <div className="text-center mb-16">
+                        <span className="text-[#135bec] font-semibold text-sm uppercase tracking-wider">Kullanıcılar</span>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-3">Onlar ne diyor?</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
@@ -216,109 +179,110 @@ export default function LandingPage() {
                             { name: 'Ahmet Y.', role: 'Yazılım Mühendisi', text: 'Teknik İngilizce kelimelerimi güçlendirmek için harika. AI ile üretilen örnek cümleler çok kaliteli.' },
                             { name: 'Zeynep D.', role: 'Lise Öğretmeni', text: 'Öğrencilerime kelime listesi hazırlamak artık çok kolay. Sınıfça yarışıyoruz!' },
                         ].map((t) => (
-                            <div key={t.name} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_16px_rgba(0,0,0,0.04)]">
+                            <div key={t.name} className="bg-[#111827]/60 border border-white/5 rounded-2xl p-6">
                                 <div className="flex items-center gap-1 mb-4">
                                     {[1,2,3,4,5].map((s) => (
                                         <span key={s} className="material-symbols-outlined text-amber-400 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                                     ))}
                                 </div>
-                                <p className="text-gray-600 text-sm leading-relaxed mb-5 italic">&quot;{t.text}&quot;</p>
+                                <p className="text-[#c0cfe0] text-sm leading-relaxed mb-5 italic">&quot;{t.text}&quot;</p>
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#135bec] to-purple-600 flex items-center justify-center text-white font-bold text-sm">{t.name[0]}</div>
                                     <div>
-                                        <p className="text-gray-900 font-medium text-sm">{t.name}</p>
-                                        <p className="text-gray-500 text-xs">{t.role}</p>
+                                        <p className="text-white font-medium text-sm">{t.name}</p>
+                                        <p className="text-[#8b9bb4] text-xs">{t.role}</p>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* FAQ */}
-            <div className="bg-white py-20">
-                <div className="max-w-3xl mx-auto px-4">
-                    <div className="lg:text-center mb-16">
-                        <p className="text-base text-[#135bec] font-semibold tracking-wide uppercase">SSS</p>
-                        <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Sıkça Sorulan Sorular</p>
+            {/* ═══ FAQ ═══ */}
+            <section className="py-24 px-4 border-t border-white/5">
+                <div className="max-w-3xl mx-auto">
+                    <div className="text-center mb-16">
+                        <span className="text-[#135bec] font-semibold text-sm uppercase tracking-wider">SSS</span>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-3">Sıkça Sorulan Sorular</h2>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {[
                             { q: 'VocabMaster nasıl çalışır?', a: 'Kelime listeleri oluşturursun, AI yardımıyla açıklamalar üretilir ve akıllı tekrar sistemi (SRS) ile en verimli zamanlarda pratik yaparsın.' },
                             { q: 'Ücretsiz plan yeterli mi?', a: 'Ücretsiz plan günde 10 kelime ve 3 çalışma moduyla temel ihtiyaçları karşılar. Daha yoğun çalışma için Lite veya Pro planlarına geçebilirsin.' },
                             { q: 'Hangi dilleri destekliyorsunuz?', a: 'Şu anda İngilizce-Türkçe destekleniyor. İleride Almanca, Fransızca ve İspanyolca da eklenecek.' },
                             { q: 'Mobilde kullanabilir miyim?', a: 'Evet! VocabMaster PWA desteklidir, telefonunuza uygulama olarak ekleyebilirsiniz.' },
-                        ].map((faq) => (
-                            <details key={faq.q} className="group bg-slate-50 rounded-xl border border-gray-100 overflow-hidden">
-                                <summary className="flex items-center justify-between p-5 cursor-pointer font-semibold text-gray-900 hover:bg-slate-100 transition-colors list-none">
-                                    {faq.q}
-                                    <span className="material-symbols-outlined text-[#135bec] group-open:rotate-180 transition-transform">expand_more</span>
-                                </summary>
-                                <p className="px-5 pb-5 text-gray-500 text-sm leading-relaxed">{faq.a}</p>
-                            </details>
+                        ].map((faq, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                                className="w-full text-left bg-[#111827]/60 border border-white/5 rounded-xl overflow-hidden hover:border-white/10 transition-colors"
+                            >
+                                <div className="flex items-center justify-between p-5">
+                                    <span className="text-white font-semibold pr-4">{faq.q}</span>
+                                    <span className={`material-symbols-outlined text-[#135bec] transition-transform flex-shrink-0 ${openFaq === i ? 'rotate-180' : ''}`}>expand_more</span>
+                                </div>
+                                {openFaq === i && (
+                                    <p className="px-5 pb-5 text-[#8b9bb4] text-sm leading-relaxed animate-fadeIn">{faq.a}</p>
+                                )}
+                            </button>
                         ))}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* CTA Section */}
-            <div className="bg-gradient-to-r from-[#135bec] to-blue-600">
-                <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
-                    <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                        <span className="block">Öğrenmeye hazır mısın?</span>
-                        <span className="block text-blue-200">Hemen ücretsiz başla.</span>
-                    </h2>
-                    <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
-                        <div className="inline-flex rounded-full shadow">
-                            <Link
-                                href="/register"
-                                className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-bold rounded-full text-[#135bec] bg-white hover:bg-gray-50 transition-all md:py-4 md:px-10"
-                            >
-                                Ücretsiz Başla
-                            </Link>
-                        </div>
-                    </div>
+            {/* ═══ CTA ═══ */}
+            <section className="py-20 px-4 border-t border-white/5">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Öğrenmeye hazır mısın?</h2>
+                    <p className="text-[#8b9bb4] text-lg mb-8">Hemen ücretsiz başla, kelime hazineni güçlendir.</p>
+                    <Link
+                        href="/register"
+                        className="inline-flex items-center gap-2 px-10 py-4 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold text-lg shadow-[0_0_30px_rgba(19,91,236,0.5)] hover:shadow-[0_0_50px_rgba(19,91,236,0.7)] hover:scale-105 transition-all"
+                    >
+                        Ücretsiz Başla
+                        <span className="material-symbols-outlined">arrow_forward</span>
+                    </Link>
                 </div>
-            </div>
+            </section>
 
-            {/* Footer */}
-            <footer className="bg-white border-t border-gray-100 py-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* ═══ FOOTER ═══ */}
+            <footer className="border-t border-white/5 py-10">
+                <div className="max-w-6xl mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                         <div>
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600">
                                     <span className="material-symbols-outlined text-white text-[18px]">school</span>
                                 </div>
-                                <span className="text-gray-900 font-bold">VocabMaster</span>
+                                <span className="text-white font-bold">VocabMaster</span>
                             </div>
-                            <p className="text-gray-500 text-sm">AI destekli kelime öğrenme platformu.</p>
+                            <p className="text-[#8b9bb4] text-sm">AI destekli kelime öğrenme platformu.</p>
                         </div>
                         <div>
-                            <h4 className="text-gray-900 font-semibold text-sm mb-3">Platform</h4>
-                            <div className="space-y-2 text-sm text-gray-500">
-                                <Link href="#pricing" className="block hover:text-[#135bec] transition-colors">Fiyatlandırma</Link>
-                                <Link href="/register" className="block hover:text-[#135bec] transition-colors">Ücretsiz Başla</Link>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 className="text-gray-900 font-semibold text-sm mb-3">Destek</h4>
-                            <div className="space-y-2 text-sm text-gray-500">
-                                <Link href="/about" className="block hover:text-[#135bec] transition-colors">Hakkımızda</Link>
-                                <Link href="/contact" className="block hover:text-[#135bec] transition-colors">İletişim</Link>
+                            <h4 className="text-white font-semibold text-sm mb-3">Platform</h4>
+                            <div className="space-y-2 text-sm text-[#8b9bb4]">
+                                <a href="#pricing" className="block hover:text-white transition-colors">Fiyatlandırma</a>
+                                <Link href="/register" className="block hover:text-white transition-colors">Ücretsiz Başla</Link>
                             </div>
                         </div>
                         <div>
-                            <h4 className="text-gray-900 font-semibold text-sm mb-3">Yasal</h4>
-                            <div className="space-y-2 text-sm text-gray-500">
-                                <Link href="/privacy" className="block hover:text-[#135bec] transition-colors">Gizlilik Politikası</Link>
-                                <Link href="/terms" className="block hover:text-[#135bec] transition-colors">Kullanım Koşulları</Link>
+                            <h4 className="text-white font-semibold text-sm mb-3">Destek</h4>
+                            <div className="space-y-2 text-sm text-[#8b9bb4]">
+                                <Link href="/about" className="block hover:text-white transition-colors">Hakkımızda</Link>
+                                <Link href="/contact" className="block hover:text-white transition-colors">İletişim</Link>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-semibold text-sm mb-3">Yasal</h4>
+                            <div className="space-y-2 text-sm text-[#8b9bb4]">
+                                <Link href="/privacy" className="block hover:text-white transition-colors">Gizlilik Politikası</Link>
+                                <Link href="/terms" className="block hover:text-white transition-colors">Kullanım Koşulları</Link>
                             </div>
                         </div>
                     </div>
-                    <div className="border-t border-gray-100 pt-6">
-                        <p className="text-gray-500 text-sm text-center">
+                    <div className="border-t border-white/5 pt-6">
+                        <p className="text-[#8b9bb4] text-sm text-center">
                             © {new Date().getFullYear()} <span className="font-medium text-[#135bec]">BAY Technology</span> — Tüm hakları saklıdır.
                         </p>
                     </div>
@@ -328,7 +292,7 @@ export default function LandingPage() {
             <style jsx>{`
                 @keyframes float {
                     0%, 100% { transform: translateY(0px); }
-                    50% { transform: translateY(-10px); }
+                    50% { transform: translateY(-12px); }
                 }
             `}</style>
         </div>

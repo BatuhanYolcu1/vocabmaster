@@ -9,6 +9,9 @@ const adminLinks = [
     { href: '/admin', icon: 'dashboard', label: 'Dashboard' },
     { href: '/admin/users', icon: 'group', label: 'Kullanıcılar' },
     { href: '/admin/words', icon: 'dictionary', label: 'Kelimeler' },
+    { href: '/admin/announcements', icon: 'campaign', label: 'Duyurular' },
+    { href: '/admin/coupons', icon: 'local_activity', label: 'Kuponlar' },
+    { href: '/admin/settings', icon: 'settings', label: 'Ayarlar' },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

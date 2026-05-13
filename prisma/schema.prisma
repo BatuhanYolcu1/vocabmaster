@@ -46,6 +46,7 @@ model User {
   wordLists     WordList[]
   dailyActivities DailyActivity[]
   notifications Notification[]
+  supportTickets SupportTicket[]
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -235,5 +236,64 @@ model Notification {
   
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
+  createdAt DateTime @default(now())
+}
+
+// ═══ ADMIN MODELS ═══
+
+// Platform announcements (banners/notifications for all users)
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String   @default("info") // info, warning, success, promo
+  active    Boolean  @default(true)
+  targetPlan String? // null = all, FREE, LITE, PRO
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+// Discount coupons for subscription plans
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Int      // percentage (e.g. 50 = %50)
+  targetPlan  String   // LITE or PRO
+  maxUses     Int      @default(100)
+  usedCount   Int      @default(0)
+  active      Boolean  @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+}
+
+// User support tickets
+model SupportTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  message   String
+  status    String   @default("open") // open, in_progress, resolved, closed
+  adminNote String?
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// System-wide settings (key-value store)
+model SystemSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+// Activity log for admin auditing
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // login, plan_change, word_add, study_complete, etc.
+  details   String?  // JSON string with extra context
+  ip        String?
   createdAt DateTime @default(now())
 }

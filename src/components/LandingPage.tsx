@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const floatingWords = [
-    { word: 'resilient', tr: 'dayanıklı', x: '10%', y: '0%', delay: '0s' },
-    { word: 'eloquent', tr: 'etkili konuşan', x: '60%', y: '0%', delay: '0.5s' },
-    { word: 'pragmatic', tr: 'düşünceli', x: '20%', y: '55%', delay: '1s' },
-    { word: 'perseverance', tr: 'azim', x: '55%', y: '55%', delay: '1.5s' },
+    { word: 'resilient', tr: 'dayanıklı', color: 'from-cyan-500/20 to-cyan-500/5', border: 'border-cyan-500/20' },
+    { word: 'eloquent', tr: 'etkili konuşan', color: 'from-purple-500/20 to-purple-500/5', border: 'border-purple-500/20' },
+    { word: 'ambition', tr: 'hırs', color: 'from-amber-500/20 to-amber-500/5', border: 'border-amber-500/20' },
+    { word: 'perseverance', tr: 'azim', color: 'from-emerald-500/20 to-emerald-500/5', border: 'border-emerald-500/20' },
+    { word: 'innovation', tr: 'yenilik', color: 'from-blue-500/20 to-blue-500/5', border: 'border-blue-500/20' },
+    { word: 'pragmatic', tr: 'gerçekçi', color: 'from-rose-500/20 to-rose-500/5', border: 'border-rose-500/20' },
 ];
 
 export default function LandingPage() {
@@ -17,10 +19,10 @@ export default function LandingPage() {
         <div className="bg-[#0b0f17] min-h-screen -mt-24 -mb-12 text-white overflow-hidden">
 
             {/* ═══ HERO ═══ */}
-            <section className="relative pt-40 pb-32 px-4">
+            <section className="relative pt-40 pb-20 px-4">
                 {/* Ambient glow */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#135bec]/15 rounded-full blur-[120px] pointer-events-none" />
-                <div className="absolute top-20 right-[20%] w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[#135bec]/12 rounded-full blur-[150px] pointer-events-none" />
+                <div className="absolute top-20 right-[15%] w-[350px] h-[350px] bg-purple-600/8 rounded-full blur-[120px] pointer-events-none" />
 
                 <div className="relative z-10 max-w-3xl mx-auto text-center">
                     {/* Badge */}
@@ -43,7 +45,7 @@ export default function LandingPage() {
                     </p>
 
                     {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
                         <Link
                             href="/register"
                             className="px-8 py-4 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold text-lg shadow-[0_0_30px_rgba(19,91,236,0.4)] hover:shadow-[0_0_50px_rgba(19,91,236,0.6)] hover:scale-105 transition-all flex items-center gap-2"
@@ -60,21 +62,19 @@ export default function LandingPage() {
                         </a>
                     </div>
 
-                    {/* Floating Word Cards */}
-                    <div className="relative h-40 max-w-lg mx-auto">
+                    {/* Floating Word Cards — Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl mx-auto">
                         {floatingWords.map((w, i) => (
                             <div
                                 key={i}
-                                className="absolute bg-[#1a2332]/80 backdrop-blur-sm border border-white/10 rounded-xl px-5 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-[#135bec]/40 hover:shadow-[0_0_25px_rgba(19,91,236,0.2)] transition-all cursor-default"
+                                className={`bg-gradient-to-br ${w.color} backdrop-blur-sm border ${w.border} rounded-xl px-4 py-3 hover:scale-105 transition-all cursor-default`}
                                 style={{
-                                    left: w.x,
-                                    top: w.y,
                                     animation: `float 4s ease-in-out infinite`,
-                                    animationDelay: w.delay,
+                                    animationDelay: `${i * 0.4}s`,
                                 }}
                             >
                                 <p className="text-white font-bold text-sm">{w.word}</p>
-                                <p className="text-[#8b9bb4] text-xs">{w.tr}</p>
+                                <p className="text-white/50 text-xs">{w.tr}</p>
                             </div>
                         ))}
                     </div>

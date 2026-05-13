@@ -31,7 +31,8 @@ model User {
   interests         String   @default("Genel") // Comma-separated: "Genel,İş,Akademik"
   onboardingComplete Boolean @default(false)
   
-  // Subscription & Limits
+  // Role & Subscription
+  role              Role             @default(USER)
   subscriptionType SubscriptionType @default(FREE)
   subscriptionEndsAt DateTime?
   aiUsageCount      Int      @default(0) // Daily AI usage counter
@@ -48,6 +49,11 @@ model User {
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum SubscriptionType {

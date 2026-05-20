@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { isRegistrationEnabled } from '@/lib/settings-server';
 
 // Starter word list - reduced for serverless performance
 const WELCOME_WORDS = [
@@ -18,6 +19,14 @@ const WELCOME_WORDS = [
 
 export async function POST(req: Request) {
     try {
+        const registrationActive = await isRegistrationEnabled();
+        if (!registrationActive) {
+            return NextResponse.json(
+                { error: 'Yeni kullanıcı kayıtları geçici olarak durdurulmuştur.' },
+                { status: 403 }
+            );
+        }
+
         const { name, email, password } = await req.json();
 
         if (!email || !password) {
@@ -116,5 +125,14 @@ export async function POST(req: Request) {
             { error: 'Kayıt sırasında bir sunucu hatası oluştu' },
             { status: 500 }
         );
+    }
+}
+
+export async function GET() {
+    try {
+        const registrationActive = await isRegistrationEnabled();
+        return NextResponse.json({ registrationEnabled: registrationActive });
+    } catch {
+        return NextResponse.json({ registrationEnabled: true });
     }
 }

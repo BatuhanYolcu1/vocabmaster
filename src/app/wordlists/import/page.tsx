@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Upload, FileSpreadsheet, Check, AlertCircle, Loader2, Wand2, Type } from 'lucide-react';
@@ -25,6 +25,24 @@ export default function ImportPage() {
     const [extracting, setExtracting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [dragActive, setDragActive] = useState(false);
+    const [hasExcelImport, setHasExcelImport] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        async function checkSubscription() {
+            try {
+                const res = await fetch('/api/subscription');
+                if (res.ok) {
+                    const data = await res.json();
+                    setHasExcelImport(data.limits?.hasExcelImport ?? false);
+                } else {
+                    setHasExcelImport(false);
+                }
+            } catch {
+                setHasExcelImport(false);
+            }
+        }
+        checkSubscription();
+    }, []);
 
     const handleMagicExtract = async () => {
         if (!rawText.trim()) return;
@@ -157,6 +175,14 @@ export default function ImportPage() {
         }
     };
 
+    if (hasExcelImport === null) {
+        return (
+            <div className="min-h-screen bg-[#0b0f17] flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-white/20 border-t-[#135bec] rounded-full animate-spin" />
+            </div>
+        );
+    }
+
     return (
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
             <div className="flex items-center gap-4 mb-8">
@@ -201,18 +227,40 @@ export default function ImportPage() {
                     </div>
 
                     {importMode === 'file' ? (
-                        <div
-                            className={`relative border-2 border-dashed rounded-3xl p-12 text-center transition-all ${dragActive ? 'border-[#135bec] bg-[#135bec]/5' : 'border-white/10 bg-white/5 hover:border-[#135bec]/50'}`}
-                            onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
-                        >
-                            <Upload className="w-12 h-12 text-slate-500 mx-auto mb-4" />
-                            <input
-                                ref={fileInputRef} type="file" accept=".xlsx,.xls,.csv,.txt"
-                                onChange={(e) => { if (e.target.files?.[0]) { setFile(e.target.files[0]); parseFile(e.target.files[0]); } }}
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            />
-                            <p className="text-white font-bold">{file ? file.name : 'Dosya sürükle veya tıkla'}</p>
-                            <p className="text-xs text-slate-500 mt-2">Excel, CSV veya TXT</p>
+                        <div className="relative">
+                            <div
+                                className={`relative border-2 border-dashed rounded-3xl p-12 text-center transition-all ${dragActive ? 'border-[#135bec] bg-[#135bec]/5' : 'border-white/10 bg-white/5 hover:border-[#135bec]/50'}`}
+                                onDragEnter={hasExcelImport ? handleDrag : undefined}
+                                onDragLeave={hasExcelImport ? handleDrag : undefined}
+                                onDragOver={hasExcelImport ? handleDrag : undefined}
+                                onDrop={hasExcelImport ? handleDrop : undefined}
+                            >
+                                <Upload className="w-12 h-12 text-slate-500 mx-auto mb-4" />
+                                {hasExcelImport && (
+                                    <input
+                                        ref={fileInputRef} type="file" accept=".xlsx,.xls,.csv,.txt"
+                                        onChange={(e) => { if (e.target.files?.[0]) { setFile(e.target.files[0]); parseFile(e.target.files[0]); } }}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                )}
+                                <p className="text-white font-bold">{file ? file.name : 'Dosya sürükle veya tıkla'}</p>
+                                <p className="text-xs text-slate-500 mt-2">Excel, CSV veya TXT</p>
+                            </div>
+
+                            {!hasExcelImport && (
+                                <div className="absolute inset-0 backdrop-blur-md bg-black/60 rounded-3xl flex flex-col items-center justify-center p-6 border border-white/5 animate-fadeIn">
+                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mb-4 shadow-lg shadow-orange-500/20">
+                                        <span className="material-symbols-outlined text-white text-xl">lock</span>
+                                    </div>
+                                    <h3 className="text-white font-bold text-base mb-1">Dosya Yükleme Premium Özelliktir</h3>
+                                    <p className="text-[#8b9bb4] text-xs text-center max-w-sm mb-4 leading-relaxed">
+                                        Kelime listelerinizi Excel, CSV veya TXT dosyalarından otomatik içe aktarmak için Lite veya Pro plana yükseltin.
+                                    </p>
+                                    <Link href="/pricing" className="px-5 py-2.5 bg-[#135bec] hover:bg-blue-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/20 transition-all">
+                                        Planları İncele
+                                    </Link>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="space-y-4">

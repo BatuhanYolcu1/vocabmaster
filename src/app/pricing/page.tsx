@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 const plans = [
     {
@@ -47,6 +48,7 @@ const plans = [
 
 export default function PricingPage() {
     const [annual, setAnnual] = useState(false);
+    const { data: session } = useSession();
 
     return (
         <div className="min-h-screen bg-[#0b0f17] text-white relative">
@@ -71,6 +73,14 @@ export default function PricingPage() {
                     {plans.map(plan => {
                         const displayPrice = plan.price === '₺0' ? '₺0' :
                             annual ? `₺${(parseFloat(plan.price.replace('₺', '')) * 0.8).toFixed(2)}` : plan.price;
+
+                        let buttonLink = '/register';
+                        if (plan.name === 'Ücretsiz') {
+                            buttonLink = session ? '/' : '/register';
+                        } else {
+                            buttonLink = `/checkout?plan=${plan.name.toLowerCase()}&annual=${annual}`;
+                        }
+
                         return (
                             <div key={plan.name} className={`relative glass-panel rounded-3xl p-7 flex flex-col ${plan.popular ? 'border-[#135bec]/50 shadow-[0_0_40px_rgba(19,91,236,0.15)] md:scale-105' : ''}`}>
                                 {plan.popular && (
@@ -89,12 +99,12 @@ export default function PricingPage() {
                                         <li key={f.text} className={`flex items-center gap-2 text-sm ${f.included ? 'text-[#c4d0e4]' : 'text-[#8b9bb4]/50 line-through'}`}>
                                             <span className={`material-symbols-outlined text-base ${f.included ? 'text-emerald-400' : 'text-[#8b9bb4]/30'}`}>
                                                 {f.included ? 'check_circle' : 'cancel'}
-                                            </span>
+                                             </span>
                                             {f.text}
                                         </li>
                                     ))}
                                 </ul>
-                                <Link href="/register" className={`w-full py-3 rounded-xl font-bold text-center block transition-all hover:scale-105 ${plan.popular ? 'bg-gradient-to-r from-[#135bec] to-blue-600 text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'glass-button text-white'}`}>
+                                <Link href={buttonLink} className={`w-full py-3 rounded-xl font-bold text-center block transition-all hover:scale-105 ${plan.popular ? 'bg-gradient-to-r from-[#135bec] to-blue-600 text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'glass-button text-white'}`}>
                                     {plan.name === 'Ücretsiz' ? 'Hemen Başla' : `${plan.name}'a Geç`}
                                 </Link>
                             </div>

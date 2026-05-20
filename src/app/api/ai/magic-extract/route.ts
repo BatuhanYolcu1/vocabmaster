@@ -1,12 +1,18 @@
 import { model } from "@/lib/gemini";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { isAIEnabled } from "@/lib/settings-server";
 
 export async function POST(req: Request) {
     try {
         const session = await auth();
         if (!session) {
             return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const aiActive = await isAIEnabled();
+        if (!aiActive) {
+            return new NextResponse("Yapay zeka modülü geçici olarak kapatılmıştır.", { status: 403 });
         }
 
         const { text } = await req.json();

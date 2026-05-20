@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getUserPlanInfo, incrementAIUsage } from '@/lib/subscription-server';
+import { isAIEnabled } from '@/lib/settings-server';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
@@ -12,6 +13,11 @@ export async function POST(request: NextRequest) {
 
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const aiActive = await isAIEnabled();
+        if (!aiActive) {
+            return NextResponse.json({ error: 'Yapay zeka modülü geçici olarak kapatılmıştır.' }, { status: 403 });
         }
 
         // 🔒 Check plan: Story mode is PRO only

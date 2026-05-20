@@ -2,12 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateWordDetails } from '@/lib/gemini';
 import { auth } from '@/lib/auth';
 import { getUserPlanInfo, incrementAIUsage } from '@/lib/subscription-server';
+import { isAIEnabled } from '@/lib/settings-server';
 
 export async function POST(request: NextRequest) {
     try {
         const session = await auth();
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const aiActive = await isAIEnabled();
+        if (!aiActive) {
+            return NextResponse.json({ error: 'Yapay zeka modülü geçici olarak kapatılmıştır.' }, { status: 403 });
         }
 
         // 🔒 Check AI usage limit

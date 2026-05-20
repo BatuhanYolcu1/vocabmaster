@@ -7,6 +7,10 @@ import PageTransition from "@/components/PageTransition";
 import { Providers } from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { isMaintenanceMode } from "@/lib/settings-server";
+import MaintenancePage from "@/components/MaintenancePage";
 
 // Optimize font loading with next/font
 const inter = Inter({
@@ -48,11 +52,29 @@ export const viewport: Viewport = {
   maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const maintenance = await isMaintenanceMode();
+  let isAdmin = false;
+
+  if (maintenance) {
+    try {
+      const session = await auth();
+      if (session?.user?.id) {
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { role: true }
+        });
+        isAdmin = user?.role === 'ADMIN';
+      }
+    } catch (e) {
+      console.error("Layout auth check failed:", e);
+    }
+  }
+
   return (
     <html lang="tr" className={`dark ${inter.variable}`} suppressHydrationWarning>
       <head>
@@ -86,13 +108,19 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`} suppressHydrationWarning>
         <Providers>
-          <Navbar />
-          <main className="pt-24 pb-12">
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </main>
-          <Footer />
+          {maintenance && !isAdmin ? (
+            <MaintenancePage />
+          ) : (
+            <>
+              <Navbar />
+              <main className="pt-24 pb-12">
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </main>
+              <Footer />
+            </>
+          )}
           <Analytics />
           <SpeedInsights />
         </Providers>

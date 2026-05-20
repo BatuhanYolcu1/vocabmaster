@@ -28,7 +28,6 @@ export default function LoginPage() {
             if (result?.error) {
                 setError('E-posta veya şifre hatalı');
             } else {
-                // Store remember me preference
                 if (rememberMe) {
                     localStorage.setItem('vocabmaster-remember', 'true');
                 } else {
@@ -45,73 +44,73 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white relative flex items-center justify-center px-4">
+        <div className="min-h-screen bg-slate-50 text-[#0f172a] relative flex items-center justify-center px-4">
             {/* Ambient Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/20 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/15 blur-[100px]" />
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-100/30 blur-[130px] animate-pulse" style={{ animationDuration: '8s' }} />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-100/30 blur-[110px]" />
             </div>
 
             <div className="relative z-10 w-full max-w-md">
                 {/* Logo */}
                 <div className="flex justify-center mb-8">
                     <Link href="/" className="flex items-center gap-3">
-                        <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_0_30px_rgba(19,91,236,0.5)]">
+                        <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_10px_20px_rgba(19,91,236,0.2)]">
                             <span className="material-symbols-outlined text-white text-[28px]">school</span>
                         </div>
-                        <h1 className="text-2xl font-bold text-white">VocabMaster</h1>
+                        <h1 className="text-2xl font-black text-[#0f172a]">VocabMaster</h1>
                     </Link>
                 </div>
 
                 {/* Login Card */}
-                <div className="glass-panel rounded-3xl p-8">
+                <div className="bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-sm rounded-3xl p-8">
                     <div className="text-center mb-8">
-                        <h2 className="text-2xl font-bold text-white mb-2">Tekrar Hoş Geldin!</h2>
-                        <p className="text-[#92a4c9] text-sm">Öğrenmeye kaldığın yerden devam et</p>
+                        <h2 className="text-2xl font-extrabold text-[#0f172a] mb-2">Tekrar Hoş Geldin!</h2>
+                        <p className="text-[#64748b] text-sm font-semibold">Öğrenmeye kaldığın yerden devam et</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         {error && (
-                            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+                            <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm text-center font-bold">
                                 {error}
                             </div>
                         )}
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-[#92a4c9]">E-posta</label>
+                            <label className="text-xs font-bold uppercase tracking-wider text-[#64748b]">E-posta</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-[#92a4c9]/50 focus:outline-none focus:border-[#135bec]/50 focus:ring-2 focus:ring-[#135bec]/20 transition-all"
+                                className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#135bec] focus:ring-4 focus:ring-[#135bec]/10 transition-all text-sm font-medium"
                                 placeholder="ornek@email.com"
                                 required
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-[#92a4c9]">Şifre</label>
+                            <label className="text-xs font-bold uppercase tracking-wider text-[#64748b]">Şifre</label>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full h-12 px-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-[#92a4c9]/50 focus:outline-none focus:border-[#135bec]/50 focus:ring-2 focus:ring-[#135bec]/20 transition-all"
+                                className="w-full h-12 px-4 rounded-xl bg-white border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#135bec] focus:ring-4 focus:ring-[#135bec]/10 transition-all text-sm font-medium"
                                 placeholder="••••••••"
                                 required
                             />
                         </div>
 
                         <div className="flex items-center justify-between text-sm">
-                            <label className="flex items-center gap-2 text-[#92a4c9] cursor-pointer">
+                            <label className="flex items-center gap-2 text-[#64748b] font-semibold cursor-pointer">
                                 <input
                                     type="checkbox"
                                     checked={rememberMe}
                                     onChange={(e) => setRememberMe(e.target.checked)}
-                                    className="w-4 h-4 rounded bg-white/5 border-white/10 text-[#135bec] focus:ring-[#135bec]/20"
+                                    className="w-4 h-4 rounded border-slate-300 text-[#135bec] focus:ring-[#135bec]/20"
                                 />
                                 Beni hatırla
                             </label>
-                            <Link href="/forgot-password" className="text-[#135bec] hover:text-blue-400 transition-colors">
+                            <Link href="/forgot-password" className="text-[#135bec] hover:underline font-semibold transition-colors">
                                 Şifremi unuttum
                             </Link>
                         </div>
@@ -119,14 +118,14 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full h-12 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full h-12 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold shadow-[0_10px_20px_-5px_rgba(19,91,236,0.3)] hover:shadow-[0_15px_25px_-5px_rgba(19,91,236,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <>
                                     <span>Giriş Yap</span>
-                                    <span className="material-symbols-outlined">arrow_forward</span>
+                                    <span className="material-symbols-outlined text-base">arrow_forward</span>
                                 </>
                             )}
                         </button>
@@ -134,15 +133,15 @@ export default function LoginPage() {
 
                     {/* Divider */}
                     <div className="flex items-center gap-4 my-6">
-                        <div className="flex-1 h-px bg-white/10" />
-                        <span className="text-[#92a4c9] text-xs">veya</span>
-                        <div className="flex-1 h-px bg-white/10" />
+                        <div className="flex-1 h-px bg-slate-200/60" />
+                        <span className="text-[#64748b] text-xs font-bold uppercase">veya</span>
+                        <div className="flex-1 h-px bg-slate-200/60" />
                     </div>
 
                     {/* Social Login */}
                     <button
                         onClick={() => signIn('google', { callbackUrl: '/' })}
-                        className="w-full h-12 rounded-xl glass-button text-white font-medium flex items-center justify-center gap-3"
+                        className="w-full h-12 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-sm flex items-center justify-center gap-3 shadow-sm transition-all"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -154,9 +153,9 @@ export default function LoginPage() {
                     </button>
 
                     {/* Register Link */}
-                    <p className="text-center text-[#92a4c9] text-sm mt-6">
+                    <p className="text-center text-[#64748b] text-sm mt-6 font-semibold">
                         Hesabın yok mu?{' '}
-                        <Link href="/register" className="text-[#135bec] hover:text-blue-400 font-medium transition-colors">
+                        <Link href="/register" className="text-[#135bec] hover:underline font-bold transition-colors">
                             Ücretsiz kaydol
                         </Link>
                     </p>

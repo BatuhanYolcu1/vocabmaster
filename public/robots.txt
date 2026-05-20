@@ -1,9 +1,14 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /study/
+Disallow: /wordlists/
+Disallow: /profile
+Disallow: /onboarding
 
 # Host
-Host: https://vocabmaster-mu.vercel.app
+Host: https://vocabmaster.app
 
 # Sitemaps
-Sitemap: https://vocabmaster-mu.vercel.app/sitemap.xml
+Sitemap: https://vocabmaster.app/sitemap.xml

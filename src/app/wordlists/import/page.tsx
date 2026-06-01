@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Upload, FileSpreadsheet, Check, AlertCircle, Loader2, Wand2, Type } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Check, FileSpreadsheet, Loader2, Lock, Type, Upload, Wand2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 interface ParsedWord {
@@ -250,7 +250,7 @@ export default function ImportPage() {
                             {!hasExcelImport && (
                                 <div className="absolute inset-0 backdrop-blur-md bg-black/60 rounded-3xl flex flex-col items-center justify-center p-6 border border-white/5 animate-fadeIn">
                                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mb-4 shadow-lg shadow-orange-500/20">
-                                        <span className="material-symbols-outlined text-white text-xl">lock</span>
+                                        <Lock size={22} className="text-white" />
                                     </div>
                                     <h3 className="text-white font-bold text-base mb-1">Dosya Yükleme Premium Özelliktir</h3>
                                     <p className="text-[#8b9bb4] text-xs text-center max-w-sm mb-4 leading-relaxed">

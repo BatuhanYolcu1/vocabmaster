@@ -1,5 +1,6 @@
 'use client';
 
+import { BookOpen, Languages, Quote, Volume2 } from 'lucide-react';
 import { SRSCard } from '@/types';
 
 interface FlashcardProps {
@@ -64,7 +65,7 @@ export default function Flashcard({ card, isFlipped, onFlip }: FlashcardProps) {
                             }}
                             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-[#135bec]/50 hover:scale-105 active:scale-95 transition-all"
                         >
-                            <span className="material-symbols-outlined text-[#60a5fa]">volume_up</span>
+                            <Volume2 size={20} className="text-[#60a5fa]" />
                             <span className="text-sm font-medium">Dinle</span>
                         </button>
                     </div>
@@ -81,7 +82,7 @@ export default function Flashcard({ card, isFlipped, onFlip }: FlashcardProps) {
                         {/* Turkish Definition */}
                         <div>
                             <h3 className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-sm">menu_book</span>
+                                <BookOpen size={16} />
                                 Tanım
                             </h3>
                             <p className="text-base sm:text-lg text-white/90 leading-relaxed">
@@ -92,7 +93,7 @@ export default function Flashcard({ card, isFlipped, onFlip }: FlashcardProps) {
                         {/* Example Sentence */}
                         <div className="bg-white/5 rounded-xl p-4 border border-white/5">
                             <h3 className="text-xs font-semibold text-[#60a5fa] uppercase tracking-wider mb-2 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-sm">format_quote</span>
+                                <Quote size={16} />
                                 Örnek Cümle
                             </h3>
                             <p className="text-sm sm:text-base text-white/80 italic leading-relaxed mb-2">
@@ -106,7 +107,7 @@ export default function Flashcard({ card, isFlipped, onFlip }: FlashcardProps) {
                         {/* Turkish Translation */}
                         <div className="pt-4 border-t border-white/10">
                             <h3 className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-sm">translate</span>
+                                <Languages size={16} />
                                 Türkçe Karşılığı
                             </h3>
                             <p className="text-xl sm:text-2xl font-bold text-white">

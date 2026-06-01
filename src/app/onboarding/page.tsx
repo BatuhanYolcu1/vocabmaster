@@ -1,5 +1,7 @@
 'use client';
 
+import { ArrowRight, CheckCircle, Rocket } from 'lucide-react';
+import { Icon } from '@/components/Icon';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -109,7 +111,7 @@ export default function OnboardingPage() {
                             ))}
                         </div>
                         <button onClick={() => setStep(2)} className="w-full py-4 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold text-lg shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:scale-105 transition-all flex items-center justify-center gap-2">
-                            Devam <span className="material-symbols-outlined">arrow_forward</span>
+                            Devam <ArrowRight size={20} />
                         </button>
                     </div>
                 )}
@@ -133,14 +135,14 @@ export default function OnboardingPage() {
                                         <p className="font-bold text-white">{g.label}</p>
                                         <p className="text-xs text-[#8b9bb4]">{g.desc} • {g.time}</p>
                                     </div>
-                                    {selectedGoal === g.value && <span className="material-symbols-outlined text-[#135bec]">check_circle</span>}
+                                    {selectedGoal === g.value && <CheckCircle size={20} className="text-[#135bec]" />}
                                 </button>
                             ))}
                         </div>
                         <div className="flex gap-3">
                             <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-xl glass-button text-white font-medium">Geri</button>
                             <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:scale-105 transition-all flex items-center justify-center gap-2">
-                                Devam <span className="material-symbols-outlined">arrow_forward</span>
+                                Devam <ArrowRight size={20} />
                             </button>
                         </div>
                     </div>
@@ -161,7 +163,7 @@ export default function OnboardingPage() {
                                     className={`p-4 rounded-2xl border text-center transition-all ${selectedInterests.includes(i.id) ? 'border-[#135bec] bg-[#135bec]/10 shadow-[0_0_20px_rgba(19,91,236,0.2)]' : 'border-white/10 bg-white/5 hover:border-white/20'}`}
                                 >
                                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${i.color} flex items-center justify-center mx-auto mb-2`}>
-                                        <span className="material-symbols-outlined text-white">{i.icon}</span>
+                                        <Icon name={i.icon} size={20} className="text-white" />
                                     </div>
                                     <p className="font-bold text-white text-sm">{i.label}</p>
                                 </button>
@@ -174,7 +176,7 @@ export default function OnboardingPage() {
                                 disabled={saving || selectedInterests.length === 0}
                                 className="flex-1 py-4 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:scale-105 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                             >
-                                {saving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <>Başla! <span className="material-symbols-outlined">rocket_launch</span></>}
+                                {saving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <>Başla! <Rocket size={20} /></>}
                             </button>
                         </div>
                     </div>

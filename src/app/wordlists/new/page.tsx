@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, Check, Edit, Plus, Save, Wand2, X } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -148,7 +149,7 @@ export default function NewWordListPage() {
                         href="/categories"
                         className="p-2 rounded-xl glass-button text-[#92a4c9] hover:text-white transition-colors"
                     >
-                        <span className="material-symbols-outlined">arrow_back</span>
+                        <ArrowLeft size={20} />
                     </Link>
                     <div className="flex-1">
                         <h1 className="text-2xl font-bold text-white">Yeni Kelime Listesi</h1>
@@ -158,7 +159,7 @@ export default function NewWordListPage() {
                         href="/wordlists/import"
                         className="flex items-center gap-2 px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl text-sm font-bold hover:bg-indigo-500/20 transition-all group"
                     >
-                        <span className="material-symbols-outlined text-lg group-hover:rotate-12 transition-transform">auto_fix</span>
+                        <Wand2 size={20} className="group-hover:rotate-12 transition-transform" />
                         Magic Paste (AI)
                     </Link>
                 </div>
@@ -302,7 +303,7 @@ export default function NewWordListPage() {
                                     onClick={addOrUpdateWord}
                                     className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-medium shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-all"
                                 >
-                                    <span className="material-symbols-outlined text-lg">{editingIndex !== null ? 'check' : 'add'}</span>
+                                    {editingIndex !== null ? <Check size={18} /> : <Plus size={18} />}
                                     {editingIndex !== null ? 'Güncelle' : 'Ekle'}
                                 </button>
                                 <span className="ml-3 text-xs text-slate-500">Ctrl+Enter</span>
@@ -340,7 +341,7 @@ export default function NewWordListPage() {
                                                 className="p-2 text-slate-500 hover:text-[#135bec] hover:bg-[#135bec]/10 rounded-lg transition-colors"
                                                 title="Düzenle"
                                             >
-                                                <span className="material-symbols-outlined text-lg">edit</span>
+                                                <Edit size={20} />
                                             </button>
                                             <button
                                                 type="button"
@@ -348,7 +349,7 @@ export default function NewWordListPage() {
                                                 className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                                                 title="Sil"
                                             >
-                                                <span className="material-symbols-outlined text-lg">close</span>
+                                                <X size={20} />
                                             </button>
                                         </div>
                                     </div>
@@ -371,7 +372,7 @@ export default function NewWordListPage() {
                             disabled={saving || words.length === 0}
                             className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-2xl font-semibold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span className="material-symbols-outlined">save</span>
+                            <Save size={20} />
                             {saving ? 'Kaydediliyor...' : 'Listeyi Kaydet'}
                         </button>
                         <Link

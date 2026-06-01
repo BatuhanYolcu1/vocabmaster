@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle, Lightbulb, Star, Trophy, XCircle } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -189,7 +190,7 @@ function FillBlankContent() {
             <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
                 <div className="glass-panel rounded-3xl p-8 max-w-md text-center">
                     <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
-                        <span className="material-symbols-outlined text-4xl text-slate-400">warning</span>
+                        <AlertTriangle size={40} className="text-slate-400" />
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-3">Yeterli Kelime Bulunamadı</h2>
                     <p className="text-[#92a4c9] mb-8">
@@ -221,7 +222,7 @@ function FillBlankContent() {
 
                 <div className="relative z-10 text-center max-w-lg">
                     <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 shadow-[0_0_40px_rgba(99,102,241,0.4)] mb-8">
-                        <span className="material-symbols-outlined text-white text-5xl">emoji_events</span>
+                        <Trophy size={48} className="text-white" />
                     </div>
                     <h1 className="text-4xl font-black text-white mb-3">Çalışma Tamamlandı! 🎉</h1>
                     <p className="text-[#92a4c9] text-lg mb-8">Cümle tamamlama pratiğini bitirdin.</p>
@@ -243,7 +244,7 @@ function FillBlankContent() {
                         </div>
                         <div className="pt-6 border-t border-white/10">
                             <div className="flex items-center justify-center gap-2 text-amber-400 text-xl font-bold">
-                                <span className="material-symbols-outlined">star</span>
+                                <Star size={20} />
                                 +{xpEarned} XP Kazandın!
                             </div>
                         </div>
@@ -274,7 +275,7 @@ function FillBlankContent() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link href="/study/select" className="flex items-center gap-2 text-[#92a4c9] hover:text-white transition-colors group">
-                        <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                         <span>Çıkış</span>
                     </Link>
                     <div className="glass-panel px-4 py-2 rounded-full text-sm text-white font-medium">
@@ -296,7 +297,7 @@ function FillBlankContent() {
                         onClick={() => setShowHint(!showHint)}
                         className="absolute top-4 right-4 flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-amber-300 text-xs font-semibold transition-colors"
                     >
-                        <span className="material-symbols-outlined text-[16px]">lightbulb</span>
+                        <Lightbulb size={16} />
                         İpucu
                     </button>
 
@@ -357,13 +358,13 @@ function FillBlankContent() {
                     <div className="text-center animate-in slide-in-from-bottom-4 fade-in duration-300">
                         {isCorrect ? (
                             <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold mb-6 text-xl bg-emerald-500/10 py-3 rounded-2xl border border-emerald-500/20">
-                                <span className="material-symbols-outlined text-3xl">check_circle</span>
+                                <CheckCircle size={32} />
                                 Mükemmel! +20 XP
                             </div>
                         ) : (
                             <div className="mb-6 bg-rose-500/10 py-4 px-6 rounded-2xl border border-rose-500/20">
                                 <div className="flex items-center justify-center gap-2 text-rose-400 font-bold mb-2 text-lg">
-                                    <span className="material-symbols-outlined text-2xl">cancel</span>
+                                    <XCircle size={24} />
                                     Yanlış Seçim
                                 </div>
                                 <div className="text-white">
@@ -378,7 +379,7 @@ function FillBlankContent() {
                             className="inline-flex items-center gap-2 px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-bold text-lg shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)] transition-all"
                         >
                             {currentIndex < questions.length - 1 ? 'Sıradaki Cümle' : 'Sonuçları Gör'}
-                            <span className="material-symbols-outlined">arrow_forward</span>
+                            <ArrowRight size={20} />
                         </button>
                     </div>
                 )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, CheckCircle, Lock, Tag } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -192,7 +193,7 @@ export default function CheckoutPage() {
                 {/* Header */}
                 <div className="mb-10 flex items-center gap-4">
                     <Link href="/pricing" className="p-2 rounded-xl glass-button text-slate-400 hover:text-white transition-colors">
-                        <span className="material-symbols-outlined text-base">arrow_back</span>
+                        <ArrowLeft size={18} />
                     </Link>
                     <div>
                         <h1 className="text-3xl font-black text-white">Güvenli Ödeme</h1>
@@ -207,7 +208,7 @@ export default function CheckoutPage() {
                             <div className="absolute inset-0 rounded-full border-4 border-white/5" />
                             <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-500 animate-spin" />
                             <div className="absolute inset-4 rounded-full bg-[#135bec]/10 flex items-center justify-center text-cyan-400">
-                                <span className="material-symbols-outlined text-3xl animate-pulse">lock</span>
+                                <Lock size={32} className="animate-pulse" />
                             </div>
                         </div>
                         <h3 className="text-xl font-bold mb-2">Ödemeniz Güvenle İşleniyor</h3>
@@ -222,7 +223,7 @@ export default function CheckoutPage() {
                     <div className="glass-panel p-16 rounded-[2rem] text-center max-w-xl mx-auto flex flex-col items-center justify-center min-h-[400px] border-emerald-500/20">
                         {/* Sparkle effect */}
                         <div className="relative w-24 h-24 mb-8 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-5xl text-emerald-400 animate-bounce">check_circle</span>
+                            <CheckCircle size={48} className="text-emerald-400 animate-bounce" />
                             {/* Confetti simulation circles */}
                             <div className="absolute top-0 right-0 w-2 h-2 bg-yellow-400 rounded-full animate-ping" />
                             <div className="absolute bottom-2 left-0 w-3 h-3 bg-purple-500 rounded-full animate-ping" />
@@ -360,7 +361,7 @@ export default function CheckoutPage() {
                                     className="w-full py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-black text-base rounded-2xl shadow-xl shadow-blue-500/25 hover:scale-[1.01] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                                 >
                                     <span>Güvenli Ödeme Yap</span>
-                                    <span className="material-symbols-outlined text-sm">lock</span>
+                                    <Lock size={16} />
                                 </button>
                             </form>
                         </div>
@@ -383,7 +384,7 @@ export default function CheckoutPage() {
                                 {discountPercent > 0 && (
                                     <div className="flex justify-between items-center text-emerald-400 text-sm bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/10">
                                         <div className="flex items-center gap-1.5">
-                                            <span className="material-symbols-outlined text-base">local_offer</span>
+                                            <Tag size={18} />
                                             <span>İndirim (%{discountPercent})</span>
                                         </div>
                                         <span>- ₺{discountAmount.toFixed(2)}</span>

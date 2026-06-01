@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, ArrowRight, CheckCircle, Headphones, Star, Volume2, XCircle } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -145,7 +146,7 @@ function ListeningQuizContent() {
                 <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
                     <div className="text-center">
                         <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 shadow-[0_0_40px_rgba(6,182,212,0.4)] mb-8">
-                            <span className="material-symbols-outlined text-white text-5xl">headphones</span>
+                            <Headphones size={48} className="text-white" />
                         </div>
                         <h1 className="text-4xl font-black text-white mb-3">Dinleme Testi Bitti! 🎧</h1>
                         <p className="text-[#8b9bb4] text-lg mb-8">Harika kulak!</p>
@@ -167,7 +168,7 @@ function ListeningQuizContent() {
                             </div>
                             <div className="pt-6 border-t border-white/10">
                                 <p className="text-cyan-400 font-bold text-xl flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined">star</span>
+                                    <Star size={20} />
                                     +{xpEarned} XP Kazandın!
                                 </p>
                             </div>
@@ -201,7 +202,7 @@ function ListeningQuizContent() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link href="/study/select" className="flex items-center gap-2 text-[#8b9bb4] hover:text-white transition-colors">
-                        <span className="material-symbols-outlined">arrow_back</span>
+                        <ArrowLeft size={20} />
                         <span>Çıkış</span>
                     </Link>
                     <div className="text-sm text-[#8b9bb4]">
@@ -230,7 +231,7 @@ function ListeningQuizContent() {
                             onClick={speakWord}
                             className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-white/20 hover:bg-white/30 hover:scale-105 transition-all mb-4"
                         >
-                            <span className="material-symbols-outlined text-5xl">volume_up</span>
+                            <Volume2 size={48} />
                         </button>
                         <p className="text-cyan-100 text-sm">Dinlemek için tıkla</p>
                     </div>
@@ -269,12 +270,12 @@ function ListeningQuizContent() {
                     <div className="text-center">
                         {isCorrect ? (
                             <p className="text-green-400 font-semibold mb-4 flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined">check_circle</span>
+                                <CheckCircle size={20} />
                                 Doğru! +20 XP
                             </p>
                         ) : (
                             <p className="text-red-400 font-semibold mb-4 flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined">cancel</span>
+                                <XCircle size={20} />
                                 Yanlış! Doğru cevap: {currentWord.word}
                             </p>
                         )}
@@ -284,7 +285,7 @@ function ListeningQuizContent() {
                             className="flex items-center gap-2 mx-auto px-6 py-3 bg-[#135bec] text-white rounded-xl font-semibold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                         >
                             {currentIndex < words.length - 1 ? 'Sonraki' : 'Sonuçlar'}
-                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            <ArrowRight size={16} />
                         </button>
                     </div>
                 )}

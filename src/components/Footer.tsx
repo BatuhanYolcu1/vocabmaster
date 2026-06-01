@@ -1,5 +1,6 @@
 'use client';
 
+import { GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
@@ -22,7 +23,7 @@ export default function Footer() {
                     <div>
                         <div className="flex items-center gap-3 mb-3">
                             <div className="w-7 h-7 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#135bec] to-purple-600">
-                                <span className="material-symbols-outlined text-white text-[16px]">school</span>
+                                <GraduationCap size={16} className="text-white" />
                             </div>
                             <span className="text-[#0f172a] font-bold text-sm">VocabMaster</span>
                         </div>

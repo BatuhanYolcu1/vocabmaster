@@ -12,7 +12,6 @@ import { prisma } from "@/lib/prisma";
 import { isMaintenanceMode } from "@/lib/settings-server";
 import MaintenancePage from "@/components/MaintenancePage";
 
-// Optimize font loading with next/font
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
   display: "swap",
@@ -66,57 +65,29 @@ export default async function RootLayout({
       if (session?.user?.id) {
         const user = await prisma.user.findUnique({
           where: { id: session.user.id },
-          select: { role: true }
+          select: { role: true },
         });
-        isAdmin = user?.role === 'ADMIN';
+        isAdmin = user?.role === "ADMIN";
       }
-    } catch (e) {
-      console.error("Layout auth check failed:", e);
+    } catch {
+      // ignore
     }
   }
 
   return (
     <html lang="tr" className={`dark ${inter.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Blocking script to prevent theme flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('vocabmaster-theme');
-                  if (theme) {
-                    document.documentElement.classList.remove('light', 'dark');
-                    document.documentElement.classList.add(theme);
-                  }
-                } catch (e) {}
-                if ('serviceWorker' in navigator) {
-                  window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('/sw.js');
-                  });
-                }
-                if (window.matchMedia('(display-mode: standalone)').matches) {
-                  document.body.classList.add('pwa-mode');
-                }
-              })();
-            `,
-          }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-      </head>
-      <body className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`} suppressHydrationWarning>
+      <body
+        className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`}
+        suppressHydrationWarning
+      >
         <Providers>
           {maintenance && !isAdmin ? (
             <MaintenancePage />
           ) : (
             <>
               <Navbar />
-              <main className="pt-24 pb-12">
-                <PageTransition>
-                  {children}
-                </PageTransition>
+              <main className="pt-20 pb-12">
+                <PageTransition>{children}</PageTransition>
               </main>
               <Footer />
             </>

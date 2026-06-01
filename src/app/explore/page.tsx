@@ -1,5 +1,7 @@
 'use client';
 
+import { Check, CheckCircle, Compass, ListPlus, LogIn, Plus, Search, SearchX, X } from 'lucide-react';
+import { Icon } from '@/components/Icon';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -169,7 +171,7 @@ export default function ExplorePage() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
                     <div>
                         <h1 className="text-4xl font-black text-white mb-2 flex items-center gap-3">
-                            <span className="material-symbols-outlined text-cyan-400">explore</span>
+                            <Compass size={20} className="text-cyan-400" />
                             Kelimeleri Keşfet
                         </h1>
                         <p className="text-[#8b9bb4]">
@@ -181,7 +183,7 @@ export default function ExplorePage() {
                             onClick={() => setShowAddModal(true)}
                             className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] transition-all flex items-center gap-2"
                         >
-                            <span className="material-symbols-outlined">playlist_add</span>
+                            <ListPlus size={20} />
                             {selectedWords.size} Kelimeyi Ekle
                         </button>
                     )}
@@ -191,7 +193,7 @@ export default function ExplorePage() {
                 <div className="glass-panel rounded-2xl p-4 mb-6 space-y-4">
                     {/* Search */}
                     <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#8b9bb4]">search</span>
+                        <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8b9bb4]" />
                         <input
                             type="text"
                             placeholder="Kelime veya anlam ara..."
@@ -216,7 +218,7 @@ export default function ExplorePage() {
                                     onClick={() => { setSelectedCategory(cat.name); setPage(1); }}
                                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${selectedCategory === cat.name ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-white/5 text-[#8b9bb4] border border-white/10 hover:bg-white/10'}`}
                                 >
-                                    <span className="material-symbols-outlined text-sm">{CATEGORY_ICONS[cat.name] || 'category'}</span>
+                                    <Icon name={CATEGORY_ICONS[cat.name] || 'language'} size={16} />
                                     {cat.name} ({cat.count})
                                 </button>
                             ))}
@@ -250,9 +252,7 @@ export default function ExplorePage() {
                             onClick={selectAll}
                             className="text-xs text-[#8b9bb4] hover:text-white transition-colors flex items-center gap-1.5"
                         >
-                            <span className="material-symbols-outlined text-sm">
-                                {selectedWords.size === words.length ? 'deselect' : 'select_all'}
-                            </span>
+                            {selectedWords.size === words.length ? <X size={16} /> : <Check size={16} />}
                             {selectedWords.size === words.length ? 'Seçimi Kaldır' : 'Tümünü Seç'}
                         </button>
                         <span className="text-xs text-[#8b9bb4]">
@@ -274,14 +274,14 @@ export default function ExplorePage() {
                     </div>
                 ) : !session ? (
                     <div className="glass-panel rounded-3xl p-12 text-center">
-                        <span className="material-symbols-outlined text-5xl text-[#135bec] mb-4">login</span>
+                        <LogIn size={48} className="text-[#135bec] mb-4" />
                         <h3 className="text-2xl font-bold mb-3">Giriş Gerekli</h3>
                         <p className="text-[#8b9bb4] mb-6">Kelimeleri keşfetmek için giriş yapın.</p>
                         <Link href="/login" className="px-8 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 rounded-xl text-white font-bold">Giriş Yap</Link>
                     </div>
                 ) : words.length === 0 ? (
                     <div className="glass-panel rounded-3xl p-12 text-center">
-                        <span className="material-symbols-outlined text-5xl text-[#8b9bb4] mb-4">search_off</span>
+                        <SearchX size={48} className="text-[#8b9bb4] mb-4" />
                         <h3 className="text-xl font-bold mb-2">Kelime Bulunamadı</h3>
                         <p className="text-[#8b9bb4]">Filtrelerinizi değiştirmeyi deneyin.</p>
                     </div>
@@ -306,7 +306,7 @@ export default function ExplorePage() {
                                             </span>
                                         </div>
                                         <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${isSelected ? 'bg-cyan-500 border-cyan-500' : 'border-white/20'}`}>
-                                            {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
+                                            {isSelected && <Check size={16} className="text-white" />}
                                         </div>
                                     </div>
                                     <p className="text-sm text-cyan-400 font-medium mb-1">{word.turkishTranslation}</p>
@@ -314,7 +314,7 @@ export default function ExplorePage() {
                                     <div className="flex items-center gap-2 mt-2">
                                         <span className="text-[10px] text-[#8b9bb4] bg-white/5 px-2 py-0.5 rounded">{word.type}</span>
                                         <span className="text-[10px] text-[#8b9bb4] bg-white/5 px-2 py-0.5 rounded flex items-center gap-1">
-                                            <span className="material-symbols-outlined text-[10px]">{CATEGORY_ICONS[word.category] || 'category'}</span>
+                                            <Icon name={CATEGORY_ICONS[word.category] || 'language'} size={10} />
                                             {word.category}
                                         </span>
                                     </div>
@@ -371,13 +371,13 @@ export default function ExplorePage() {
                             onClick={() => { setShowAddModal(false); setAddResult(null); }}
                             className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#92a4c9] hover:text-white hover:bg-white/10 transition-all"
                         >
-                            <span className="material-symbols-outlined">close</span>
+                            <X size={20} />
                         </button>
 
                         {addResult ? (
                             <div className="text-center py-4">
                                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
-                                    <span className="material-symbols-outlined text-emerald-400 text-3xl">check_circle</span>
+                                    <CheckCircle size={32} className="text-emerald-400" />
                                 </div>
                                 <h3 className="text-xl font-bold text-white mb-2">Eklendi!</h3>
                                 <p className="text-[#8b9bb4]">{addResult.added} kelime listeye eklendi.</p>
@@ -385,7 +385,7 @@ export default function ExplorePage() {
                         ) : (
                             <>
                                 <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-cyan-400">playlist_add</span>
+                                    <ListPlus size={20} className="text-cyan-400" />
                                     Listeye Ekle
                                 </h2>
                                 <p className="text-sm text-[#8b9bb4] mb-6">{selectedWords.size} kelime eklenecek</p>
@@ -414,7 +414,7 @@ export default function ExplorePage() {
                                                         <p className="text-[#8b9bb4] text-xs">{list._count?.items || 0} kelime</p>
                                                     </div>
                                                     {selectedListId === list.id && (
-                                                        <span className="material-symbols-outlined text-cyan-400">check_circle</span>
+                                                        <CheckCircle size={20} className="text-cyan-400" />
                                                     )}
                                                 </button>
                                             ))}
@@ -428,7 +428,7 @@ export default function ExplorePage() {
                                                 <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                                             ) : (
                                                 <>
-                                                    <span className="material-symbols-outlined">add</span>
+                                                    <Plus size={20} />
                                                     Ekle
                                                 </>
                                             )}

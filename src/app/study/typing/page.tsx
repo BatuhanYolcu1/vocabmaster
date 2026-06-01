@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, ArrowRight, CheckCircle, Edit, FileEdit, Star, Volume2, XCircle } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -134,7 +135,7 @@ function TypingQuizContent() {
             <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
                 <div className="glass-panel rounded-3xl p-8 max-w-md text-center">
                     <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
-                        <span className="material-symbols-outlined text-4xl text-slate-400">edit_off</span>
+                        <Edit size={40} className="text-slate-400" />
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-3">Çalışılacak Kelime Yok</h2>
                     <p className="text-[#8b9bb4] mb-8">Bu modda çalışmak için kelime listenizin dolu olması gerekiyor.</p>
@@ -165,7 +166,7 @@ function TypingQuizContent() {
                 <div className="relative z-10 max-w-2xl mx-auto px-4 py-12">
                     <div className="text-center">
                         <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_40px_rgba(245,158,11,0.4)] mb-8">
-                            <span className="material-symbols-outlined text-white text-5xl">edit_note</span>
+                            <FileEdit size={48} className="text-white" />
                         </div>
                         <h1 className="text-4xl font-black text-white mb-3">Yazma Testi Bitti! ✍️</h1>
                         <p className="text-[#8b9bb4] text-lg mb-8">Harika çalışma!</p>
@@ -187,7 +188,7 @@ function TypingQuizContent() {
                             </div>
                             <div className="pt-6 border-t border-white/10">
                                 <p className="text-amber-400 font-bold text-xl flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined">star</span>
+                                    <Star size={20} />
                                     +{xpEarned} XP Kazandın!
                                 </p>
                             </div>
@@ -221,7 +222,7 @@ function TypingQuizContent() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link href="/study/select" className="flex items-center gap-2 text-[#8b9bb4] hover:text-white transition-colors">
-                        <span className="material-symbols-outlined">arrow_back</span>
+                        <ArrowLeft size={20} />
                         <span>Çıkış</span>
                     </Link>
                     <div className="text-sm text-[#8b9bb4]">
@@ -245,7 +246,7 @@ function TypingQuizContent() {
                     <div className="flex items-center justify-center gap-3 mb-8">
                         <h2 className="text-3xl font-bold text-white">{currentWord.turkishTranslation}</h2>
                         <button onClick={speakHint} className="p-2 text-[#8b9bb4] hover:text-amber-400 transition-colors">
-                            <span className="material-symbols-outlined">volume_up</span>
+                            <Volume2 size={20} />
                         </button>
                     </div>
 
@@ -271,13 +272,13 @@ function TypingQuizContent() {
                         <div className="mt-6">
                             {isCorrect ? (
                                 <p className="text-green-400 font-semibold flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined">check_circle</span>
+                                    <CheckCircle size={20} />
                                     Doğru! +20 XP
                                 </p>
                             ) : (
                                 <div className="text-red-400">
                                     <p className="font-semibold flex items-center justify-center gap-2 mb-2">
-                                        <span className="material-symbols-outlined">cancel</span>
+                                        <XCircle size={20} />
                                         Yanlış!
                                     </p>
                                     <p className="text-[#8b9bb4]">
@@ -305,7 +306,7 @@ function TypingQuizContent() {
                             className="flex items-center gap-2 px-8 py-4 bg-[#135bec] text-white rounded-2xl font-semibold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                         >
                             {currentIndex < words.length - 1 ? 'Sonraki' : 'Sonuçlar'}
-                            <span className="material-symbols-outlined">arrow_forward</span>
+                            <ArrowRight size={20} />
                         </button>
                     )}
                 </div>

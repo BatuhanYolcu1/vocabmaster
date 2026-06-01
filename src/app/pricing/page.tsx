@@ -1,117 +1,151 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { Check, X, Zap, Gem } from 'lucide-react';
 
 const plans = [
-    {
-        name: 'Ücretsiz', price: '₺0', period: 'sonsuza dek', popular: false, color: 'from-slate-400 to-slate-600',
-        features: [
-            { text: 'Günde 10 kelime', included: true },
-            { text: '3 kelime listesi', included: true },
-            { text: '3 çalışma modu', included: true },
-            { text: 'Temel istatistikler', included: true },
-            { text: '5 AI üretim/gün', included: true },
-            { text: 'Excel içe aktarma', included: false },
-            { text: 'Story modu', included: false },
-            { text: 'Öncelikli destek', included: false },
-        ],
-    },
-    {
-        name: 'Lite', price: '₺29.99', period: '/ay', popular: true, color: 'from-[#135bec] to-blue-600',
-        features: [
-            { text: 'Günde 50 kelime', included: true },
-            { text: '10 kelime listesi', included: true },
-            { text: '5 çalışma modu', included: true },
-            { text: 'Detaylı istatistikler', included: true },
-            { text: '30 AI üretim/gün', included: true },
-            { text: 'Excel içe aktarma', included: true },
-            { text: 'Story modu', included: false },
-            { text: 'Öncelikli destek', included: false },
-        ],
-    },
-    {
-        name: 'Pro', price: '₺59.99', period: '/ay', popular: false, color: 'from-purple-600 to-fuchsia-600',
-        features: [
-            { text: 'Sınırsız kelime', included: true },
-            { text: 'Sınırsız liste', included: true },
-            { text: 'Tüm 7 mod', included: true },
-            { text: 'Tam istatistikler', included: true },
-            { text: 'Sınırsız AI', included: true },
-            { text: 'Excel içe aktarma', included: true },
-            { text: 'Story modu', included: true },
-            { text: 'Öncelikli destek', included: true },
-        ],
-    },
+  {
+    name: 'Ücretsiz',
+    price: '₺0',
+    period: 'sonsuza dek',
+    icon: Zap,
+    iconColor: 'text-blue-400',
+    iconBg: 'bg-blue-500/10',
+    border: 'border-white/8',
+    features: [
+      { text: 'Sınırsız kelime & liste', included: true },
+      { text: 'Tüm 8 çalışma modu', included: true },
+      { text: 'SRS akıllı tekrar sistemi', included: true },
+      { text: 'Detaylı istatistikler', included: true },
+      { text: 'Günde 5 AI üretim', included: true },
+      { text: 'Sınırsız AI üretim', included: false },
+      { text: 'Excel/CSV içe aktarma', included: false },
+      { text: 'Öncelikli destek', included: false },
+    ],
+  },
+  {
+    name: 'Pro',
+    price: '₺49.99',
+    period: '/ay',
+    icon: Gem,
+    iconColor: 'text-purple-400',
+    iconBg: 'bg-purple-500/10',
+    border: 'border-purple-500/30',
+    popular: true,
+    features: [
+      { text: 'Sınırsız kelime & liste', included: true },
+      { text: 'Tüm 8 çalışma modu', included: true },
+      { text: 'SRS akıllı tekrar sistemi', included: true },
+      { text: 'Detaylı istatistikler', included: true },
+      { text: 'Sınırsız AI üretim', included: true },
+      { text: 'Excel/CSV içe aktarma', included: true },
+      { text: 'Story modu (AI hikaye)', included: true },
+      { text: 'Öncelikli destek', included: true },
+    ],
+  },
 ];
 
 export default function PricingPage() {
-    const [annual, setAnnual] = useState(false);
-    const { data: session } = useSession();
+  const { data: session } = useSession();
 
-    return (
-        <div className="min-h-screen bg-[#0b0f17] text-white relative">
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#135bec]/15 blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/10 blur-[100px]" />
-            </div>
+  return (
+    <div className="min-h-screen bg-[#0b0f17] text-white">
+      <div className="max-w-4xl mx-auto px-4 py-16">
 
-            <div className="relative z-10 max-w-5xl mx-auto px-4 py-16">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-black mb-4">Sana uygun planı seç</h1>
-                    <p className="text-[#8b9bb4] text-lg max-w-lg mx-auto mb-8">Ücretsiz başla, ihtiyacına göre yükselt. İstediğin zaman iptal edebilirsin.</p>
-                    <div className="inline-flex items-center gap-3 bg-white/5 rounded-full p-1 border border-white/10">
-                        <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${!annual ? 'bg-[#135bec] text-white' : 'text-[#8b9bb4]'}`}>Aylık</button>
-                        <button onClick={() => setAnnual(true)} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${annual ? 'bg-[#135bec] text-white' : 'text-[#8b9bb4]'}`}>
-                            Yıllık <span className="text-emerald-400 text-xs ml-1">%20 indirim</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {plans.map(plan => {
-                        const displayPrice = plan.price === '₺0' ? '₺0' :
-                            annual ? `₺${(parseFloat(plan.price.replace('₺', '')) * 0.8).toFixed(2)}` : plan.price;
-
-                        let buttonLink = '/register';
-                        if (plan.name === 'Ücretsiz') {
-                            buttonLink = session ? '/' : '/register';
-                        } else {
-                            buttonLink = `/checkout?plan=${plan.name.toLowerCase()}&annual=${annual}`;
-                        }
-
-                        return (
-                            <div key={plan.name} className={`relative glass-panel rounded-3xl p-7 flex flex-col ${plan.popular ? 'border-[#135bec]/50 shadow-[0_0_40px_rgba(19,91,236,0.15)] md:scale-105' : ''}`}>
-                                {plan.popular && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-[#135bec] to-blue-600 text-white text-xs font-bold">En Popüler</div>
-                                )}
-                                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${plan.color} flex items-center justify-center mb-4`}>
-                                    <span className="material-symbols-outlined text-white">{plan.name === 'Ücretsiz' ? 'stars' : plan.name === 'Lite' ? 'bolt' : 'diamond'}</span>
-                                </div>
-                                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
-                                <div className="flex items-baseline gap-1 mb-6">
-                                    <span className="text-4xl font-black">{displayPrice}</span>
-                                    <span className="text-[#8b9bb4] text-sm">{plan.period}</span>
-                                </div>
-                                <ul className="space-y-3 mb-8 flex-1">
-                                    {plan.features.map(f => (
-                                        <li key={f.text} className={`flex items-center gap-2 text-sm ${f.included ? 'text-[#c4d0e4]' : 'text-[#8b9bb4]/50 line-through'}`}>
-                                            <span className={`material-symbols-outlined text-base ${f.included ? 'text-emerald-400' : 'text-[#8b9bb4]/30'}`}>
-                                                {f.included ? 'check_circle' : 'cancel'}
-                                             </span>
-                                            {f.text}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Link href={buttonLink} className={`w-full py-3 rounded-xl font-bold text-center block transition-all hover:scale-105 ${plan.popular ? 'bg-gradient-to-r from-[#135bec] to-blue-600 text-white shadow-[0_0_20px_rgba(19,91,236,0.4)]' : 'glass-button text-white'}`}>
-                                    {plan.name === 'Ücretsiz' ? 'Hemen Başla' : `${plan.name}'a Geç`}
-                                </Link>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+        {/* Header */}
+        <div className="text-center mb-14">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+            Sana uygun planı seç
+          </h1>
+          <p className="text-[#6b7a94] text-lg max-w-md mx-auto">
+            Ücretsiz başla, Pro ile limitleri kaldır. İstediğin zaman iptal edebilirsin.
+          </p>
         </div>
-    );
+
+        {/* Plans */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {plans.map((plan) => {
+            const PlanIcon = plan.icon;
+            const href = plan.name === 'Ücretsiz'
+              ? (session ? '/study/select' : '/register')
+              : `/checkout?plan=pro`;
+
+            return (
+              <div
+                key={plan.name}
+                className={`relative rounded-2xl border p-8 flex flex-col bg-[#111827] ${plan.border} ${(plan as { popular?: boolean }).popular ? 'ring-1 ring-purple-500/30 shadow-[0_0_40px_rgba(168,85,247,0.08)]' : ''}`}
+              >
+                {(plan as { popular?: boolean }).popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-purple-600 text-white text-xs font-semibold tracking-wide">
+                    En Popüler
+                  </div>
+                )}
+
+                <div className={`w-11 h-11 rounded-xl ${plan.iconBg} flex items-center justify-center mb-5`}>
+                  <PlanIcon className={plan.iconColor} size={22} />
+                </div>
+                <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
+                <div className="flex items-baseline gap-1 mb-7">
+                  <span className="text-4xl font-bold">{plan.price}</span>
+                  <span className="text-[#6b7a94] text-sm">{plan.period}</span>
+                </div>
+
+                <ul className="space-y-3 mb-8 flex-1">
+                  {plan.features.map((f) => (
+                    <li key={f.text} className="flex items-center gap-3 text-sm">
+                      {f.included
+                        ? <Check size={16} className="text-emerald-400 shrink-0" />
+                        : <X size={16} className="text-[#6b7a94]/40 shrink-0" />}
+                      <span className={f.included ? 'text-[#c4d0e4]' : 'text-[#6b7a94]/50'}>
+                        {f.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href={href}
+                  className={`w-full py-3 rounded-xl font-semibold text-center transition-all text-sm ${
+                    (plan as { popular?: boolean }).popular
+                      ? 'bg-purple-600 hover:bg-purple-500 text-white'
+                      : 'bg-white/6 hover:bg-white/10 text-white border border-white/8'
+                  }`}
+                >
+                  {plan.name === 'Ücretsiz' ? 'Ücretsiz Başla' : "Pro'ya Geç"}
+                </Link>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* FAQ */}
+        <div className="mt-20 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-semibold text-center mb-8">Sık Sorulan Sorular</h2>
+          <div className="space-y-4">
+            {[
+              {
+                q: 'Ücretsiz planda neler var?',
+                a: 'Sınırsız kelime, sınırsız liste, tüm 8 çalışma modu, SRS sistemi ve günde 5 AI üretim — tamamen ücretsiz.',
+              },
+              {
+                q: 'Pro planı iptal edebilir miyim?',
+                a: 'Evet, istediğin zaman ve herhangi bir ceza olmadan iptal edebilirsin. Ödeme dönemin sonuna kadar Pro özelliklere erişimin devam eder.',
+              },
+              {
+                q: "Pro ve Ücretsiz arasındaki fark ne?",
+                a: "Pro plan; sınırsız AI üretim, Excel/CSV içe aktarma, Story modu ve öncelikli destek sunar. Öğrenme deneyimi için Ücretsiz plan fazlasıyla yeterlidir.",
+              },
+            ].map((item) => (
+              <div key={item.q} className="rounded-xl bg-[#111827] border border-white/6 p-5">
+                <h4 className="font-medium mb-2 text-white">{item.q}</h4>
+                <p className="text-[#6b7a94] text-sm leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 }

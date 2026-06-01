@@ -1,5 +1,7 @@
 'use client';
 
+import { Calendar, CheckCircle, Lock, Medal, TrendingUp, Trophy } from 'lucide-react';
+import { Icon } from '@/components/Icon';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
@@ -64,7 +66,7 @@ export default function AchievementsPage() {
                         <div className="glass-panel rounded-xl p-5 flex flex-col gap-3 max-w-xl">
                             <div className="flex justify-between items-end">
                                 <p className="text-white font-medium flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-[#135bec] text-xl">trophy</span>
+                                    <Trophy size={22} className="text-[#135bec]" />
                                     Genel İlerleme
                                 </p>
                                 <p className="text-[#135bec] font-bold">%{progressPercent}</p>
@@ -83,7 +85,7 @@ export default function AchievementsPage() {
                     <div className="flex flex-wrap gap-4 lg:min-w-[400px]">
                         <div className="glass-card flex-1 min-w-[140px] rounded-xl p-5 flex flex-col justify-between h-32">
                             <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 mb-2">
-                                <span className="material-symbols-outlined">military_tech</span>
+                                <Medal size={20} />
                             </div>
                             <div>
                                 <p className="text-slate-400 text-sm font-medium">Toplam Rozet</p>
@@ -92,7 +94,7 @@ export default function AchievementsPage() {
                         </div>
                         <div className="glass-card flex-1 min-w-[140px] rounded-xl p-5 flex flex-col justify-between h-32">
                             <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mb-2">
-                                <span className="material-symbols-outlined">check_circle</span>
+                                <CheckCircle size={20} />
                             </div>
                             <div>
                                 <p className="text-slate-400 text-sm font-medium">Kazanılan</p>
@@ -101,7 +103,7 @@ export default function AchievementsPage() {
                         </div>
                         <div className="glass-card flex-1 min-w-[140px] rounded-xl p-5 flex flex-col justify-between h-32">
                             <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 mb-2">
-                                <span className="material-symbols-outlined">trending_up</span>
+                                <TrendingUp size={20} />
                             </div>
                             <div>
                                 <p className="text-slate-400 text-sm font-medium">Seviye</p>
@@ -154,7 +156,7 @@ export default function AchievementsPage() {
                             {!achievement.unlocked && (
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px] z-10 group-hover:bg-black/20 transition-all">
                                     <div className="w-12 h-12 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-slate-400 shadow-xl">
-                                        <span className="material-symbols-outlined text-2xl">lock</span>
+                                        <Lock size={24} />
                                     </div>
                                 </div>
                             )}
@@ -168,7 +170,7 @@ export default function AchievementsPage() {
 
                             {/* Icon */}
                             <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${achievement.gradient} flex items-center justify-center shadow-lg shadow-${achievement.glowColor}/20 mb-2 group-hover:scale-110 transition-transform duration-300`}>
-                                <span className="material-symbols-outlined text-white text-4xl">{achievement.icon}</span>
+                                <Icon name={achievement.icon} size={36} className="text-white" />
                             </div>
 
                             {/* Content */}
@@ -181,7 +183,7 @@ export default function AchievementsPage() {
                             <div className="mt-auto pt-4 border-t border-white/5">
                                 {achievement.unlocked ? (
                                     <div className="flex items-center gap-2 text-xs text-slate-500">
-                                        <span className="material-symbols-outlined text-base">calendar_today</span>
+                                        <Calendar size={18} />
                                         <span>{achievement.unlockedAt}&apos;te kazanıldı</span>
                                     </div>
                                 ) : (

@@ -1,5 +1,7 @@
 'use client';
 
+import { Wrench } from 'lucide-react';
+
 export default function MaintenancePage() {
     return (
         <div className="min-h-screen bg-slate-50 text-[#0f172a] flex flex-col justify-center items-center relative overflow-hidden px-4">
@@ -25,7 +27,7 @@ export default function MaintenancePage() {
                     
                     {/* Core Icon */}
                     <div className="absolute w-14 h-14 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-[0_10px_20px_rgba(6,182,212,0.3)]">
-                        <span className="material-symbols-outlined text-white text-3xl animate-pulse">construction</span>
+                        <Wrench size={32} className="text-white animate-pulse" />
                     </div>
                 </div>
 

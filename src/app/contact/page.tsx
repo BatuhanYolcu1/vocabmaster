@@ -1,5 +1,6 @@
 'use client';
 
+import { CheckCircle, Clock, Mail, Send } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ContactPage() {
@@ -26,7 +27,7 @@ export default function ContactPage() {
                 {sent ? (
                     <div className="glass-panel rounded-3xl p-12 text-center">
                         <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
-                            <span className="material-symbols-outlined text-emerald-400 text-4xl">check_circle</span>
+                            <CheckCircle size={40} className="text-emerald-400" />
                         </div>
                         <h2 className="text-2xl font-bold mb-3">Mesajınız Gönderildi!</h2>
                         <p className="text-[#8b9bb4]">En kısa sürede size geri dönüş yapacağız.</p>
@@ -72,7 +73,7 @@ export default function ContactPage() {
                             />
                         </div>
                         <button type="submit" className="w-full h-12 rounded-xl bg-gradient-to-r from-[#135bec] to-blue-600 text-white font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined">send</span>
+                            <Send size={20} />
                             Gönder
                         </button>
                     </form>
@@ -81,7 +82,7 @@ export default function ContactPage() {
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="glass-panel rounded-2xl p-5 flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
-                            <span className="material-symbols-outlined">mail</span>
+                            <Mail size={20} />
                         </div>
                         <div>
                             <p className="text-white font-medium text-sm">E-posta</p>
@@ -90,7 +91,7 @@ export default function ContactPage() {
                     </div>
                     <div className="glass-panel rounded-2xl p-5 flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400">
-                            <span className="material-symbols-outlined">schedule</span>
+                            <Clock size={20} />
                         </div>
                         <div>
                             <p className="text-white font-medium text-sm">Yanıt Süresi</p>

@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, BookOpen, HelpCircle, Inbox, PlayCircle, Plus, Trash2, Volume2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
@@ -95,7 +96,7 @@ export default function WordListDetailPage() {
                             href="/categories"
                             className="p-2 rounded-xl glass-button text-[#92a4c9] hover:text-white transition-colors"
                         >
-                            <span className="material-symbols-outlined">arrow_back</span>
+                            <ArrowLeft size={20} />
                         </Link>
                         <div>
                             <h1 className="text-2xl font-bold text-white">{wordList.name}</h1>
@@ -109,7 +110,7 @@ export default function WordListDetailPage() {
                             href={`/wordlists/${listId}/add`}
                             className="flex items-center gap-2 px-4 py-2 glass-button text-white rounded-xl font-medium"
                         >
-                            <span className="material-symbols-outlined text-lg">add</span>
+                            <Plus size={20} />
                             Kelime Ekle
                         </Link>
                         <button
@@ -118,7 +119,7 @@ export default function WordListDetailPage() {
                             className="p-2 rounded-xl glass-button text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                             title="Listeyi Sil"
                         >
-                            <span className="material-symbols-outlined">delete</span>
+                            <Trash2 size={20} />
                         </button>
                     </div>
                 </div>
@@ -129,14 +130,14 @@ export default function WordListDetailPage() {
                         href={`/study/flashcard?list=${listId}`}
                         className="flex-1 flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-2xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
                     >
-                        <span className="material-symbols-outlined text-2xl">play_circle</span>
+                        <PlayCircle size={24} />
                         Flashcard İle Çalış
                     </Link>
                     <Link
                         href={`/study/multiple-choice?list=${listId}`}
                         className="flex-1 flex items-center justify-center gap-3 px-6 py-4 glass-button text-white rounded-2xl font-medium"
                     >
-                        <span className="material-symbols-outlined text-2xl">quiz</span>
+                        <HelpCircle size={24} />
                         Test İle Çalış
                     </Link>
                 </div>
@@ -145,7 +146,7 @@ export default function WordListDetailPage() {
                 <div className="glass-panel rounded-2xl p-4 mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
-                            <span className="material-symbols-outlined">menu_book</span>
+                            <BookOpen size={20} />
                         </div>
                         <div>
                             <p className="text-white font-medium">{wordList.words.length} Kelime</p>
@@ -172,7 +173,7 @@ export default function WordListDetailPage() {
                 {wordList.words.length === 0 ? (
                     <div className="glass-panel rounded-2xl p-12 text-center">
                         <div className="w-20 h-20 rounded-full bg-slate-700/50 flex items-center justify-center mx-auto mb-6">
-                            <span className="material-symbols-outlined text-4xl text-slate-400">inbox</span>
+                            <Inbox size={40} className="text-slate-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2">Henüz kelime yok</h3>
                         <p className="text-[#92a4c9] mb-6">Bu listeye kelime ekleyerek başlayın</p>
@@ -180,7 +181,7 @@ export default function WordListDetailPage() {
                             href={`/wordlists/${listId}/add`}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-semibold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                         >
-                            <span className="material-symbols-outlined">add</span>
+                            <Plus size={20} />
                             Kelime Ekle
                         </Link>
                     </div>
@@ -209,7 +210,7 @@ export default function WordListDetailPage() {
                                     </div>
                                 </div>
                                 <button className="p-2 text-slate-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
-                                    <span className="material-symbols-outlined text-lg">volume_up</span>
+                                    <Volume2 size={20} />
                                 </button>
                             </div>
                         ))}

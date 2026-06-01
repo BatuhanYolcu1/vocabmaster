@@ -1,5 +1,6 @@
 'use client';
 
+import { AlertCircle, Clock, GraduationCap, RefreshCw, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface WordDetail {
@@ -73,7 +74,7 @@ export default function WordDetailModal({ wordId, onClose }: WordDetailModalProp
             >
                 {loading ? (
                     <div className="p-12 text-center">
-                        <span className="material-symbols-outlined text-[#135bec] text-4xl animate-spin">sync</span>
+                        <RefreshCw size={40} className="text-[#135bec] animate-spin" />
                         <p className="text-[#8b9bb4] mt-3 text-sm">Yükleniyor...</p>
                     </div>
                 ) : word ? (
@@ -81,7 +82,7 @@ export default function WordDetailModal({ wordId, onClose }: WordDetailModalProp
                         {/* Header */}
                         <div className="relative bg-gradient-to-r from-[#135bec] to-blue-700 px-6 py-5">
                             <button onClick={onClose} className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
-                                <span className="material-symbols-outlined">close</span>
+                                <X size={20} />
                             </button>
                             <div className="flex items-center gap-3 mb-2">
                                 <span className={`text-xs font-bold px-2.5 py-1 rounded-full bg-white/20 text-white`}>
@@ -166,13 +167,13 @@ export default function WordDetailModal({ wordId, onClose }: WordDetailModalProp
 
                                     {/* Next Review */}
                                     <div className="flex items-center gap-2 text-xs text-[#8b9bb4]">
-                                        <span className="material-symbols-outlined text-base">schedule</span>
+                                        <Clock size={18} />
                                         Sonraki tekrar: {new Date(word.progress.nextReview).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
                                     </div>
                                 </div>
                             ) : (
                                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5 text-center">
-                                    <span className="material-symbols-outlined text-[#8b9bb4] text-2xl mb-1">school</span>
+                                    <GraduationCap size={24} className="text-[#8b9bb4] mb-1" />
                                     <p className="text-[#8b9bb4] text-sm">Henüz çalışılmadı</p>
                                     <p className="text-[#8b9bb4]/60 text-xs mt-1">Bu kelimeyi pratik yaparak ilerlemeye başla!</p>
                                 </div>
@@ -181,7 +182,7 @@ export default function WordDetailModal({ wordId, onClose }: WordDetailModalProp
                     </>
                 ) : (
                     <div className="p-12 text-center">
-                        <span className="material-symbols-outlined text-red-400 text-4xl mb-2">error</span>
+                        <AlertCircle size={40} className="text-red-400 mb-2" />
                         <p className="text-[#8b9bb4] text-sm">Kelime bulunamadı</p>
                     </div>
                 )}

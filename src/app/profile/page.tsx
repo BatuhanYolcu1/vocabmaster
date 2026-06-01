@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowRight, BarChart3, BookOpen, CheckCircle, Edit, Flame, Folder, HelpCircle, LogOut, PlayCircle, Save, Star, Target, Trophy, X } from 'lucide-react';
 import { useSession, signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -130,7 +131,7 @@ export default function ProfilePage() {
                                     Premium Üye
                                 </span>
                                 <span className="px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-sm font-medium border border-orange-500/20 flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-base">local_fire_department</span>
+                                    <Flame size={18} />
                                     {stats.streak} Gün Seri
                                 </span>
                             </div>
@@ -142,14 +143,14 @@ export default function ProfilePage() {
                                 onClick={openEditModal}
                                 className="px-6 py-2.5 rounded-xl glass-button text-white font-medium flex items-center gap-2 hover:bg-white/10 transition-all"
                             >
-                                <span className="material-symbols-outlined text-lg">edit</span>
+                                <Edit size={20} />
                                 Düzenle
                             </button>
                             <button
                                 onClick={() => signOut()}
                                 className="px-6 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium hover:bg-red-500/20 transition-all flex items-center gap-2"
                             >
-                                <span className="material-symbols-outlined text-lg">logout</span>
+                                <LogOut size={20} />
                                 Çıkış Yap
                             </button>
                         </div>
@@ -160,28 +161,28 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div className="glass-card rounded-2xl p-5 text-center">
                         <div className="w-12 h-12 rounded-full bg-[#135bec]/20 flex items-center justify-center text-[#135bec] mx-auto mb-3">
-                            <span className="material-symbols-outlined">star</span>
+                            <Star size={20} />
                         </div>
                         <p className="text-2xl font-bold text-white">{stats.totalXP.toLocaleString()}</p>
                         <p className="text-sm text-[#92a4c9]">Toplam XP</p>
                     </div>
                     <div className="glass-card rounded-2xl p-5 text-center">
                         <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 mx-auto mb-3">
-                            <span className="material-symbols-outlined">menu_book</span>
+                            <BookOpen size={20} />
                         </div>
                         <p className="text-2xl font-bold text-white">{stats.wordsLearned}</p>
                         <p className="text-sm text-[#92a4c9]">Öğrenilen</p>
                     </div>
                     <div className="glass-card rounded-2xl p-5 text-center">
                         <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 mx-auto mb-3">
-                            <span className="material-symbols-outlined">quiz</span>
+                            <HelpCircle size={20} />
                         </div>
                         <p className="text-2xl font-bold text-white">{stats.quizzesTaken}</p>
                         <p className="text-sm text-[#92a4c9]">Quiz</p>
                     </div>
                     <div className="glass-card rounded-2xl p-5 text-center">
                         <div className="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 mx-auto mb-3">
-                            <span className="material-symbols-outlined">target</span>
+                            <Target size={20} />
                         </div>
                         <p className="text-2xl font-bold text-white">%{stats.accuracy}</p>
                         <p className="text-sm text-[#92a4c9]">Doğruluk</p>
@@ -194,43 +195,43 @@ export default function ProfilePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Link href="/achievements" className="glass-card rounded-xl p-4 flex items-center gap-4 group">
                             <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center text-yellow-400 group-hover:scale-110 transition-transform">
-                                <span className="material-symbols-outlined">emoji_events</span>
+                                <Trophy size={20} />
                             </div>
                             <div className="flex-1">
                                 <p className="text-white font-medium">Başarımlar</p>
                                 <p className="text-[#92a4c9] text-sm">Rozetlerini görüntüle</p>
                             </div>
-                            <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
+                            <ArrowRight size={20} className="text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all" />
                         </Link>
                         <Link href="/categories" className="glass-card rounded-xl p-4 flex items-center gap-4 group">
                             <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec] group-hover:scale-110 transition-transform">
-                                <span className="material-symbols-outlined">folder</span>
+                                <Folder size={20} />
                             </div>
                             <div className="flex-1">
                                 <p className="text-white font-medium">Kelime Listeleri</p>
                                 <p className="text-[#92a4c9] text-sm">Listelerini yönet</p>
                             </div>
-                            <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
+                            <ArrowRight size={20} className="text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all" />
                         </Link>
                         <Link href="/leaderboard" className="glass-card rounded-xl p-4 flex items-center gap-4 group">
                             <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                                <span className="material-symbols-outlined">leaderboard</span>
+                                <BarChart3 size={20} />
                             </div>
                             <div className="flex-1">
                                 <p className="text-white font-medium">Liderlik Tablosu</p>
                                 <p className="text-[#92a4c9] text-sm">Sıralamana bak</p>
                             </div>
-                            <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
+                            <ArrowRight size={20} className="text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all" />
                         </Link>
                         <Link href="/study/select" className="glass-card rounded-xl p-4 flex items-center gap-4 group">
                             <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 group-hover:scale-110 transition-transform">
-                                <span className="material-symbols-outlined">play_circle</span>
+                                <PlayCircle size={20} />
                             </div>
                             <div className="flex-1">
                                 <p className="text-white font-medium">Pratik Yap</p>
                                 <p className="text-[#92a4c9] text-sm">Çalışmaya başla</p>
                             </div>
-                            <span className="material-symbols-outlined text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all">arrow_forward</span>
+                            <ArrowRight size={20} className="text-[#92a4c9] group-hover:text-white group-hover:translate-x-1 transition-all" />
                         </Link>
                     </div>
                 </div>
@@ -244,11 +245,11 @@ export default function ProfilePage() {
                             onClick={() => setIsEditing(false)}
                             className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#92a4c9] hover:text-white hover:bg-white/10 transition-all"
                         >
-                            <span className="material-symbols-outlined">close</span>
+                            <X size={20} />
                         </button>
 
                         <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[#135bec]">edit</span>
+                            <Edit size={20} className="text-[#135bec]" />
                             Profili Düzenle
                         </h2>
 
@@ -314,7 +315,7 @@ export default function ProfilePage() {
                                             />
                                             {editImage === avatarUrl && (
                                                 <div className="absolute inset-0 bg-[#135bec]/20 flex items-center justify-center">
-                                                    <span className="material-symbols-outlined text-white text-2xl">check_circle</span>
+                                                    <CheckCircle size={24} className="text-white" />
                                                 </div>
                                             )}
                                         </button>
@@ -354,7 +355,7 @@ export default function ProfilePage() {
                                     </>
                                 ) : (
                                     <>
-                                        <span className="material-symbols-outlined text-lg">save</span>
+                                        <Save size={20} />
                                         Kaydet
                                     </>
                                 )}

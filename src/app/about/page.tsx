@@ -1,3 +1,5 @@
+import { Eye, Flag } from 'lucide-react';
+
 export default function AboutPage() {
     const team = [
         { name: 'BAY Technology', role: 'Geliştirici Ekip', icon: '🚀' },
@@ -20,7 +22,7 @@ export default function AboutPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                     <div className="glass-panel rounded-3xl p-8">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#135bec] to-blue-600 flex items-center justify-center mb-4">
-                            <span className="material-symbols-outlined text-white text-[28px]">visibility</span>
+                            <Eye size={28} className="text-white" />
                         </div>
                         <h2 className="text-2xl font-bold mb-3">Vizyonumuz</h2>
                         <p className="text-[#8b9bb4] leading-relaxed">
@@ -29,7 +31,7 @@ export default function AboutPage() {
                     </div>
                     <div className="glass-panel rounded-3xl p-8">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center mb-4">
-                            <span className="material-symbols-outlined text-white text-[28px]">flag</span>
+                            <Flag size={28} className="text-white" />
                         </div>
                         <h2 className="text-2xl font-bold mb-3">Misyonumuz</h2>
                         <p className="text-[#8b9bb4] leading-relaxed">

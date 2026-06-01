@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowRight, GraduationCap } from 'lucide-react';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -56,7 +57,7 @@ export default function LoginPage() {
                 <div className="flex justify-center mb-8">
                     <Link href="/" className="flex items-center gap-3">
                         <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_10px_20px_rgba(19,91,236,0.2)]">
-                            <span className="material-symbols-outlined text-white text-[28px]">school</span>
+                            <GraduationCap size={28} className="text-white" />
                         </div>
                         <h1 className="text-2xl font-black text-[#0f172a]">VocabMaster</h1>
                     </Link>
@@ -125,7 +126,7 @@ export default function LoginPage() {
                             ) : (
                                 <>
                                     <span>Giriş Yap</span>
-                                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                                    <ArrowRight size={18} />
                                 </>
                             )}
                         </button>

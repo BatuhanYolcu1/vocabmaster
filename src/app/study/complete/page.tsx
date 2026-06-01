@@ -5,207 +5,155 @@ import { useStudyStore } from '@/lib/store';
 import { useSession } from 'next-auth/react';
 import { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Trophy, Home, RefreshCw, Star } from 'lucide-react';
 
 interface SessionStats {
-    totalWords: number;
-    hardCount: number;
-    goodCount: number;
-    easyCount: number;
-    startTime: string;
-    endTime: string;
+  totalWords: number;
+  hardCount: number;
+  goodCount: number;
+  easyCount: number;
+  startTime: string;
+  endTime: string;
 }
 
 function StudyCompleteContent() {
-    const searchParams = useSearchParams();
-    const { resetSession } = useStudyStore();
-    const { update } = useSession();
+  const searchParams = useSearchParams();
+  const { resetSession } = useStudyStore();
+  const { update } = useSession();
 
-    // Get stats from URL parameters
-    const sessionStats: SessionStats | null = (() => {
-        const total = searchParams.get('total');
-        const hard = searchParams.get('hard');
-        const good = searchParams.get('good');
-        const easy = searchParams.get('easy');
-        const start = searchParams.get('start');
-        const end = searchParams.get('end');
-
-        if (total && hard && good && easy && start && end) {
-            return {
-                totalWords: parseInt(total),
-                hardCount: parseInt(hard),
-                goodCount: parseInt(good),
-                easyCount: parseInt(easy),
-                startTime: start,
-                endTime: end,
-            };
-        }
-        return null;
-    })();
-
-    useEffect(() => {
-        // Refresh session to update XP display in navbar
-        if (sessionStats) {
-            update();
-            window.dispatchEvent(new Event('xp-updated'));
-        }
-    }, [sessionStats, update]);
-
-    const getDuration = () => {
-        if (!sessionStats?.startTime || !sessionStats?.endTime) return '0 dk';
-        const start = new Date(sessionStats.startTime);
-        const end = new Date(sessionStats.endTime);
-        const duration = Math.round((end.getTime() - start.getTime()) / 60000);
-        return duration < 1 ? '1 dk\'dan az' : `${duration} dk`;
-    };
-
-    const handleStartAgain = () => {
-        resetSession();
-    };
-
-    if (!sessionStats) {
-        return (
-            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
-                <div className="glass-panel rounded-3xl p-8 text-center">
-                    <p className="text-[#92a4c9] mb-4">Oturum verisi bulunamadı.</p>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 text-[#135bec] hover:text-blue-400 transition-colors"
-                    >
-                        <span className="material-symbols-outlined">home</span>
-                        Ana Sayfaya Dön
-                    </Link>
-                </div>
-            </div>
-        );
+  const sessionStats: SessionStats | null = (() => {
+    const total = searchParams.get('total');
+    const hard = searchParams.get('hard');
+    const good = searchParams.get('good');
+    const easy = searchParams.get('easy');
+    const start = searchParams.get('start');
+    const end = searchParams.get('end');
+    if (total && hard && good && easy && start && end) {
+      return { totalWords: parseInt(total), hardCount: parseInt(hard), goodCount: parseInt(good), easyCount: parseInt(easy), startTime: start, endTime: end };
     }
+    return null;
+  })();
 
-    const totalXpEarned = (sessionStats.goodCount * 5) + (sessionStats.easyCount * 10);
+  useEffect(() => {
+    if (sessionStats) { update(); window.dispatchEvent(new Event('xp-updated')); }
+  }, [sessionStats, update]);
 
+  const getDuration = () => {
+    if (!sessionStats?.startTime || !sessionStats?.endTime) return '0 dk';
+    const diff = Math.round((new Date(sessionStats.endTime).getTime() - new Date(sessionStats.startTime).getTime()) / 60000);
+    return diff < 1 ? '< 1 dk' : `${diff} dk`;
+  };
+
+  if (!sessionStats) {
     return (
-        <div className="min-h-screen bg-[#0b0f17] text-white relative">
-            {/* Ambient Background */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-amber-500/20 blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#135bec]/15 blur-[100px]" />
-            </div>
-
-            <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                {/* Celebration */}
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-[0_0_40px_rgba(251,191,36,0.4)] mb-8">
-                        <span className="material-symbols-outlined text-white text-5xl">emoji_events</span>
-                    </div>
-                    <h1 className="text-4xl font-black text-white mb-3">
-                        Oturum Tamamlandı! 🎉
-                    </h1>
-                    <p className="text-lg text-[#92a4c9] mb-4">
-                        Harika iş! Bu oturumdaki tüm kelimeleri gözden geçirdin.
-                    </p>
-                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500/20 text-amber-400 rounded-full font-bold text-lg border border-amber-500/30">
-                        <span className="material-symbols-outlined">star</span>
-                        +{totalXpEarned} XP Kazandın!
-                    </div>
-                </div>
-
-                {/* Stats Card */}
-                <div className="glass-panel rounded-3xl p-8 mb-8">
-                    <h2 className="text-lg font-semibold text-white mb-6">Oturum Özeti</h2>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                        {/* Total Words */}
-                        <div className="glass-card rounded-2xl p-5 text-center col-span-2 sm:col-span-1">
-                            <p className="text-3xl font-bold text-white">{sessionStats.totalWords}</p>
-                            <p className="text-sm text-[#92a4c9] mt-1">Tekrar Edilen</p>
-                        </div>
-
-                        {/* Duration */}
-                        <div className="glass-card rounded-2xl p-5 text-center">
-                            <p className="text-3xl font-bold text-white font-mono">{getDuration()}</p>
-                            <p className="text-sm text-[#92a4c9] mt-1">Süre</p>
-                        </div>
-
-                        {/* Hard Count */}
-                        <div className="rounded-2xl p-5 text-center bg-red-500/10 border border-red-500/20">
-                            <p className="text-3xl font-bold text-red-400">{sessionStats.hardCount}</p>
-                            <p className="text-sm text-red-300 mt-1">Zor Kelimeler</p>
-                        </div>
-
-                        {/* Good Count */}
-                        <div className="rounded-2xl p-5 text-center bg-amber-500/10 border border-amber-500/20">
-                            <p className="text-3xl font-bold text-amber-400">{sessionStats.goodCount}</p>
-                            <p className="text-sm text-amber-300 mt-1">İyi Kelimeler</p>
-                        </div>
-
-                        {/* Easy Count */}
-                        <div className="rounded-2xl p-5 text-center bg-green-500/10 border border-green-500/20">
-                            <p className="text-3xl font-bold text-green-400">{sessionStats.easyCount}</p>
-                            <p className="text-sm text-green-300 mt-1">Kolay Kelimeler</p>
-                        </div>
-                    </div>
-
-                    {/* Performance Bar */}
-                    <div>
-                        <p className="text-sm font-medium text-[#92a4c9] mb-3">Performans Dağılımı</p>
-                        <div className="flex h-3 rounded-full overflow-hidden bg-white/5">
-                            {sessionStats.hardCount > 0 && (
-                                <div
-                                    className="bg-red-500"
-                                    style={{ width: `${(sessionStats.hardCount / sessionStats.totalWords) * 100}%` }}
-                                />
-                            )}
-                            {sessionStats.goodCount > 0 && (
-                                <div
-                                    className="bg-amber-400"
-                                    style={{ width: `${(sessionStats.goodCount / sessionStats.totalWords) * 100}%` }}
-                                />
-                            )}
-                            {sessionStats.easyCount > 0 && (
-                                <div
-                                    className="bg-green-500"
-                                    style={{ width: `${(sessionStats.easyCount / sessionStats.totalWords) * 100}%` }}
-                                />
-                            )}
-                        </div>
-                        <div className="flex justify-between text-xs text-slate-500 mt-2">
-                            <span>Zor</span>
-                            <span>İyi</span>
-                            <span>Kolay</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex justify-center gap-4">
-                    <Link
-                        href="/"
-                        onClick={resetSession}
-                        className="flex items-center gap-2 px-6 py-3 glass-button text-white rounded-xl font-medium"
-                    >
-                        <span className="material-symbols-outlined">home</span>
-                        Ana Sayfa
-                    </Link>
-                    <Link
-                        href="/study/select"
-                        onClick={handleStartAgain}
-                        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
-                    >
-                        <span className="material-symbols-outlined">refresh</span>
-                        Tekrar Çalış
-                    </Link>
-                </div>
-            </div>
+      <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-[#6b7a94] mb-4">Oturum verisi bulunamadı.</p>
+          <Link href="/" className="inline-flex items-center gap-2 text-[#135bec] hover:text-blue-400 transition-colors text-sm">
+            <Home size={15} /> Ana Sayfaya Dön
+          </Link>
         </div>
+      </div>
     );
+  }
+
+  const totalXpEarned = sessionStats.goodCount * 5 + sessionStats.easyCount * 10;
+
+  return (
+    <div className="min-h-screen bg-[#0b0f17] text-white">
+      <div className="max-w-xl mx-auto px-4 py-12">
+
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center mx-auto mb-5">
+            <Trophy size={28} className="text-amber-400" />
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Oturum Tamamlandı!</h1>
+          <p className="text-[#6b7a94] text-sm mb-4">Tüm kelimeleri gözden geçirdin.</p>
+          {totalXpEarned > 0 && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm font-semibold">
+              <Star size={15} fill="currentColor" />
+              +{totalXpEarned} XP
+            </div>
+          )}
+        </div>
+
+        {/* Stats */}
+        <div className="bg-[#111827] border border-white/6 rounded-xl p-6 mb-6">
+          <h2 className="text-sm font-medium text-[#6b7a94] mb-5">Özet</h2>
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            <div className="text-center p-4 bg-white/4 rounded-lg">
+              <div className="text-2xl font-bold text-white">{sessionStats.totalWords}</div>
+              <div className="text-xs text-[#6b7a94] mt-0.5">Tekrar Edilen</div>
+            </div>
+            <div className="text-center p-4 bg-white/4 rounded-lg">
+              <div className="text-2xl font-bold text-white">{getDuration()}</div>
+              <div className="text-xs text-[#6b7a94] mt-0.5">Süre</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="text-center p-3 bg-red-500/8 border border-red-500/15 rounded-lg">
+              <div className="text-xl font-bold text-red-400">{sessionStats.hardCount}</div>
+              <div className="text-xs text-red-400/70 mt-0.5">Zor</div>
+            </div>
+            <div className="text-center p-3 bg-amber-500/8 border border-amber-500/15 rounded-lg">
+              <div className="text-xl font-bold text-amber-400">{sessionStats.goodCount}</div>
+              <div className="text-xs text-amber-400/70 mt-0.5">İyi</div>
+            </div>
+            <div className="text-center p-3 bg-emerald-500/8 border border-emerald-500/15 rounded-lg">
+              <div className="text-xl font-bold text-emerald-400">{sessionStats.easyCount}</div>
+              <div className="text-xs text-emerald-400/70 mt-0.5">Kolay</div>
+            </div>
+          </div>
+
+          {/* Performance bar */}
+          <div className="flex h-2 rounded-full overflow-hidden bg-white/6">
+            {sessionStats.hardCount > 0 && (
+              <div className="bg-red-500" style={{ width: `${(sessionStats.hardCount / sessionStats.totalWords) * 100}%` }} />
+            )}
+            {sessionStats.goodCount > 0 && (
+              <div className="bg-amber-400" style={{ width: `${(sessionStats.goodCount / sessionStats.totalWords) * 100}%` }} />
+            )}
+            {sessionStats.easyCount > 0 && (
+              <div className="bg-emerald-500" style={{ width: `${(sessionStats.easyCount / sessionStats.totalWords) * 100}%` }} />
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <Link
+            href="/"
+            onClick={resetSession}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white/6 border border-white/8 text-white rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
+          >
+            <Home size={15} />
+            Ana Sayfa
+          </Link>
+          <Link
+            href="/study/select"
+            onClick={() => resetSession()}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#135bec] text-white rounded-lg text-sm font-medium hover:bg-[#1a6ef5] transition-colors"
+          >
+            <RefreshCw size={15} />
+            Tekrar Çalış
+          </Link>
+        </div>
+
+      </div>
+    </div>
+  );
 }
 
 export default function StudyCompletePage() {
-    return (
-        <Suspense fallback={
-            <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center">
-                <div className="w-16 h-16 border-4 border-[#135bec]/20 border-t-[#135bec] rounded-full animate-spin" />
-            </div>
-        }>
-            <StudyCompleteContent />
-        </Suspense>
-    );
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0b0f17] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#135bec]/30 border-t-[#135bec] rounded-full animate-spin" />
+      </div>
+    }>
+      <StudyCompleteContent />
+    </Suspense>
+  );
 }

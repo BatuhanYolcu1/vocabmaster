@@ -1,5 +1,6 @@
 'use client';
 
+import { BookOpen, Brain, CheckCircle2, GraduationCap, Smile, Target } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -93,7 +94,7 @@ export default function StatisticsPage() {
                     <div className="glass-panel rounded-3xl p-6 relative overflow-hidden group">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl" />
                         <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 mb-4 relative z-10">
-                            <span className="material-symbols-outlined">menu_book</span>
+                            <BookOpen size={20} />
                         </div>
                         <p className="text-[#92a4c9] text-sm font-medium mb-1 relative z-10">Öğrenilen Kelime</p>
                         <p className="text-3xl font-bold text-white relative z-10">{stats.overview.totalLearned}</p>
@@ -102,7 +103,7 @@ export default function StatisticsPage() {
                     <div className="glass-panel rounded-3xl p-6 relative overflow-hidden group">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl" />
                         <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4 relative z-10">
-                            <span className="material-symbols-outlined">verified</span>
+                            <CheckCircle2 size={20} />
                         </div>
                         <p className="text-[#92a4c9] text-sm font-medium mb-1 relative z-10">Ustalaşılan</p>
                         <p className="text-3xl font-bold text-white relative z-10">{stats.overview.masteredCount}</p>
@@ -111,7 +112,7 @@ export default function StatisticsPage() {
                     <div className="glass-panel rounded-3xl p-6 relative overflow-hidden group">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl" />
                         <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 mb-4 relative z-10">
-                            <span className="material-symbols-outlined">psychology</span>
+                            <Brain size={20} />
                         </div>
                         <p className="text-[#92a4c9] text-sm font-medium mb-1 relative z-10">Öğrenme Aşamasında</p>
                         <p className="text-3xl font-bold text-white relative z-10">{stats.overview.learningCount}</p>
@@ -120,7 +121,7 @@ export default function StatisticsPage() {
                     <div className="glass-panel rounded-3xl p-6 relative overflow-hidden group">
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl" />
                         <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 mb-4 relative z-10">
-                            <span className="material-symbols-outlined">track_changes</span>
+                            <Target size={20} />
                         </div>
                         <p className="text-[#92a4c9] text-sm font-medium mb-1 relative z-10">Genel Doğruluk</p>
                         <p className="text-3xl font-bold text-white relative z-10">%{stats.overview.overallAccuracy}</p>
@@ -214,7 +215,7 @@ export default function StatisticsPage() {
                             <p className="text-sm text-[#92a4c9]">Bu kelimeleri tekrar gözden geçirmen faydalı olabilir</p>
                         </div>
                         <Link href="/study/select" className="px-4 py-2 bg-[#135bec]/20 text-[#3b82f6] hover:bg-[#135bec]/30 rounded-xl transition-colors font-medium text-sm flex items-center gap-2">
-                            <span className="material-symbols-outlined text-sm">school</span>
+                            <GraduationCap size={16} />
                             Test Çöz
                         </Link>
                     </div>
@@ -261,7 +262,7 @@ export default function StatisticsPage() {
                                     <tr>
                                         <td colSpan={5} className="py-12 text-center text-[#92a4c9]">
                                             <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
-                                                <span className="material-symbols-outlined text-3xl">sentiment_satisfied</span>
+                                                <Smile size={32} />
                                             </div>
                                             Harika gidiyorsun! Hata yaptığın kelime bulunmuyor.
                                         </td>

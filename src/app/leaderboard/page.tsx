@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowUp, Crown, Globe, Medal, MoreVertical, Trophy, Users } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
@@ -69,7 +70,7 @@ export default function LeaderboardPage() {
                             />
                             <div className="absolute inset-0 bg-transparent peer-checked:bg-[#135bec] peer-checked:shadow-lg peer-checked:shadow-[#135bec]/40 rounded-full transition-all duration-300 z-0" />
                             <div className="relative z-10 flex items-center justify-center w-full h-full gap-2 text-slate-400 peer-checked:text-white font-medium transition-colors">
-                                <span className="material-symbols-outlined text-[20px]">public</span>
+                                <Globe size={20} />
                                 <span>Genel</span>
                             </div>
                         </label>
@@ -84,7 +85,7 @@ export default function LeaderboardPage() {
                             />
                             <div className="absolute inset-0 bg-transparent peer-checked:bg-[#135bec] peer-checked:shadow-lg peer-checked:shadow-[#135bec]/40 rounded-full transition-all duration-300 z-0" />
                             <div className="relative z-10 flex items-center justify-center w-full h-full gap-2 text-slate-400 peer-checked:text-white font-medium transition-colors">
-                                <span className="material-symbols-outlined text-[20px]">group</span>
+                                <Users size={20} />
                                 <span>Arkadaşlar</span>
                             </div>
                         </label>
@@ -110,7 +111,7 @@ export default function LeaderboardPage() {
                                             style={{ backgroundImage: top3[1].image ? `url("${top3[1].image}")` : 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}
                                         >
                                             <div className="absolute -bottom-3 -right-1 bg-slate-700 p-1.5 rounded-full border-2 border-[#101622] shadow-lg">
-                                                <span className="material-symbols-outlined text-slate-300 text-sm md:text-base font-bold">military_tech</span>
+                                                <Medal size={18} className="text-slate-300 md:text-base font-bold" />
                                             </div>
                                         </div>
                                     </div>
@@ -129,7 +130,7 @@ export default function LeaderboardPage() {
                                 <div className="flex flex-col items-center gap-3 order-2 z-10 -mt-8">
                                     <div className="relative group">
                                         <div className="absolute -top-14 left-1/2 -translate-x-1/2 text-yellow-400 animate-bounce">
-                                            <span className="material-symbols-outlined text-4xl drop-shadow-[0_0_10px_rgba(250,204,21,0.6)]">crown</span>
+                                            <Crown size={40} className="drop-shadow-[0_0_10px_rgba(250,204,21,0.6)]" />
                                         </div>
                                         <div className="absolute inset-0 bg-yellow-500 rounded-full blur-[30px] opacity-30 group-hover:opacity-50 transition-opacity" />
                                         <div
@@ -137,7 +138,7 @@ export default function LeaderboardPage() {
                                             style={{ backgroundImage: top3[0].image ? `url("${top3[0].image}")` : 'linear-gradient(135deg, #eab308, #f59e0b)' }}
                                         >
                                             <div className="absolute -bottom-3 -right-1 bg-yellow-500 p-1.5 rounded-full border-2 border-[#101622] shadow-lg">
-                                                <span className="material-symbols-outlined text-[#101622] text-lg md:text-xl font-bold">emoji_events</span>
+                                                <Trophy size={22} className="text-[#101622] md:text-xl font-bold" />
                                             </div>
                                         </div>
                                     </div>
@@ -162,7 +163,7 @@ export default function LeaderboardPage() {
                                             style={{ backgroundImage: top3[2].image ? `url("${top3[2].image}")` : 'linear-gradient(135deg, #c2410c, #ea580c)' }}
                                         >
                                             <div className="absolute -bottom-3 -right-1 bg-orange-800 p-1.5 rounded-full border-2 border-[#101622] shadow-lg">
-                                                <span className="material-symbols-outlined text-orange-200 text-sm md:text-base font-bold">military_tech</span>
+                                                <Medal size={18} className="text-orange-200 md:text-base font-bold" />
                                             </div>
                                         </div>
                                     </div>
@@ -211,7 +212,7 @@ export default function LeaderboardPage() {
                             {currentUserData && currentUserRank > 3 && (
                                 <>
                                     <div className="flex justify-center py-2 opacity-30">
-                                        <span className="material-symbols-outlined text-white">more_vert</span>
+                                        <MoreVertical size={20} className="text-white" />
                                     </div>
                                     <div className="sticky bottom-6 z-30 mt-2">
                                         <div className="relative overflow-hidden rounded-2xl border border-[#135bec]/50 shadow-[0_0_30px_rgba(19,91,236,0.25)]">
@@ -236,7 +237,7 @@ export default function LeaderboardPage() {
                                                 <div className="text-right flex flex-col items-end">
                                                     <p className="text-white font-black text-xl tracking-tight">{currentUserData.xp.toLocaleString()} XP</p>
                                                     <div className="flex items-center gap-1 text-xs text-blue-200">
-                                                        <span className="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                                        <ArrowUp size={14} />
                                                         <span>2 sıra</span>
                                                     </div>
                                                 </div>

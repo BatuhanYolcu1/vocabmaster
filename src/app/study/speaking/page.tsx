@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, CheckCircle, Mic, MicOff, RefreshCw, Volume2, XCircle } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 
@@ -205,7 +206,7 @@ export default function SpeakingPage() {
             <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
                 <div className="glass-panel rounded-3xl p-8 max-w-md text-center border-rose-500/20">
                     <div className="w-20 h-20 rounded-full bg-rose-500/20 flex items-center justify-center mx-auto mb-6">
-                        <span className="material-symbols-outlined text-4xl text-rose-400">mic_off</span>
+                        <MicOff size={40} className="text-rose-400" />
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-3">Tarayıcı Desteklenmiyor</h2>
                     <p className="text-[#8b9bb4] mb-8">Konuşma tanıma özelliği bu tarayıcıda çalışmıyor. Lütfen Chrome veya Edge kullanın.</p>
@@ -242,11 +243,11 @@ export default function SpeakingPage() {
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
                         <Link href="/study/select" className="p-2 rounded-lg text-[#8b9bb4] hover:text-white hover:bg-white/5 transition-colors">
-                            <span className="material-symbols-outlined">arrow_back</span>
+                            <ArrowLeft size={20} />
                         </Link>
                         <div>
                             <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-rose-500">mic</span>
+                                <Mic size={20} className="text-rose-500" />
                                 Konuşma Koçu
                             </h1>
                             <p className="text-[#8b9bb4]">Telaffuzunu geliştir</p>
@@ -301,7 +302,7 @@ export default function SpeakingPage() {
                                 onClick={speakWord}
                                 className="mb-4 p-4 bg-[#135bec]/20 text-[#60a5fa] rounded-full hover:bg-[#135bec]/30 transition-colors"
                             >
-                                <span className="material-symbols-outlined text-3xl">volume_up</span>
+                                <Volume2 size={32} />
                             </button>
                             <h2 className="text-4xl font-bold text-white mb-2">{currentWord?.word}</h2>
                             <p className="text-[#8b9bb4]">{currentWord?.turkishTranslation}</p>
@@ -323,16 +324,16 @@ export default function SpeakingPage() {
                                     {isEvaluating ? (
                                         <div className="w-12 h-12 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin" />
                                     ) : (
-                                        <span className="material-symbols-outlined text-5xl">{isListening ? 'mic_off' : 'mic'}</span>
+                                        isListening ? <MicOff size={48} /> : <Mic size={48} />
                                     )}
                                 </button>
                             ) : result === 'correct' ? (
                                 <div className="p-8 rounded-full bg-green-500/20 text-green-400">
-                                    <span className="material-symbols-outlined text-5xl">check_circle</span>
+                                    <CheckCircle size={48} />
                                 </div>
                             ) : (
                                 <div className="p-8 rounded-full bg-red-500/20 text-red-400">
-                                    <span className="material-symbols-outlined text-5xl">cancel</span>
+                                    <XCircle size={48} />
                                 </div>
                             )}
 
@@ -360,7 +361,7 @@ export default function SpeakingPage() {
                                         onClick={retry}
                                         className="flex items-center gap-2 px-6 py-3 glass-button text-white rounded-xl font-medium"
                                     >
-                                        <span className="material-symbols-outlined text-sm">refresh</span>
+                                        <RefreshCw size={16} />
                                         Tekrar
                                     </button>
                                     <button

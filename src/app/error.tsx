@@ -1,55 +1,46 @@
 'use client';
 
 import { useEffect } from 'react';
+import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 export default function Error({
-    error,
-    reset,
+  error,
+  reset,
 }: {
-    error: Error & { digest?: string };
-    reset: () => void;
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
-    useEffect(() => {
-        console.error('Application error:', error);
-    }, [error]);
+  useEffect(() => {
+    console.error('Application error:', error);
+  }, [error]);
 
-    return (
-        <div className="min-h-screen bg-slate-50 text-[#0f172a] flex items-center justify-center px-4 relative overflow-hidden">
-            {/* Ambient Background */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-100/30 blur-[130px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-red-100/30 blur-[110px]" />
-            </div>
-
-            <div className="relative z-10 text-center max-w-md">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-50 to-red-50 border border-slate-200/60 flex items-center justify-center mx-auto mb-8 shadow-sm">
-                    <span className="material-symbols-outlined text-5xl text-orange-500">warning</span>
-                </div>
-
-                <h1 className="text-2xl md:text-3xl font-extrabold mb-4 text-[#0f172a]">
-                    Bir Sorun Oluştu
-                </h1>
-                <p className="text-[#64748b] mb-8 leading-relaxed font-semibold">
-                    Beklenmeyen bir hata meydana geldi. Sorun devam ederse lütfen bizimle iletişime geçin.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <button
-                        onClick={reset}
-                        className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold shadow-[0_10px_20px_-5px_rgba(249,115,22,0.3)] hover:shadow-[0_15px_25px_-5px_rgba(249,115,22,0.4)] transition-all flex items-center justify-center gap-2 text-sm"
-                    >
-                        <span className="material-symbols-outlined text-base">refresh</span>
-                        Tekrar Dene
-                    </button>
-                    <a
-                        href="/"
-                        className="px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold flex items-center justify-center gap-2 shadow-sm transition-all text-sm"
-                    >
-                        <span className="material-symbols-outlined text-base">home</span>
-                        Ana Sayfa
-                    </a>
-                </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
+      <div className="text-center max-w-md">
+        <div className="w-16 h-16 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mx-auto mb-6">
+          <AlertTriangle size={28} className="text-orange-400" />
         </div>
-    );
+        <h1 className="text-2xl font-bold mb-3">Bir Sorun Oluştu</h1>
+        <p className="text-[#6b7a94] mb-8 leading-relaxed text-sm">
+          Beklenmeyen bir hata meydana geldi. Sorun devam ederse lütfen bizimle iletişime geçin.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button
+            onClick={reset}
+            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#135bec] text-white rounded-lg text-sm font-medium hover:bg-[#1a6ef5] transition-colors"
+          >
+            <RefreshCw size={15} />
+            Tekrar Dene
+          </button>
+          <a
+            href="/"
+            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-white/6 border border-white/8 text-white rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
+          >
+            <Home size={15} />
+            Ana Sayfa
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }

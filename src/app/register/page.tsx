@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, ArrowRight, GraduationCap, UserX } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -88,7 +89,7 @@ export default function RegisterPage() {
                     <div className="flex justify-center mb-8">
                         <Link href="/" className="flex items-center gap-3">
                             <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_10px_20px_rgba(19,91,236,0.2)]">
-                                <span className="material-symbols-outlined text-white text-[28px]">school</span>
+                                <GraduationCap size={28} className="text-white" />
                             </div>
                             <h1 className="text-2xl font-black text-[#0f172a]">VocabMaster</h1>
                         </Link>
@@ -96,14 +97,14 @@ export default function RegisterPage() {
 
                     <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-3xl p-8 shadow-sm">
                         <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-amber-100">
-                            <span className="material-symbols-outlined text-amber-500 text-3xl">person_add_disabled</span>
+                            <UserX size={32} className="text-amber-500" />
                         </div>
                         <h2 className="text-2xl font-extrabold text-[#0f172a] mb-4">Kayıtlar Geçici Olarak Kapalı</h2>
                         <p className="text-[#64748b] text-sm leading-relaxed mb-6 font-medium">
                             Platformumuza gösterdiğiniz ilgi için teşekkür ederiz. Şu anda sistem güncellemeleri nedeniyle yeni üye alımı geçici olarak askıya alınmıştır.
                         </p>
                         <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-sm hover:bg-slate-50 transition-all shadow-sm">
-                            <span className="material-symbols-outlined text-sm">arrow_back</span> Ana Sayfaya Dön
+                            <ArrowLeft size={16} /> Ana Sayfaya Dön
                         </Link>
                     </div>
                 </div>
@@ -124,7 +125,7 @@ export default function RegisterPage() {
                 <div className="flex justify-center mb-8">
                     <Link href="/" className="flex items-center gap-3">
                         <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#135bec] to-purple-600 shadow-[0_10px_20px_rgba(19,91,236,0.2)]">
-                            <span className="material-symbols-outlined text-white text-[28px]">school</span>
+                            <GraduationCap size={28} className="text-white" />
                         </div>
                         <h1 className="text-2xl font-black text-[#0f172a]">VocabMaster</h1>
                     </Link>
@@ -202,7 +203,7 @@ export default function RegisterPage() {
                             ) : (
                                 <>
                                     <span>Kayıt Ol</span>
-                                    <span className="material-symbols-outlined text-base">arrow_forward</span>
+                                    <ArrowRight size={18} />
                                 </>
                             )}
                         </button>

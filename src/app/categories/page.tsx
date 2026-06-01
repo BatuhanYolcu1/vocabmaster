@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowRight, Folder, FolderOpen, LogIn, Plus } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -65,7 +66,7 @@ export default function CategoriesPage() {
                             href="/wordlists/new"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] hover:shadow-[0_0_30px_rgba(19,91,236,0.6)] transition-all"
                         >
-                            <span className="material-symbols-outlined">add</span>
+                            <Plus size={20} />
                             Yeni Liste
                         </Link>
                     </div>
@@ -80,7 +81,7 @@ export default function CategoriesPage() {
                     ) : !session ? (
                         <div className="glass-panel rounded-3xl p-12 text-center">
                             <div className="w-20 h-20 rounded-full bg-[#135bec]/20 flex items-center justify-center mx-auto mb-6">
-                                <span className="material-symbols-outlined text-4xl text-[#135bec]">login</span>
+                                <LogIn size={40} className="text-[#135bec]" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-3">Giriş Yapın</h3>
                             <p className="text-[#8b9bb4] mb-8 max-w-md mx-auto">
@@ -96,7 +97,7 @@ export default function CategoriesPage() {
                     ) : wordLists.length === 0 ? (
                         <div className="glass-panel rounded-3xl p-12 text-center">
                             <div className="w-20 h-20 rounded-full bg-[#135bec]/20 flex items-center justify-center mx-auto mb-6">
-                                <span className="material-symbols-outlined text-4xl text-[#135bec]">folder_open</span>
+                                <FolderOpen size={40} className="text-[#135bec]" />
                             </div>
                             <h3 className="text-2xl font-bold text-white mb-3">Henüz liste yok</h3>
                             <p className="text-[#8b9bb4] mb-8 max-w-md mx-auto">
@@ -106,7 +107,7 @@ export default function CategoriesPage() {
                                 href="/wordlists/new"
                                 className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#135bec] to-blue-600 text-white rounded-xl font-bold shadow-[0_0_20px_rgba(19,91,236,0.4)] transition-all"
                             >
-                                <span className="material-symbols-outlined">add</span>
+                                <Plus size={20} />
                                 İlk Listeni Oluştur
                             </Link>
                         </div>
@@ -120,7 +121,7 @@ export default function CategoriesPage() {
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="w-12 h-12 rounded-xl bg-[#135bec]/20 flex items-center justify-center text-[#135bec]">
-                                            <span className="material-symbols-outlined">folder</span>
+                                            <Folder size={20} />
                                         </div>
                                         <span className="text-xs text-[#8b9bb4] bg-white/5 px-2 py-1 rounded-lg">
                                             {list._count?.items || 0} kelime
@@ -154,9 +155,7 @@ export default function CategoriesPage() {
                                                 );
                                             })()}
                                         </div>
-                                        <span className="material-symbols-outlined text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all">
-                                            arrow_forward
-                                        </span>
+                                        <ArrowRight size={20} className="text-[#8b9bb4] group-hover:text-[#135bec] group-hover:translate-x-1 transition-all" />
                                     </div>
                                 </Link>
                             ))}

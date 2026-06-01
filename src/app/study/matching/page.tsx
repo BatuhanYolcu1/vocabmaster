@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowLeft, ArrowLeftRight, Check, Clock, Lightbulb, RefreshCw, Star, Trophy } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -195,12 +196,12 @@ function MatchingGameContent() {
                         href="/study/select"
                         className="flex items-center gap-2 text-[#8b9bb4] hover:text-white transition-colors"
                     >
-                        <span className="material-symbols-outlined">arrow_back</span>
+                        <ArrowLeft size={20} />
                         <span>Çıkış</span>
                     </Link>
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2 text-[#8b9bb4]">
-                            <span className="material-symbols-outlined text-lg">schedule</span>
+                            <Clock size={20} />
                             <span className="font-mono text-white">{timerDisplay}</span>
                         </div>
                         <div className="text-[#8b9bb4]">
@@ -211,7 +212,7 @@ function MatchingGameContent() {
                             className="p-2 text-[#8b9bb4] hover:text-pink-400 hover:bg-pink-500/10 rounded-lg transition-all"
                             title="Yeniden başla"
                         >
-                            <span className="material-symbols-outlined">refresh</span>
+                            <RefreshCw size={20} />
                         </button>
                     </div>
                 </div>
@@ -220,7 +221,7 @@ function MatchingGameContent() {
                 <div className="glass-panel rounded-2xl p-4 mb-8">
                     <div className="flex justify-between text-sm text-[#8b9bb4] mb-3">
                         <span className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-pink-400">swap_horiz</span>
+                            <ArrowLeftRight size={20} className="text-pink-400" />
                             Eşleşme
                         </span>
                         <span className="text-white font-bold">{matchedPairs} / {words.length}</span>
@@ -244,14 +245,14 @@ function MatchingGameContent() {
 
                         <div className="relative z-10">
                             <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-6 animate-bounce">
-                                <span className="material-symbols-outlined text-white text-4xl">emoji_events</span>
+                                <Trophy size={40} className="text-white" />
                             </div>
                             <h2 className="text-3xl font-black text-white mb-3">Tebrikler! 🎉</h2>
                             <p className="text-white/80 mb-4">
                                 {timerDisplay} sürede {moves} hamle ile tamamladın!
                             </p>
                             <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-xl font-bold mb-6">
-                                <span className="material-symbols-outlined text-yellow-300">star</span>
+                                <Star size={20} className="text-yellow-300" />
                                 +{xpEarned} XP
                             </div>
                             <div className="flex gap-4 justify-center">
@@ -301,7 +302,7 @@ function MatchingGameContent() {
                             {/* Matched check icon */}
                             {card.isMatched && (
                                 <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-white text-sm">check</span>
+                                    <Check size={16} className="text-white" />
                                 </div>
                             )}
 
@@ -330,7 +331,7 @@ function MatchingGameContent() {
 
                 {/* Instructions */}
                 <p className="text-center text-sm text-[#8b9bb4] mt-10 flex items-center justify-center gap-2">
-                    <span className="material-symbols-outlined text-pink-400 text-lg">lightbulb</span>
+                    <Lightbulb size={20} className="text-pink-400" />
                     İngilizce kelimeleri Türkçe anlamlarıyla eşleştir
                 </p>
             </div>

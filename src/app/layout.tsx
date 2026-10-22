@@ -1,100 +1,67 @@
-import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import PageTransition from "@/components/PageTransition";
-import { Providers } from "@/components/Providers";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { isMaintenanceMode } from "@/lib/settings-server";
-import MaintenancePage from "@/components/MaintenancePage";
+import type { Metadata, Viewport } from 'next';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import './globals.css';
+import { Providers } from '@/components/providers';
+import { MaintenanceGate } from '@/components/app/maintenance-gate';
+import { SITE } from '@/lib/constants';
 
-const inter = Inter({
-  subsets: ["latin", "latin-ext"],
-  display: "swap",
-  variable: "--font-inter",
+const inter = Inter({ subsets: ['latin', 'latin-ext'], display: 'swap', variable: '--font-inter' });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin', 'latin-ext'],
+  display: 'swap',
+  variable: '--font-jakarta',
+  weight: ['600', '700', '800'],
 });
 
 export const metadata: Metadata = {
-  title: "VocabMaster - İngilizce Kelime Öğrenme Platformu",
-  description: "AI destekli akıllı tekrar sistemi ile İngilizce kelimeleri kalıcı olarak öğrenin. Flashcard, quiz ve oyunlaştırılmış öğrenme deneyimi.",
-  keywords: ["ingilizce", "kelime", "öğrenme", "flashcard", "quiz", "vocabulary", "learning"],
-  authors: [{ name: "VocabMaster" }],
-  creator: "VocabMaster",
+  metadataBase: new URL(SITE.url),
+  title: {
+    default: 'VocabMaster — İngilizce kelimeleri kalıcı öğren',
+    template: '%s · VocabMaster',
+  },
+  description:
+    'Aralıklı tekrar (SRS) ile İngilizce kelimeleri kalıcı olarak öğren. 7 çalışma modu, hazır kelime kütüphanesi, kendi listelerin ve yapay zekâ desteği.',
+  keywords: ['ingilizce kelime', 'kelime ezberleme', 'aralıklı tekrar', 'flashcard', 'İngilizce öğren', 'SRS', 'YDS', 'IELTS'],
+  applicationName: 'VocabMaster',
+  manifest: '/manifest.json',
   openGraph: {
-    type: "website",
-    locale: "tr_TR",
-    url: "https://vocabmaster.app",
-    siteName: "VocabMaster",
-    title: "VocabMaster - Dil Öğrenmenin Akıllı Yolu",
-    description: "Yapay zeka destekli kelime öğrenme platformu. Ezberlemeyi bırak, öğrenmeye başla!",
+    type: 'website',
+    locale: 'tr_TR',
+    siteName: 'VocabMaster',
+    title: 'VocabMaster — İngilizce kelimeleri kalıcı öğren',
+    description: 'Aralıklı tekrar ile her gün birkaç dakikada İngilizce kelime dağarcığını büyüt.',
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "VocabMaster - İngilizce Kelime Öğren",
-    description: "AI destekli akıllı tekrar sistemi ile kalıcı kelime öğrenme.",
-  },
-  manifest: "/manifest.json",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
+  twitter: { card: 'summary_large_image' },
+  icons: { icon: '/favicon.ico', apple: '/icons/icon-192.png' },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#135bec",
-  width: "device-width",
+  width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f6f7fb' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0f17' },
+  ],
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const maintenance = await isMaintenanceMode();
-  let isAdmin = false;
+// Applies the saved theme before first paint so there is no flash.
+const themeScript = `(function(){try{var t=localStorage.getItem('vm-theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
-  if (maintenance) {
-    try {
-      const session = await auth();
-      if (session?.user?.id) {
-        const user = await prisma.user.findUnique({
-          where: { id: session.user.id },
-          select: { role: true },
-        });
-        isAdmin = user?.role === "ADMIN";
-      }
-    } catch {
-      // ignore
-    }
-  }
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`dark ${inter.variable}`} suppressHydrationWarning>
-      <body
-        className={`${inter.className} antialiased min-h-screen bg-[#0b0f17] text-white`}
-        suppressHydrationWarning
-      >
+    <html lang="tr" className={`${inter.variable} ${jakarta.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-dvh bg-bg font-sans text-fg antialiased">
         <Providers>
-          {maintenance && !isAdmin ? (
-            <MaintenancePage />
-          ) : (
-            <>
-              <Navbar />
-              <main className="pt-20 pb-12">
-                <PageTransition>{children}</PageTransition>
-              </main>
-              <Footer />
-            </>
-          )}
-          <Analytics />
-          <SpeedInsights />
+          <MaintenanceGate>{children}</MaintenanceGate>
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

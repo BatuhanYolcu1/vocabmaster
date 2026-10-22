@@ -1,80 +1,44 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+
+const securityHeaders = [
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+  // Microphone is needed for the speaking mode.
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(self), geolocation=()' },
+];
 
 const nextConfig: NextConfig = {
-  // Enable React Strict Mode for better debugging
   reactStrictMode: true,
-
-  // Image optimization for external sources
+  poweredByHeader: false,
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'api.dicebear.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        pathname: '/**',
-      },
+      { protocol: 'https', hostname: 'api.dicebear.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 60 * 60 * 24 * 7, // Cache images for 7 days
   },
-
-  // Performance optimizations
-  poweredByHeader: false, // Security: remove X-Powered-By header
-  compress: true, // Enable gzip compression
-
-  // Bundle optimization
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
+    optimizePackageImports: ['lucide-react'],
   },
-
-  // Logging configuration for production
-  logging: {
-    fetches: {
-      fullUrl: false,
-    },
-  },
-
-  // Security headers
   async headers() {
+    return [{ source: '/(.*)', headers: securityHeaders }];
+  },
+  // Keep links from v2 working.
+  async redirects() {
     return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(self), geolocation=()',
-          },
-        ],
-      },
+      { source: '/study/select', destination: '/study', permanent: true },
+      { source: '/study/complete', destination: '/study', permanent: true },
+      { source: '/wordlists', destination: '/lists', permanent: true },
+      { source: '/wordlists/new', destination: '/lists/new', permanent: true },
+      { source: '/wordlists/import', destination: '/lists/import', permanent: true },
+      { source: '/wordlists/:id/add', destination: '/lists/:id', permanent: true },
+      { source: '/wordlists/:id', destination: '/lists/:id', permanent: true },
+      { source: '/categories', destination: '/library', permanent: true },
+      { source: '/explore', destination: '/library', permanent: true },
+      { source: '/statistics', destination: '/stats', permanent: true },
+      { source: '/profile', destination: '/settings', permanent: true },
+      { source: '/checkout', destination: '/pricing', permanent: true },
     ];
   },
 };

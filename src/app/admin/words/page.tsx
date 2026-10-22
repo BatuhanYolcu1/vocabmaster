@@ -1,170 +1,256 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ConfirmDialog, Dialog } from '@/components/ui/dialog';
+import { Field, Input, Select, Textarea } from '@/components/ui/field';
+import { Chip, PageHeader, Skeleton } from '@/components/ui/misc';
+import { LevelBadge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/toast';
+import { api, errorMessage } from '@/lib/fetcher';
+import { useApiData } from '@/lib/use-api-data';
+import { CATEGORIES, CEFR_LEVELS, WORD_TYPES, WORD_TYPE_LABELS, CATEGORY_INFO } from '@/lib/constants';
+import { formatNumber } from '@/lib/utils';
 
-interface Word {
-    id: string;
-    word: string;
-    turkishTranslation: string;
-    type: string;
-    level: string;
-    category: string;
-    exampleSentence: string;
+interface AdminWord {
+  id: string;
+  word: string;
+  turkishTranslation: string;
+  definitionTr: string;
+  exampleSentence: string;
+  exampleSentenceTr: string;
+  type: string;
+  level: string;
+  category: string;
+  pronunciation: string | null;
 }
 
+type Draft = Omit<AdminWord, 'id' | 'pronunciation'> & { pronunciation: string };
+
+const empty: Draft = {
+  word: '',
+  turkishTranslation: '',
+  definitionTr: '',
+  exampleSentence: '',
+  exampleSentenceTr: '',
+  type: 'noun',
+  level: 'B1',
+  category: 'Genel',
+  pronunciation: '',
+};
+
 export default function AdminWordsPage() {
-    const [words, setWords] = useState<Word[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState('');
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [total, setTotal] = useState(0);
-    const [showAdd, setShowAdd] = useState(false);
-    const [newWord, setNewWord] = useState({ word: '', turkishTranslation: '', type: 'noun', level: 'B1', category: 'Genel', exampleSentence: '' });
-    const [saving, setSaving] = useState(false);
+  const toast = useToast();
+  const [q, setQ] = useState('');
+  const [debounced, setDebounced] = useState('');
+  const [category, setCategory] = useState('');
+  const [incomplete, setIncomplete] = useState(false);
+  const [page, setPage] = useState(1);
+  const [editing, setEditing] = useState<{ id: string | null; draft: Draft } | null>(null);
+  const [deleting, setDeleting] = useState<AdminWord | null>(null);
+  const [busy, setBusy] = useState(false);
 
-    const fetchWords = useCallback(async () => {
-        setLoading(true);
-        try {
-            const params = new URLSearchParams({ page: page.toString() });
-            if (search) params.set('q', search);
-            const res = await fetch(`/api/admin/words?${params}`);
-            if (res.ok) {
-                const data = await res.json();
-                setWords(data.words);
-                setTotal(data.total);
-                setTotalPages(data.totalPages);
-            }
-        } catch (e) { console.error(e); }
-        finally { setLoading(false); }
-    }, [page, search]);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setDebounced(q.trim());
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [q]);
 
-    useEffect(() => { fetchWords(); }, [fetchWords]);
+  const params = new URLSearchParams({ page: String(page) });
+  if (debounced) params.set('q', debounced);
+  if (category) params.set('category', category);
+  if (incomplete) params.set('incomplete', '1');
+  const { data, reload: load } = useApiData<{ words: AdminWord[]; total: number; pageCount: number }>(`/api/admin/words?${params}`);
 
-    const addWord = async () => {
-        if (!newWord.word.trim() || !newWord.turkishTranslation.trim()) return;
-        setSaving(true);
-        try {
-            const res = await fetch('/api/admin/words', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newWord),
-            });
-            if (res.ok) {
-                setShowAdd(false);
-                setNewWord({ word: '', turkishTranslation: '', type: 'noun', level: 'B1', category: 'Genel', exampleSentence: '' });
-                fetchWords();
-            }
-        } catch (e) { console.error(e); }
-        finally { setSaving(false); }
-    };
+  const set = (key: keyof Draft) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setEditing((ed) => (ed ? { ...ed, draft: { ...ed.draft, [key]: e.target.value } } : ed));
 
-    const deleteWord = async (wordId: string) => {
-        if (!confirm('Bu kelimeyi silmek istediğinize emin misiniz?')) return;
-        try {
-            await fetch('/api/admin/words', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ wordId }),
-            });
-            fetchWords();
-        } catch (e) { console.error(e); }
-    };
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editing) return;
+    setBusy(true);
+    try {
+      if (editing.id) await api('/api/admin/words', { method: 'PATCH', body: { id: editing.id, ...editing.draft } });
+      else await api('/api/admin/words', { method: 'POST', body: editing.draft });
+      toast.success(editing.id ? 'Kelime güncellendi' : 'Kelime eklendi');
+      setEditing(null);
+      load();
+    } catch (error) {
+      toast.error('Kaydedilemedi', errorMessage(error));
+    } finally {
+      setBusy(false);
+    }
+  }
 
-    return (
-        <div className="space-y-6 animate-fadeIn">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-black text-white flex items-center gap-3">
-                        <span className="material-symbols-outlined text-cyan-400">dictionary</span>
-                        Sistem Kelimeleri
-                    </h1>
-                    <p className="text-[#8b9bb4] mt-1">{total} kelime</p>
-                </div>
-                <button
-                    onClick={() => setShowAdd(!showAdd)}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm flex items-center gap-2 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all"
-                >
-                    <span className="material-symbols-outlined text-lg">add</span>
-                    Kelime Ekle
-                </button>
-            </div>
+  async function remove() {
+    if (!deleting) return;
+    setBusy(true);
+    try {
+      await api('/api/admin/words', { method: 'DELETE', body: { id: deleting.id } });
+      toast.success('Kelime silindi');
+      setDeleting(null);
+      load();
+    } catch (error) {
+      toast.error('Silinemedi', errorMessage(error));
+    } finally {
+      setBusy(false);
+    }
+  }
 
-            {/* Add Word Form */}
-            {showAdd && (
-                <div className="bg-[#111827]/60 border border-emerald-500/20 rounded-2xl p-6 animate-fadeIn">
-                    <h3 className="text-white font-bold mb-4">Yeni Kelime</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                        <input placeholder="İngilizce" value={newWord.word} onChange={e => setNewWord({ ...newWord, word: e.target.value })} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-[#8b9bb4] focus:outline-none focus:border-emerald-500/50" />
-                        <input placeholder="Türkçe" value={newWord.turkishTranslation} onChange={e => setNewWord({ ...newWord, turkishTranslation: e.target.value })} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-[#8b9bb4] focus:outline-none focus:border-emerald-500/50" />
-                        <input placeholder="Örnek cümle" value={newWord.exampleSentence} onChange={e => setNewWord({ ...newWord, exampleSentence: e.target.value })} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm placeholder:text-[#8b9bb4] focus:outline-none focus:border-emerald-500/50" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                        <select value={newWord.type} onChange={e => setNewWord({ ...newWord, type: e.target.value })} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none">
-                            {['noun', 'verb', 'adjective', 'adverb', 'preposition'].map(t => <option key={t} value={t}>{t}</option>)}
-                        </select>
-                        <select value={newWord.level} onChange={e => setNewWord({ ...newWord, level: e.target.value })} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none">
-                            {['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].map(l => <option key={l} value={l}>{l}</option>)}
-                        </select>
-                        <select value={newWord.category} onChange={e => setNewWord({ ...newWord, category: e.target.value })} className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none">
-                            {['Genel', 'İş', 'Akademik', 'Teknoloji', 'Seyahat', 'Sağlık'].map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                    </div>
-                    <button onClick={addWord} disabled={saving} className="px-6 py-2.5 rounded-xl bg-emerald-500 text-white font-bold text-sm disabled:opacity-50">
-                        {saving ? 'Ekleniyor...' : 'Kaydet'}
-                    </button>
-                </div>
-            )}
-
-            {/* Search */}
-            <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[#8b9bb4]">search</span>
-                <input type="text" placeholder="Kelime ara..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} className="w-full pl-12 pr-4 py-3 bg-[#111827]/60 rounded-xl border border-white/10 text-white placeholder:text-[#8b9bb4] focus:border-[#135bec]/50 focus:outline-none text-sm" />
-            </div>
-
-            {/* Words Table */}
-            <div className="bg-[#111827]/60 border border-white/5 rounded-2xl overflow-hidden">
-                <table className="w-full text-left">
-                    <thead className="bg-white/5">
-                        <tr className="text-[10px] uppercase tracking-widest text-[#8b9bb4]">
-                            <th className="px-5 py-4 font-bold">Kelime</th>
-                            <th className="px-5 py-4 font-bold">Çeviri</th>
-                            <th className="px-5 py-4 font-bold">Tür</th>
-                            <th className="px-5 py-4 font-bold">Seviye</th>
-                            <th className="px-5 py-4 font-bold">Kategori</th>
-                            <th className="px-5 py-4 font-bold w-16"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/5">
-                        {loading ? (
-                            Array.from({ length: 5 }).map((_, i) => (
-                                <tr key={i}><td colSpan={6} className="px-5 py-4"><div className="h-5 bg-white/5 rounded animate-pulse" /></td></tr>
-                            ))
-                        ) : words.map(w => (
-                            <tr key={w.id} className="hover:bg-white/[0.02] transition-colors">
-                                <td className="px-5 py-3.5 text-white font-medium text-sm">{w.word}</td>
-                                <td className="px-5 py-3.5 text-[#8b9bb4] text-sm">{w.turkishTranslation}</td>
-                                <td className="px-5 py-3.5 text-[#8b9bb4] text-xs">{w.type}</td>
-                                <td className="px-5 py-3.5"><span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/20">{w.level}</span></td>
-                                <td className="px-5 py-3.5 text-[#8b9bb4] text-xs">{w.category}</td>
-                                <td className="px-5 py-3.5">
-                                    <button onClick={() => deleteWord(w.id)} className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center transition-colors">
-                                        <span className="material-symbols-outlined text-red-400 text-sm">delete</span>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2">
-                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 rounded-xl bg-white/5 text-white text-sm disabled:opacity-30">← Önceki</button>
-                    <span className="text-[#8b9bb4] text-sm">{page}/{totalPages}</span>
-                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="px-4 py-2 rounded-xl bg-white/5 text-white text-sm disabled:opacity-30">Sonraki →</button>
-                </div>
-            )}
+  return (
+    <>
+      <PageHeader
+        title="Kütüphane kelimeleri"
+        description={data ? `${formatNumber(data.total)} kelime` : ' '}
+        actions={
+          <Button onClick={() => setEditing({ id: null, draft: empty })}>
+            <Plus /> Kelime ekle
+          </Button>
+        }
+      />
+      <div className="mb-4 space-y-3">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-subtle" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Kelime ya da anlam ara" className="pl-10" aria-label="Kelime ara" />
         </div>
-    );
+        <div className="flex flex-wrap gap-2">
+          <Chip active={!category} onClick={() => { setCategory(''); setPage(1); }}>Tümü</Chip>
+          {CATEGORIES.map((c) => (
+            <Chip key={c} active={category === c} onClick={() => { setCategory(c); setPage(1); }}>
+              {CATEGORY_INFO[c]?.label ?? c}
+            </Chip>
+          ))}
+          <Chip active={incomplete} onClick={() => { setIncomplete((v) => !v); setPage(1); }} className="ml-auto">
+            Eksik içerikli
+          </Chip>
+        </div>
+      </div>
+
+      <Card className="overflow-hidden">
+        <ul className="divide-y divide-border">
+          {!data
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <li key={i} className="px-4 py-3">
+                  <Skeleton className="h-9" />
+                </li>
+              ))
+            : data.words.map((w) => (
+                <li key={w.id} className="flex items-center gap-3 px-4 py-3">
+                  <LevelBadge level={w.level} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold">
+                      {w.word} <span className="text-xs font-normal text-subtle">{WORD_TYPE_LABELS[w.type] ?? w.type}</span>
+                    </p>
+                    <p className="truncate text-sm text-muted">{w.turkishTranslation}</p>
+                  </div>
+                  <span className="hidden text-xs text-muted sm:inline">{CATEGORY_INFO[w.category]?.label ?? w.category}</span>
+                  {(!w.exampleSentence || !w.definitionTr) && <span className="text-xs font-medium text-warning">eksik</span>}
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label={`${w.word} düzenle`}
+                    onClick={() =>
+                      setEditing({
+                        id: w.id,
+                        draft: { ...w, pronunciation: w.pronunciation ?? '' },
+                      })
+                    }
+                  >
+                    <Pencil />
+                  </Button>
+                  <Button variant="ghost" size="icon-sm" aria-label={`${w.word} sil`} onClick={() => setDeleting(w)}>
+                    <Trash2 />
+                  </Button>
+                </li>
+              ))}
+        </ul>
+        {data && data.pageCount > 1 && (
+          <div className="flex items-center justify-end gap-3 border-t border-border px-4 py-3">
+            <Button variant="secondary" size="icon-sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} aria-label="Önceki">
+              <ChevronLeft />
+            </Button>
+            <span className="text-sm tabular text-muted">
+              {page}/{data.pageCount}
+            </span>
+            <Button variant="secondary" size="icon-sm" disabled={page >= data.pageCount} onClick={() => setPage((p) => p + 1)} aria-label="Sonraki">
+              <ChevronRight />
+            </Button>
+          </div>
+        )}
+      </Card>
+
+      <Dialog
+        open={!!editing}
+        onClose={() => setEditing(null)}
+        title={editing?.id ? 'Kelimeyi düzenle' : 'Yeni kütüphane kelimesi'}
+        size="lg"
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setEditing(null)}>
+              Vazgeç
+            </Button>
+            <Button type="submit" form="admin-word" loading={busy}>
+              Kaydet
+            </Button>
+          </>
+        }
+      >
+        {editing && (
+          <form id="admin-word" onSubmit={save} className="grid gap-4 sm:grid-cols-2">
+            <Field label="İngilizce">{(p) => <Input {...p} required value={editing.draft.word} onChange={set('word')} />}</Field>
+            <Field label="Türkçe anlamı">{(p) => <Input {...p} required value={editing.draft.turkishTranslation} onChange={set('turkishTranslation')} />}</Field>
+            <Field label="Tanım" className="sm:col-span-2">{(p) => <Input {...p} value={editing.draft.definitionTr} onChange={set('definitionTr')} />}</Field>
+            <Field label="Örnek cümle">{(p) => <Textarea {...p} rows={2} value={editing.draft.exampleSentence} onChange={set('exampleSentence')} className="min-h-0" />}</Field>
+            <Field label="Cümle çevirisi">{(p) => <Textarea {...p} rows={2} value={editing.draft.exampleSentenceTr} onChange={set('exampleSentenceTr')} className="min-h-0" />}</Field>
+            <Field label="Tür">
+              {(p) => (
+                <Select {...p} value={editing.draft.type} onChange={set('type')}>
+                  {WORD_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {WORD_TYPE_LABELS[t]}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </Field>
+            <Field label="Telaffuz (IPA)">{(p) => <Input {...p} value={editing.draft.pronunciation} onChange={set('pronunciation')} className="font-mono" />}</Field>
+            <Field label="Seviye">
+              {(p) => (
+                <Select {...p} value={editing.draft.level} onChange={set('level')}>
+                  {CEFR_LEVELS.map((l) => (
+                    <option key={l}>{l}</option>
+                  ))}
+                </Select>
+              )}
+            </Field>
+            <Field label="Kategori">
+              {(p) => (
+                <Select {...p} value={editing.draft.category} onChange={set('category')}>
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {CATEGORY_INFO[c]?.label ?? c}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </Field>
+          </form>
+        )}
+      </Dialog>
+
+      <ConfirmDialog
+        open={!!deleting}
+        onClose={() => setDeleting(null)}
+        onConfirm={remove}
+        loading={busy}
+        title={`“${deleting?.word}” silinsin mi?`}
+        description="Kelime kütüphaneden, kullanıcıların listelerinden ve ilerlemelerinden kalıcı olarak kaldırılır."
+        confirmLabel="Sil"
+      />
+    </>
+  );
 }

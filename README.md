@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VocabMaster
 
-## Getting Started
+Aralıklı tekrar (SRS) ile İngilizce kelime öğrenme platformu. Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · Prisma 6 · PostgreSQL · Auth.js v5.
 
-First, run the development server:
+## Özellikler
+
+- **Günlük çalışma**: tekrarı gelen kelimeler + seviyeye ve ilgi alanlarına göre seçilen yeni kelimeler
+- **7 çalışma modu**: kartlar, çoktan seçmeli, yazma, eşleştirme, dinleme, boşluk doldurma, konuşma (+ Pro: AI hikâye modu)
+- **SM-2 tabanlı tekrar takvimi** (öğrenme adımları + aralıklı tekrar), tek kaynakta: `src/lib/srs.ts`
+- **XP, seviye, günlük seri, günlük hedef ve başarımlar**; hepsi sunucuda hesaplanır (`src/server/study.ts`)
+- **Hazır kütüphane** (7 kategori, A1–C2), tanım, örnek cümle ve IPA ile
+- **Kendi listelerin**: elle, yapıştırarak, Excel/CSV’den (Pro) ya da metinden AI ile çıkararak
+- **İstatistikler**, sıralama (haftalık/aylık/tüm zamanlar), açık/koyu tema, mobil uyumlu arayüz
+- **Yönetim paneli**: kullanıcılar (plan/rol), kütüphane kelimeleri, duyurular, kuponlar, sistem ayarları (bakım modu, AI, kayıtlar)
+
+## Kurulum
 
 ```bash
+npm install
+cp .env.example .env      # DATABASE_URL ve AUTH_SECRET'i doldur
+npm run db:push           # şemayı veritabanına uygula
+npm run db:seed           # kütüphane kelimeleri ve başarımlar
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+İlk admin hesabı için kayıt olduktan sonra veritabanında ilgili kullanıcının `role` alanını `ADMIN` yap.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Komutlar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Komut | Açıklama |
+| --- | --- |
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` | Prisma client + şema senkronu + production build |
+| `npm test` | Birim testleri (Vitest) |
+| `npm run typecheck` / `npm run lint` | Tip ve lint kontrolleri |
+| `npm run db:seed` | Kütüphaneyi günceller. Tekrar tekrar çalıştırılabilir; kelimeleri yerinde günceller, hiçbir şey silmez |
 
-## Learn More
+## Proje yapısı
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    (marketing)/   tanıtım sayfaları, fiyatlar, yasal sayfalar
+    (auth)/        giriş / kayıt
+    (app)/         giriş yapmış kullanıcı alanı (panel, çalışma, listeler, kütüphane…)
+    admin/         yönetim paneli
+    api/           route handler'lar (zod ile doğrulama, tek tip hata cevapları)
+  components/      ui/ (tasarım sistemi), study/ (çalışma motoru + modlar), app/, marketing/, charts/
+  lib/             istemci + sunucu ortak saf mantık (srs, levels, dates, plans, schemas)
+  server/          yalnızca sunucu: auth, oturum yardımcıları, çalışma/istatistik servisleri, AI
+prisma/
+  schema.prisma
+  seed.ts, words/  kütüphane içeriği
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notlar
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Gün sınırları Türkiye saatine göre** hesaplanır (seri, günlük hedef, grafikler): `src/lib/dates.ts`.
+- **Build sırasında `prisma db push`** çalışır; veri kaybına yol açacak bir şema değişikliğinde build bilerek durur.
+- **Ödeme altyapısı henüz bağlı değil.** Pro üyelik şimdilik yönetim panelinden tanımlanır.

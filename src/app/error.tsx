@@ -1,46 +1,35 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { Button, ButtonLink } from '@/components/ui/button';
+import { SITE } from '@/lib/constants';
 
-export default function Error({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function ErrorPage({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error('Application error:', error);
+    console.error(error);
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-white flex items-center justify-center px-4">
-      <div className="text-center max-w-md">
-        <div className="w-16 h-16 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mx-auto mb-6">
-          <AlertTriangle size={28} className="text-orange-400" />
+    <main className="grid min-h-[70dvh] place-items-center px-6">
+      <div className="max-w-md text-center">
+        <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-danger-soft text-danger">
+          <AlertTriangle className="size-7" />
         </div>
-        <h1 className="text-2xl font-bold mb-3">Bir Sorun Oluştu</h1>
-        <p className="text-[#6b7a94] mb-8 leading-relaxed text-sm">
-          Beklenmeyen bir hata meydana geldi. Sorun devam ederse lütfen bizimle iletişime geçin.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={reset}
-            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#135bec] text-white rounded-lg text-sm font-medium hover:bg-[#1a6ef5] transition-colors"
-          >
-            <RefreshCw size={15} />
-            Tekrar Dene
-          </button>
-          <a
-            href="/"
-            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-white/6 border border-white/8 text-white rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
-          >
-            <Home size={15} />
-            Ana Sayfa
-          </a>
+        <h1 className="mt-5 font-display text-2xl font-extrabold">Bir şeyler ters gitti</h1>
+        <p className="mt-2 text-muted">Beklenmedik bir hata oluştu. İlerlemen güvende; sayfayı yeniden denemen genellikle yeterli.</p>
+        <div className="mt-7 flex justify-center gap-2">
+          <Button onClick={reset}>Tekrar dene</Button>
+          <ButtonLink href="/dashboard" variant="secondary">
+            Panele dön
+          </ButtonLink>
         </div>
+        {error.digest && (
+          <p className="mt-6 text-xs text-subtle">
+            Sorun devam ederse bu kodla bize yaz: <code className="font-mono">{error.digest}</code> · {SITE.supportEmail}
+          </p>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

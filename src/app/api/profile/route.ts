@@ -1,107 +1,50 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+import { prisma } from '@/server/db';
+import { route, readJson, json, requireApiUserId, ApiError } from '@/server/api';
+import { profileUpdateSchema } from '@/lib/schemas';
 
-// GET - Fetch user profile
-export async function GET() {
-    try {
-        const session = await auth();
+export const PATCH = route(async (req) => {
+  const userId = await requireApiUserId();
+  const body = await readJson(req, profileUpdateSchema);
 
-        if (!session?.user?.id) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      name: body.name,
+      image: body.image === undefined ? undefined : body.image || null,
+      dailyGoal: body.dailyGoal,
+      languageLevel: body.languageLevel,
+      interests: body.interests?.join(','),
+      onboardingComplete: body.onboardingComplete,
+    },
+    select: { name: true, image: true, dailyGoal: true, languageLevel: true, interests: true, onboardingComplete: true },
+  });
+  return json(user);
+});
 
-        const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-                xp: true,
-                level: true,
-                streak: true,
-                createdAt: true,
-            }
-        });
+const deleteSchema = z.object({
+  confirm: z.string().trim(),
+  password: z.string().max(200).optional().default(''),
+});
 
-        if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
-        }
+/** Permanently deletes the account and everything that belongs to it. */
+export const DELETE = route(async (req) => {
+  const userId = await requireApiUserId();
+  const { confirm, password } = await readJson(req, deleteSchema);
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { email: true, password: true } });
 
-        return NextResponse.json(user);
-    } catch (error) {
-        console.error('Error fetching profile:', error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
+  if (confirm.toLocaleLowerCase('tr-TR') !== 'hesabımı sil') {
+    throw new ApiError(400, 'Onaylamak için "hesabımı sil" yaz.', 'CONFIRMATION_REQUIRED');
+  }
+  if (user.password && !(await bcrypt.compare(password, user.password))) {
+    throw new ApiError(400, 'Şifre hatalı.', 'WRONG_PASSWORD');
+  }
 
-// PUT - Update user profile
-export async function PUT(req: NextRequest) {
-    try {
-        const session = await auth();
-
-        if (!session?.user?.id) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const body = await req.json();
-        const { name, image, level, dailyGoal, interests, onboardingComplete } = body;
-
-        // Validate name
-        if (name !== undefined) {
-            if (typeof name !== 'string' || name.trim().length < 2) {
-                return NextResponse.json({ error: 'Name must be at least 2 characters' }, { status: 400 });
-            }
-            if (name.length > 50) {
-                return NextResponse.json({ error: 'Name must be less than 50 characters' }, { status: 400 });
-            }
-        }
-
-        // Validate image URL if provided
-        if (image !== undefined && image !== null) {
-            if (typeof image !== 'string') {
-                return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 });
-            }
-            // Basic URL validation
-            if (image && !image.startsWith('http://') && !image.startsWith('https://') && !image.startsWith('data:image/')) {
-                return NextResponse.json({ error: 'Invalid image URL format' }, { status: 400 });
-            }
-        }
-
-        // Build update data
-        const updateData: Record<string, unknown> = {};
-        if (name !== undefined) updateData.name = name.trim();
-        if (image !== undefined) updateData.image = image || null;
-        
-        // Onboarding fields
-        if (level !== undefined) updateData.languageLevel = level;
-        if (dailyGoal !== undefined) updateData.dailyGoal = Number(dailyGoal);
-        if (interests !== undefined) {
-            updateData.interests = Array.isArray(interests) ? interests.join(',') : interests;
-        }
-        if (onboardingComplete !== undefined) updateData.onboardingComplete = Boolean(onboardingComplete);
-
-        const updatedUser = await prisma.user.update({
-            where: { id: session.user.id },
-            data: updateData,
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true,
-                xp: true,
-                level: true,
-                streak: true,
-                dailyGoal: true,
-                languageLevel: true,
-                onboardingComplete: true,
-            }
-        });
-
-        return NextResponse.json(updatedUser);
-    } catch (error) {
-        console.error('Error updating profile:', error);
-        return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
-}
+  await prisma.$transaction([
+    prisma.word.deleteMany({ where: { createdByUserId: userId, isSystem: false } }),
+    prisma.activityLog.deleteMany({ where: { userId } }),
+    prisma.user.delete({ where: { id: userId } }),
+  ]);
+  return json({ ok: true });
+});

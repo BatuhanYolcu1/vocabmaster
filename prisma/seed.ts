@@ -1,57 +1,104 @@
+// Seeds the curated library words and the achievement definitions.
+// Safe to run any number of times, including against production:
+// - words are matched by seedKey, or (for rows created by older seeds) by word + category,
+//   and updated in place, so users' progress on them is kept
+// - nothing is ever deleted
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import WORDS from './word-data';
+import { ACHIEVEMENTS } from '../src/lib/achievement-defs';
+import type { WordEntry } from './words/types';
+import { temel } from './words/temel';
+import { genel } from './words/genel';
+import { is } from './words/is';
+import { akademik } from './words/akademik';
+import { teknoloji } from './words/teknoloji';
+import { seyahat } from './words/seyahat';
+import { saglik } from './words/saglik';
 
 const prisma = new PrismaClient();
 
+const LIBRARY: Record<string, WordEntry[]> = {
+  Temel: temel,
+  Genel: genel,
+  İş: is,
+  Akademik: akademik,
+  Teknoloji: teknoloji,
+  Seyahat: seyahat,
+  Sağlık: saglik,
+};
+
+function containsWord(sentence: string, word: string) {
+  return new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i').test(sentence);
+}
+
+async function seedWords() {
+  let created = 0;
+  let updated = 0;
+  const problems: string[] = [];
+
+  for (const [category, entries] of Object.entries(LIBRARY)) {
+    for (const [word, ipa, type, level, turkish, definition, example, exampleTr] of entries) {
+      if (!containsWord(example, word)) problems.push(`${category}/${word}: example does not contain the word`);
+
+      const seedKey = `${category}:${word}`.toLowerCase();
+      const data = {
+        word,
+        pronunciation: ipa,
+        type,
+        level,
+        category,
+        turkishTranslation: turkish,
+        definitionTr: definition,
+        exampleSentence: example,
+        exampleSentenceTr: exampleTr,
+        isSystem: true,
+        seedKey,
+      };
+
+      const existing =
+        (await prisma.word.findFirst({ where: { seedKey }, select: { id: true } })) ??
+        (await prisma.word.findFirst({
+          where: { isSystem: true, seedKey: null, category, word: { equals: word, mode: 'insensitive' } },
+          select: { id: true },
+        }));
+
+      if (existing) {
+        await prisma.word.update({ where: { id: existing.id }, data });
+        updated++;
+      } else {
+        await prisma.word.create({ data });
+        created++;
+      }
+    }
+  }
+
+  console.log(`Words: ${created} created, ${updated} updated`);
+  if (problems.length) console.warn(`⚠ ${problems.length} content issue(s):\n  ${problems.join('\n  ')}`);
+}
+
+async function seedAchievements() {
+  for (const def of ACHIEVEMENTS) {
+    const data = {
+      nameTr: def.nameTr,
+      description: def.description,
+      descriptionTr: def.descriptionTr,
+      icon: def.icon,
+      xpReward: def.xpReward,
+      condition: JSON.stringify({ metric: def.metric, target: def.target }),
+    };
+    await prisma.achievement.upsert({ where: { name: def.name }, update: data, create: { name: def.name, ...data } });
+  }
+  console.log(`Achievements: ${ACHIEVEMENTS.length} synced`);
+}
+
 async function main() {
-    console.log('🌱 Seeding database...');
-
-    // Seed words from compact data
-    let wordCount = 0;
-    for (const [category, words] of Object.entries(WORDS)) {
-        for (const [word, turkishTranslation, type, level] of words) {
-            await prisma.word.upsert({
-                where: { id: word },
-                update: { turkishTranslation, type, level, category },
-                create: {
-                    word,
-                    turkishTranslation,
-                    definitionTr: `${turkishTranslation} anlamına gelen ${type}.`,
-                    exampleSentence: '',
-                    exampleSentenceTr: '',
-                    type,
-                    level,
-                    category,
-                },
-            });
-            wordCount++;
-        }
-    }
-    console.log(`✅ Created ${wordCount} words across ${Object.keys(WORDS).length} categories`);
-
-    // Create achievements
-    const achievements = [
-        { name: 'first_word', nameTr: 'İlk Adım', description: 'Learn your first word', descriptionTr: 'İlk kelimeni öğren', icon: '🎯', xpReward: 50, condition: JSON.stringify({ wordsLearned: 1 }) },
-        { name: 'streak_7', nameTr: '7 Gün Seri', description: 'Maintain a 7-day streak', descriptionTr: '7 gün üst üste çalış', icon: '🔥', xpReward: 200, condition: JSON.stringify({ streak: 7 }) },
-        { name: 'streak_30', nameTr: '30 Gün Ustası', description: 'Maintain a 30-day streak', descriptionTr: '30 gün üst üste çalış', icon: '💪', xpReward: 1000, condition: JSON.stringify({ streak: 30 }) },
-        { name: 'words_50', nameTr: '50 Kelime', description: 'Learn 50 words', descriptionTr: '50 kelime öğren', icon: '📚', xpReward: 300, condition: JSON.stringify({ wordsLearned: 50 }) },
-        { name: 'words_100', nameTr: '100 Kelime', description: 'Learn 100 words', descriptionTr: '100 kelime öğren', icon: '💯', xpReward: 500, condition: JSON.stringify({ wordsLearned: 100 }) },
-        { name: 'words_500', nameTr: '500 Kelime', description: 'Learn 500 words', descriptionTr: '500 kelime öğren', icon: '🏆', xpReward: 2000, condition: JSON.stringify({ wordsLearned: 500 }) },
-        { name: 'perfectionist', nameTr: 'Mükemmeliyetçi', description: 'Complete a session with 100% accuracy', descriptionTr: '%100 doğrulukla tamamla', icon: '⭐', xpReward: 150, condition: JSON.stringify({ perfectSession: true }) },
-        { name: 'speed_demon', nameTr: 'Hız Şeytanı', description: 'Complete 10 words in under 2 minutes', descriptionTr: '10 kelimeyi 2 dk altında tamamla', icon: '⚡', xpReward: 200, condition: JSON.stringify({ speedRun: true }) },
-        { name: 'night_owl', nameTr: 'Gece Kuşu', description: 'Study after midnight', descriptionTr: 'Gece yarısından sonra çalış', icon: '🦉', xpReward: 100, condition: JSON.stringify({ nightStudy: true }) },
-        { name: 'early_bird', nameTr: 'Erken Kalkan', description: 'Study before 7 AM', descriptionTr: 'Sabah 7den önce çalış', icon: '🌅', xpReward: 100, condition: JSON.stringify({ earlyStudy: true }) },
-        { name: 'polyglot', nameTr: 'Çok Yönlü', description: 'Study all categories', descriptionTr: 'Tüm kategorilerde çalış', icon: '🌍', xpReward: 500, condition: JSON.stringify({ allCategories: true }) },
-        { name: 'marathon', nameTr: 'Maraton', description: 'Study for 30+ minutes in one session', descriptionTr: 'Tek oturumda 30+ dk çalış', icon: '🏃', xpReward: 300, condition: JSON.stringify({ longSession: true }) },
-    ];
-
-    for (const a of achievements) {
-        await prisma.achievement.upsert({ where: { name: a.name }, update: a, create: a });
-    }
-    console.log(`✅ Created ${achievements.length} achievements`);
-    console.log('🎉 Seeding complete!');
+  await seedWords();
+  await seedAchievements();
 }
 
 main()
-    .catch((e) => { console.error(e); process.exit(1); })
-    .finally(async () => { await prisma.$disconnect(); });
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());

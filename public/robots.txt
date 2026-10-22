@@ -2,9 +2,15 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /study/
-Disallow: /wordlists/
-Disallow: /profile
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /study
+Disallow: /lists
+Disallow: /library
+Disallow: /stats
+Disallow: /leaderboard
+Disallow: /achievements
+Disallow: /settings
 Disallow: /onboarding
 
 # Host

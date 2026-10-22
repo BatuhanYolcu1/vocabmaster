@@ -1,143 +1,107 @@
-'use client';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Activity, BookText, Layers, Sparkles, UserPlus, Users } from 'lucide-react';
+import { prisma } from '@/server/db';
+import { Card, CardBody, CardHeader } from '@/components/ui/card';
+import { Avatar, PageHeader, StatTile } from '@/components/ui/misc';
+import { BarChart } from '@/components/charts/bar-chart';
+import { dayStamp, lastDays, shortDateLabel, startOfToday, relativeDayLabel } from '@/lib/dates';
+import { formatNumber } from '@/lib/utils';
 
-import { useEffect, useState } from 'react';
+export const metadata: Metadata = { title: 'Genel bakış' };
 
-interface Stats {
-    users: { total: number; today: number; week: number; month: number; activeToday: number };
-    plans: { FREE: number; LITE: number; PRO: number };
-    words: { total: number; system: number };
-    lists: number;
-    studySessions: { total: number; today: number };
-    revenue: { estimated: number };
-}
+export default async function AdminHome() {
+  const now = new Date();
+  const days = lastDays(14, now);
+  const since = new Date(days[0].getTime() - 3 * 3_600_000);
+  const todayStart = startOfToday(now);
+  const weekAgo = new Date(now.getTime() - 7 * 86_400_000);
 
-export default function AdminDashboard() {
-    const [stats, setStats] = useState<Stats | null>(null);
-    const [loading, setLoading] = useState(true);
+  const [users, newToday, newWeek, activeToday, active7, pro, systemWords, customWords, lists, reviewsToday, signups, activity, recent] =
+    await Promise.all([
+      prisma.user.count(),
+      prisma.user.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.user.count({ where: { createdAt: { gte: weekAgo } } }),
+      prisma.user.count({ where: { lastStudyDate: { gte: todayStart } } }),
+      prisma.user.count({ where: { lastStudyDate: { gte: weekAgo } } }),
+      prisma.user.count({ where: { subscriptionType: { in: ['PRO', 'LITE'] } } }),
+      prisma.word.count({ where: { isSystem: true } }),
+      prisma.word.count({ where: { isSystem: false } }),
+      prisma.wordList.count(),
+      prisma.reviewLog.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.user.findMany({ where: { createdAt: { gte: since } }, select: { createdAt: true } }),
+      prisma.dailyActivity.groupBy({ by: ['date'], where: { date: { gte: days[0] }, wordsStudied: { gt: 0 } }, _count: { _all: true } }),
+      prisma.user.findMany({ orderBy: { createdAt: 'desc' }, take: 6, select: { id: true, name: true, email: true, image: true, createdAt: true } }),
+    ]);
 
-    useEffect(() => {
-        fetch('/api/admin/stats')
-            .then(res => res.json())
-            .then(setStats)
-            .catch(console.error)
-            .finally(() => setLoading(false));
-    }, []);
+  const signupsByDay = new Map<string, number>();
+  for (const s of signups) {
+    const key = dayStamp(s.createdAt).toISOString();
+    signupsByDay.set(key, (signupsByDay.get(key) ?? 0) + 1);
+  }
+  const activeByDay = new Map(activity.map((a) => [a.date.toISOString(), a._count._all]));
 
-    if (loading) {
-        return (
-            <div className="space-y-6">
-                <div className="h-8 bg-white/5 rounded-xl w-48 animate-pulse" />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="bg-[#111827]/60 border border-white/5 rounded-2xl p-6 animate-pulse">
-                            <div className="h-4 bg-white/10 rounded w-24 mb-3" />
-                            <div className="h-8 bg-white/5 rounded w-16" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
+  return (
+    <>
+      <PageHeader title="Genel bakış" description="Platformun bugünkü durumu." />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatTile icon={Users} label="Toplam kullanıcı" value={formatNumber(users)} hint={`Bu hafta +${newWeek}`} />
+        <StatTile icon={UserPlus} tone="success" label="Bugün kayıt" value={formatNumber(newToday)} />
+        <StatTile icon={Activity} tone="streak" label="Bugün aktif" value={formatNumber(activeToday)} hint={`Son 7 gün: ${formatNumber(active7)}`} />
+        <StatTile icon={Sparkles} tone="violet" label="Pro üye" value={formatNumber(pro)} hint={users ? `%${Math.round((pro / users) * 100)} oran` : undefined} />
+        <StatTile icon={BookText} tone="primary" label="Kütüphane kelimesi" value={formatNumber(systemWords)} hint={`${formatNumber(customWords)} kullanıcı kelimesi`} />
+        <StatTile icon={Layers} tone="warning" label="Liste" value={formatNumber(lists)} />
+        <StatTile icon={Activity} tone="xp" label="Bugün cevap" value={formatNumber(reviewsToday)} />
+      </div>
 
-    if (!stats) return <p className="text-red-400">İstatistikler yüklenemedi.</p>;
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader title="Yeni kayıtlar" description="Son 14 gün" />
+          <CardBody>
+            <BarChart
+              ariaLabel="Son 14 gündeki günlük yeni kayıt sayısı"
+              unit="kayıt"
+              labelEvery={3}
+              data={days.map((d, i) => ({ label: shortDateLabel(d), value: signupsByDay.get(d.toISOString()) ?? 0, highlight: i === days.length - 1 }))}
+            />
+          </CardBody>
+        </Card>
+        <Card>
+          <CardHeader title="Aktif kullanıcılar" description="Son 14 gün, gün içinde en az bir kelime çalışanlar" />
+          <CardBody>
+            <BarChart
+              ariaLabel="Son 14 gündeki günlük aktif kullanıcı sayısı"
+              unit="kullanıcı"
+              tone="success"
+              labelEvery={3}
+              data={days.map((d, i) => ({ label: shortDateLabel(d), value: activeByDay.get(d.toISOString()) ?? 0, highlight: i === days.length - 1 }))}
+            />
+          </CardBody>
+        </Card>
+      </div>
 
-    const statCards = [
-        { label: 'Toplam Kullanıcı', value: stats.users.total, icon: 'group', color: 'from-blue-500 to-cyan-500', glow: 'rgba(59,130,246,0.3)' },
-        { label: 'Bugün Aktif', value: stats.users.activeToday, icon: 'person_check', color: 'from-emerald-500 to-green-500', glow: 'rgba(16,185,129,0.3)' },
-        { label: 'Bugün Kayıt', value: stats.users.today, icon: 'person_add', color: 'from-violet-500 to-purple-500', glow: 'rgba(139,92,246,0.3)' },
-        { label: 'Bu Hafta Kayıt', value: stats.users.week, icon: 'trending_up', color: 'from-amber-500 to-orange-500', glow: 'rgba(245,158,11,0.3)' },
-        { label: 'Toplam Kelime', value: stats.words.total, icon: 'dictionary', color: 'from-cyan-500 to-teal-500', glow: 'rgba(6,182,212,0.3)' },
-        { label: 'Sistem Kelimeleri', value: stats.words.system, icon: 'library_books', color: 'from-pink-500 to-rose-500', glow: 'rgba(236,72,153,0.3)' },
-        { label: 'Kelime Listeleri', value: stats.lists, icon: 'format_list_bulleted', color: 'from-indigo-500 to-blue-500', glow: 'rgba(99,102,241,0.3)' },
-        { label: 'Bugün Çalışma', value: stats.studySessions.today, icon: 'school', color: 'from-rose-500 to-red-500', glow: 'rgba(244,63,94,0.3)' },
-    ];
-
-    const totalPaid = stats.plans.LITE + stats.plans.PRO;
-    const totalUsers = stats.users.total || 1;
-
-    return (
-        <div className="space-y-8 animate-fadeIn">
-            <div>
-                <h1 className="text-3xl font-black text-white flex items-center gap-3">
-                    <span className="material-symbols-outlined text-amber-400">dashboard</span>
-                    Dashboard
-                </h1>
-                <p className="text-[#8b9bb4] mt-1">Platform genel bakış</p>
-            </div>
-
-            {/* Stat Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {statCards.map(card => (
-                    <div
-                        key={card.label}
-                        className="bg-[#111827]/60 border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all group"
-                    >
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="text-[#8b9bb4] text-xs font-medium uppercase tracking-wider">{card.label}</span>
-                            <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center group-hover:shadow-[0_0_20px_${card.glow}] transition-shadow`}>
-                                <span className="material-symbols-outlined text-white text-lg">{card.icon}</span>
-                            </div>
-                        </div>
-                        <p className="text-3xl font-black text-white">{card.value.toLocaleString('tr-TR')}</p>
-                    </div>
-                ))}
-            </div>
-
-            {/* Plan Distribution + Revenue */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Plan Distribution */}
-                <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-6">
-                    <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#135bec]">pie_chart</span>
-                        Plan Dağılımı
-                    </h3>
-                    <div className="space-y-4">
-                        {[
-                            { name: 'Free', count: stats.plans.FREE, color: 'bg-slate-500', pct: ((stats.plans.FREE / totalUsers) * 100).toFixed(0) },
-                            { name: 'Lite', count: stats.plans.LITE, color: 'bg-[#135bec]', pct: ((stats.plans.LITE / totalUsers) * 100).toFixed(0) },
-                            { name: 'Pro', count: stats.plans.PRO, color: 'bg-purple-500', pct: ((stats.plans.PRO / totalUsers) * 100).toFixed(0) },
-                        ].map(p => (
-                            <div key={p.name}>
-                                <div className="flex justify-between text-sm mb-1.5">
-                                    <span className="text-white font-medium">{p.name}</span>
-                                    <span className="text-[#8b9bb4]">{p.count} kullanıcı ({p.pct}%)</span>
-                                </div>
-                                <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
-                                    <div className={`h-full ${p.color} rounded-full transition-all duration-500`} style={{ width: `${Math.max(2, Number(p.pct))}%` }} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Revenue */}
-                <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-6">
-                    <h3 className="text-white font-bold text-lg mb-5 flex items-center gap-2">
-                        <span className="material-symbols-outlined text-emerald-400">payments</span>
-                        Gelir Tahmini
-                    </h3>
-                    <div className="space-y-6">
-                        <div>
-                            <p className="text-[#8b9bb4] text-xs uppercase tracking-wider mb-1">Tahmini Aylık Gelir</p>
-                            <p className="text-4xl font-black text-emerald-400">₺{stats.revenue.estimated.toFixed(2)}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-white/5 rounded-xl p-4">
-                                <p className="text-[#8b9bb4] text-xs mb-1">Ücretli Kullanıcı</p>
-                                <p className="text-2xl font-bold text-white">{totalPaid}</p>
-                            </div>
-                            <div className="bg-white/5 rounded-xl p-4">
-                                <p className="text-[#8b9bb4] text-xs mb-1">Dönüşüm Oranı</p>
-                                <p className="text-2xl font-bold text-white">{totalUsers > 0 ? ((totalPaid / totalUsers) * 100).toFixed(1) : 0}%</p>
-                            </div>
-                        </div>
-                        <div className="bg-white/5 rounded-xl p-4">
-                            <p className="text-[#8b9bb4] text-xs mb-1">Toplam Çalışma Oturumu</p>
-                            <p className="text-2xl font-bold text-white">{stats.studySessions.total.toLocaleString('tr-TR')}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+      <Card className="mt-6">
+        <CardHeader
+          title="Son kayıt olanlar"
+          action={
+            <Link href="/admin/users" className="text-sm font-medium text-primary hover:underline">
+              Tümü
+            </Link>
+          }
+        />
+        <ul className="mt-2 divide-y divide-border">
+          {recent.map((u) => (
+            <li key={u.id} className="flex items-center gap-3 px-5 py-3">
+              <Avatar name={u.name} image={u.image} size={32} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{u.name ?? '—'}</p>
+                <p className="truncate text-xs text-muted">{u.email}</p>
+              </div>
+              <span className="text-xs text-subtle">{relativeDayLabel(u.createdAt)}</span>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    </>
+  );
 }

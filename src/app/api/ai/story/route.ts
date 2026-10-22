@@ -1,109 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { getUserPlanInfo, incrementAIUsage } from '@/lib/subscription-server';
-import { isAIEnabled } from '@/lib/settings-server';
+import { z } from 'zod';
+import { prisma } from '@/server/db';
+import { route, readJson, json, requireApiUserId, ApiError, notFound } from '@/server/api';
+import { consumeAiCredit, refundAiCredit } from '@/server/plan';
+import { generateStory } from '@/server/ai';
+import { CEFR_LEVELS } from '@/lib/constants';
+import { shuffle } from '@/lib/utils';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const schema = z.object({
+  listId: z.string().min(1).nullable().optional(),
+  level: z.enum(CEFR_LEVELS).default('B1'),
+});
 
-export async function POST(request: NextRequest) {
-    try {
-        const session = await auth();
+/** Writes a short story around words the user is learning (Pro). */
+export const POST = route(async (req) => {
+  const userId = await requireApiUserId();
+  const { listId, level } = await readJson(req, schema);
 
-        if (!session?.user?.id) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+  let candidates: Array<{ id: string; word: string; turkishTranslation: string }>;
+  if (listId) {
+    const list = await prisma.wordList.findFirst({
+      where: { id: listId, userId },
+      select: { items: { select: { word: { select: { id: true, word: true, turkishTranslation: true } } } } },
+    });
+    if (!list) throw notFound('Liste bulunamadı.');
+    candidates = list.items.map((i) => i.word);
+  } else {
+    // Words currently in learning/review are the ones a story helps most with.
+    const rows = await prisma.progress.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+      take: 40,
+      select: { word: { select: { id: true, word: true, turkishTranslation: true } } },
+    });
+    candidates = rows.map((r) => r.word);
+  }
 
-        const aiActive = await isAIEnabled();
-        if (!aiActive) {
-            return NextResponse.json({ error: 'Yapay zeka modülü geçici olarak kapatılmıştır.' }, { status: 403 });
-        }
+  const words = shuffle(candidates).slice(0, 8);
+  if (words.length < 3) {
+    throw new ApiError(400, 'Hikâye için en az 3 kelime gerekiyor. Önce birkaç kelime çalış ya da listeye ekle.', 'NOT_ENOUGH_WORDS');
+  }
 
-        // 🔒 Check plan: Story mode is PRO only
-        const planInfo = await getUserPlanInfo(session.user.id);
-        if (!planInfo || !planInfo.limits.hasStoryMode) {
-            return NextResponse.json({
-                error: 'Hikaye modu yalnızca Pro plan ile kullanılabilir.',
-                code: 'PLAN_REQUIRED',
-                requiredPlan: 'PRO',
-                plan: planInfo?.plan || 'FREE',
-            }, { status: 403 });
-        }
-
-        // 🔒 Check AI limit
-        if (planInfo.aiLimitReached) {
-            return NextResponse.json({
-                error: `Günlük AI limitine ulaştınız. Planınızı yükseltin.`,
-                code: 'AI_LIMIT_REACHED',
-                plan: planInfo.plan,
-            }, { status: 403 });
-        }
-
-        const { level = 'A2', wordCount = 10 } = await request.json();
-
-        // Get user's words for story generation
-        const userListItems = await prisma.wordListItem.findMany({
-            where: {
-                wordList: { userId: session.user.id }
-            },
-            include: { word: true },
-            take: wordCount,
-        });
-
-        if (userListItems.length < 3) {
-            return NextResponse.json(
-                { error: 'Hikaye oluşturmak için en az 3 kelime gerekli' },
-                { status: 400 }
-            );
-        }
-
-        const words = userListItems.map(item => ({
-            word: item.word.word,
-            translation: item.word.turkishTranslation,
-        }));
-
-        const wordList = words.map(w => w.word).join(', ');
-
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
-        const prompt = `You are a language learning assistant. Create a short, engaging story in English for a ${level} level learner.
-
-The story MUST include these words naturally: ${wordList}
-
-Requirements:
-1. Story should be 100-150 words long
-2. Use simple sentences appropriate for ${level} level
-3. Make it interesting and memorable
-4. Wrap each target vocabulary word with ** markers (e.g., **hello**)
-5. Return ONLY the story text, nothing else
-
-Target words to include:
-${wordList}`;
-
-        const result = await model.generateContent(prompt);
-        const story = result.response.text();
-
-        // Parse story to identify target words
-        const wordsInStory = words.map(w => ({
-            word: w.word,
-            translation: w.translation,
-            found: story.toLowerCase().includes(w.word.toLowerCase()),
-        }));
-
-        // Track AI usage
-        await incrementAIUsage(session.user.id);
-
-        return NextResponse.json({
-            story,
-            words: wordsInStory,
-            level,
-        });
-    } catch (error) {
-        console.error('Story generation error:', error);
-        return NextResponse.json(
-            { error: 'Hikaye oluşturulamadı' },
-            { status: 500 }
-        );
-    }
-}
+  await consumeAiCredit(userId, { requireStoryMode: true });
+  try {
+    const story = await generateStory(words.map((w) => w.word), level);
+    return json({ ...story, level, words });
+  } catch (error) {
+    await refundAiCredit(userId);
+    throw error;
+  }
+});

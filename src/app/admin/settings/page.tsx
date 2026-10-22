@@ -1,142 +1,78 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Bot, Construction, UserPlus } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/field';
+import { PageHeader, Skeleton } from '@/components/ui/misc';
+import { useToast } from '@/components/ui/toast';
+import { api, errorMessage } from '@/lib/fetcher';
+import { cn } from '@/lib/utils';
+
+type Key = 'MAINTENANCE_MODE' | 'AI_ENABLED' | 'REGISTRATION_ENABLED';
+
+const ITEMS: Array<{ key: Key; title: string; description: string; icon: typeof Bot; danger?: boolean }> = [
+  { key: 'AI_ENABLED', title: 'Yapay zekâ özellikleri', description: 'Kapalıyken AI ile doldurma, metinden kelime çıkarma ve hikâye modu devre dışı kalır.', icon: Bot },
+  { key: 'REGISTRATION_ENABLED', title: 'Yeni kayıtlar', description: 'Kapalıyken kayıt sayfası yeni üyelik kabul etmez. Mevcut kullanıcılar giriş yapabilir.', icon: UserPlus },
+  {
+    key: 'MAINTENANCE_MODE',
+    title: 'Bakım modu',
+    description: 'Açıkken adminler dışında herkes bakım ekranını görür. Giriş sayfası açık kalır.',
+    icon: Construction,
+    danger: true,
+  },
+];
 
 export default function AdminSettingsPage() {
-    const [settings, setSettings] = useState<Record<string, string>>({});
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState<string | null>(null);
+  const toast = useToast();
+  const [settings, setSettings] = useState<Record<Key, boolean> | null>(null);
+  const [saving, setSaving] = useState<Key | null>(null);
 
-    const fetchSettings = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch('/api/admin/settings');
-            if (res.ok) {
-                const data = await res.json();
-                const map: Record<string, string> = {};
-                data.forEach((s: any) => map[s.key] = s.value);
-                setSettings(map);
-            }
-        } catch (e) { console.error(e); }
-        finally { setLoading(false); }
-    };
+  useEffect(() => {
+    api<Record<Key, boolean>>('/api/admin/settings')
+      .then(setSettings)
+      .catch((e) => toast.error('Ayarlar yüklenemedi', errorMessage(e)));
+  }, [toast]);
 
-    useEffect(() => { fetchSettings(); }, []);
-
-    const saveSetting = async (key: string, value: string) => {
-        setSaving(key);
-        try {
-            await fetch('/api/admin/settings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key, value }),
-            });
-            setSettings(prev => ({ ...prev, [key]: value }));
-        } catch (e) { console.error(e); }
-        finally { setSaving(null); }
-    };
-
-    const toggleBooleanSetting = (key: string) => {
-        const current = settings[key] === 'true';
-        saveSetting(key, current ? 'false' : 'true');
-    };
-
-    const ConfigCard = ({ title, description, icon, children }: any) => (
-        <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-6">
-            <div className="flex items-start gap-4 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-[#8b9bb4]">{icon}</span>
-                </div>
-                <div>
-                    <h3 className="text-white font-bold text-lg">{title}</h3>
-                    <p className="text-[#8b9bb4] text-sm">{description}</p>
-                </div>
-            </div>
-            {children}
-        </div>
-    );
-
-    if (loading) {
-        return (
-            <div className="space-y-6">
-                <div className="h-8 bg-white/5 rounded-xl w-48 animate-pulse mb-8" />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-48 bg-white/5 rounded-2xl animate-pulse" />)}
-                </div>
-            </div>
-        );
+  async function change(key: Key, value: boolean) {
+    setSaving(key);
+    try {
+      await api('/api/admin/settings', { method: 'PATCH', body: { key, value } });
+      setSettings((s) => (s ? { ...s, [key]: value } : s));
+      toast.success('Ayar kaydedildi');
+    } catch (error) {
+      toast.error('Kaydedilemedi', errorMessage(error));
+    } finally {
+      setSaving(null);
     }
+  }
 
-    return (
-        <div className="space-y-8 animate-fadeIn">
-            <div>
-                <h1 className="text-3xl font-black text-white flex items-center gap-3">
-                    <span className="material-symbols-outlined text-slate-400">settings</span>
-                    Sistem Ayarları
-                </h1>
-                <p className="text-[#8b9bb4] mt-1">Platform geneli yapılandırmalar</p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* AI Settings */}
-                <ConfigCard title="Yapay Zeka (AI) Modülü" description="Hikaye ve kelime üretimi ayarları" icon="smart_toy">
-                    <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
-                        <div>
-                            <p className="text-white font-medium">AI Servisi Aktif</p>
-                            <p className="text-[#8b9bb4] text-xs">Kapatılırsa kullanıcılar AI özellikleri kullanamaz</p>
-                        </div>
-                        <button
-                            onClick={() => toggleBooleanSetting('AI_ENABLED')}
-                            disabled={saving === 'AI_ENABLED'}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${settings['AI_ENABLED'] !== 'false' ? 'bg-emerald-500' : 'bg-slate-600'} disabled:opacity-50`}
-                        >
-                            <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${settings['AI_ENABLED'] !== 'false' ? 'translate-x-7' : 'translate-x-1'}`} />
-                        </button>
-                    </div>
-                </ConfigCard>
-
-                {/* Maintenance */}
-                <ConfigCard title="Bakım Modu" description="Siteyi geçici olarak erişime kapatın" icon="construction">
-                    <div className="flex items-center justify-between p-4 bg-white/5 border border-amber-500/20 rounded-xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <div className="relative z-10">
-                            <p className="text-white font-medium">Bakım Modunu Aç</p>
-                            <p className="text-amber-400/70 text-xs">Sadece adminler siteye erişebilir</p>
-                        </div>
-                        <button
-                            onClick={() => toggleBooleanSetting('MAINTENANCE_MODE')}
-                            disabled={saving === 'MAINTENANCE_MODE'}
-                            className={`w-12 h-6 rounded-full transition-colors relative z-10 ${settings['MAINTENANCE_MODE'] === 'true' ? 'bg-amber-500' : 'bg-slate-600'} disabled:opacity-50`}
-                        >
-                            <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${settings['MAINTENANCE_MODE'] === 'true' ? 'translate-x-7' : 'translate-x-1'}`} />
-                        </button>
-                    </div>
-                </ConfigCard>
-
-                {/* Registration */}
-                <ConfigCard title="Yeni Kayıtlar" description="Platforma yeni üye alımını kontrol edin" icon="person_add">
-                    <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
-                        <div>
-                            <p className="text-white font-medium">Yeni Kayıtları Kabul Et</p>
-                            <p className="text-[#8b9bb4] text-xs">Kapatılırsa register sayfası kilitlenir</p>
-                        </div>
-                        <button
-                            onClick={() => toggleBooleanSetting('REGISTRATION_ENABLED')}
-                            disabled={saving === 'REGISTRATION_ENABLED'}
-                            className={`w-12 h-6 rounded-full transition-colors relative ${settings['REGISTRATION_ENABLED'] !== 'false' ? 'bg-[#135bec]' : 'bg-slate-600'} disabled:opacity-50`}
-                        >
-                            <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${settings['REGISTRATION_ENABLED'] !== 'false' ? 'translate-x-7' : 'translate-x-1'}`} />
-                        </button>
-                    </div>
-                </ConfigCard>
-
-                {/* Pricing / Limits Preview */}
-                <ConfigCard title="Plan Limitleri" description="Mevcut limitler kaynak koddan yönetiliyor" icon="tune">
-                    <div className="p-4 bg-white/5 rounded-xl border border-white/5 text-sm text-[#8b9bb4]">
-                        Plan limitleri ve fiyatlandırmalar (₺29.99 / ₺59.99) şu anda <code className="bg-black/30 px-1 py-0.5 rounded text-amber-400 font-mono">src/lib/subscription.ts</code> dosyasında sabit (hardcoded) olarak tanımlıdır. Değiştirmek için kod güncellenmelidir.
-                    </div>
-                </ConfigCard>
-            </div>
-        </div>
-    );
+  return (
+    <>
+      <PageHeader title="Sistem ayarları" description="Değişiklikler anında tüm kullanıcılar için geçerli olur." />
+      <Card>
+        <ul className="divide-y divide-border">
+          {ITEMS.map(({ key, title, description, icon: Icon, danger }) => (
+            <li key={key} className="flex items-start gap-4 px-5 py-5">
+              <span className={cn('grid size-10 shrink-0 place-items-center rounded-xl', danger ? 'bg-warning-soft text-warning' : 'bg-surface-2 text-muted')}>
+                <Icon className="size-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold">{title}</p>
+                <p className="text-sm text-muted">{description}</p>
+              </div>
+              {settings ? (
+                <Switch checked={settings[key]} onChange={(v) => change(key, v)} disabled={saving === key} label={title} />
+              ) : (
+                <Skeleton className="h-6 w-11 rounded-full" />
+              )}
+            </li>
+          ))}
+        </ul>
+      </Card>
+      <p className="mt-4 text-sm text-muted">
+        Plan limitleri (ör. ücretsiz plandaki günlük AI hakkı) <code className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-xs">src/lib/plans.ts</code> dosyasında tanımlıdır.
+      </p>
+    </>
+  );
 }
